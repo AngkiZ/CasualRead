@@ -6,7 +6,7 @@ package com.angki.casualread.zhihu.gson.ZhihuDailyNews;
  * 知乎日报每天推荐JSON数据类中热门新闻类
  */
 
-public class TopStoriesBean {
+public class TopNewsBean {
     private int type = 0;
     private String id;
     private String ga_prefix;
@@ -55,7 +55,7 @@ public class TopStoriesBean {
 
     @Override
     public String toString() {
-        return "TopStoriesBean{" +
+        return "TopNewsBean{" +
                 "type=" + type +
                 ", id='" + id + '\'' +
                 ", ga_prefix='" + ga_prefix + '\'' +

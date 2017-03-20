@@ -8,10 +8,10 @@ import java.util.List;
  * 知乎日报每天推荐JSON数据类（包含每日新闻和热门新闻）
  */
 
-public class StoriesBeans {
+public class NewsBeans {
     private String date;
-    private List<StoriesBean> stories;
-    private List<TopStoriesBean> topStories;
+    private List<NewsBean> stories;
+    private List<TopNewsBean> topStories;
 
     public String getDate() {
         return date;
@@ -21,25 +21,25 @@ public class StoriesBeans {
         this.date = date;
     }
 
-    public List<StoriesBean> getStories() {
+    public List<NewsBean> getStories() {
         return stories;
     }
 
-    public void setStories(List<StoriesBean> stories) {
+    public void setStories(List<NewsBean> stories) {
         this.stories = stories;
     }
 
-    public List<TopStoriesBean> getTopStories() {
+    public List<TopNewsBean> getTopStories() {
         return topStories;
     }
 
-    public void setTopStories(List<TopStoriesBean> topStories) {
+    public void setTopStories(List<TopNewsBean> topStories) {
         this.topStories = topStories;
     }
 
     @Override
     public String toString() {
-        return "StoriesBeans{" +
+        return "NewsBeans{" +
                 "date='" + date + '\'' +
                 ", stories=" + stories +
                 ", topStories=" + topStories +

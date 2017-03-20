@@ -1,8 +1,8 @@
 package com.angki.casualread.util;
 
-import com.angki.casualread.zhihu.gson.ZhihuDailyNews.StoriesBean;
-import com.angki.casualread.zhihu.gson.ZhihuDailyNews.StoriesBeans;
-import com.angki.casualread.zhihu.gson.ZhihuDailyNews.TopStoriesBean;
+import com.angki.casualread.zhihu.gson.ZhihuDailyNews.NewsBean;
+import com.angki.casualread.zhihu.gson.ZhihuDailyNews.NewsBeans;
+import com.angki.casualread.zhihu.gson.ZhihuDailyNews.TopNewsBean;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,9 +24,9 @@ public class Utility {
     /**
      * 将知乎每日推荐返回的JSON数据解析成Weather实体类
      */
-    public static StoriesBeans handleZHDNResponse(String data) {
+    public static NewsBeans handleZHDNResponse(String data) {
         try {
-            StoriesBeans beans = new StoriesBeans();
+            NewsBeans beans = new NewsBeans();
             JSONObject object = new JSONObject(data);
             //解析Date
             beans.setDate(object.optString("date"));
@@ -34,10 +34,10 @@ public class Utility {
             JSONArray array = object.optJSONArray("stories");
             //如果数组不为空且有长度进行解析
             if (array != null && array.length() > 0) {
-                List<StoriesBean> stories = new ArrayList<>();
+                List<NewsBean> stories = new ArrayList<>();
                 for (int i = 0; i < array.length(); ++i) {
                     JSONObject object1 = array.optJSONObject(i);
-                    StoriesBean bean = new StoriesBean();
+                    NewsBean bean = new NewsBean();
                     //解析非图片数据
                     bean.setType(object1.optInt("type"));
                     bean.setId(object1.optString("id"));
@@ -62,10 +62,10 @@ public class Utility {
             array = object.optJSONArray("top_stories");
             //检查数组是否有数据，如果有则进行解析
             if (array != null && array.length() > 0) {
-                List<TopStoriesBean> topStories = new ArrayList<>();
+                List<TopNewsBean> topStories = new ArrayList<>();
                 for (int i = 0; i < array.length(); ++i) {
                     object = array.optJSONObject(i);
-                    TopStoriesBean bean = new TopStoriesBean();
+                    TopNewsBean bean = new TopNewsBean();
                     //开始解析数据
                     bean.setType(object.optInt("type"));
                     bean.setId(object.optString("id"));
@@ -83,29 +83,5 @@ public class Utility {
             return null;
         }
     }
-
-
-
-
-
-
-//    public static ZhihuDailyNews handleZHDNResponse(String response){
-//
-//        try{
-//            Log.d(TAG, "ZHDNContent: 1" );
-//            JSONObject jsonObject = new JSONObject(response);
-//            Log.d(TAG, "ZHDNContent: 2" );
-//            JSONArray jsonArray = jsonObject.getJSONArray("");
-//
-//            String ZHDNContent = jsonArray.getJSONObject(0).toString();
-//            return new Gson().fromJson(response, ZhihuDailyNews.class);
-//        }catch (Exception e){
-//            Log.d(TAG, "handleZHDNResponse: e.printStackTrace();");
-//            e.printStackTrace();
-//        }
-//        Log.d(TAG, "正常加载 ");
-//        return null;
-//    }
-
 
 }

@@ -3,10 +3,8 @@ package com.angki.casualread.zhihu;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,8 +15,8 @@ import com.angki.casualread.util.Api;
 import com.angki.casualread.util.HttpUtil;
 import com.angki.casualread.util.Utility;
 import com.angki.casualread.zhihu.adapter.ZhihuFragmentAdapter;
-import com.angki.casualread.zhihu.gson.GlideImageLoader;
-import com.angki.casualread.zhihu.gson.ZhihuDailyNews.StoriesBeans;
+import com.angki.casualread.zhihu.adapter.GlideImageLoader;
+import com.angki.casualread.zhihu.gson.ZhihuDailyNews.NewsBeans;
 import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
 
@@ -83,14 +81,14 @@ public class ZhihuFragment extends Fragment{
                 //获取Json数据
                 final String responseData = response.body().string();
                 //解析Json数据
-                final StoriesBeans storiesBeans = Utility.handleZHDNResponse(responseData);
+                final NewsBeans newsBeans = Utility.handleZHDNResponse(responseData);
 
                 final List<String> images = new ArrayList<String>();
                 final List<String> titles = new ArrayList<String>();
-                for(int i = 0; i < storiesBeans.getTopStories().size(); i++){
+                for(int i = 0; i < newsBeans.getTopStories().size(); i++){
 
-                    images.add(storiesBeans.getTopStories().get(i).getImage());
-                    titles.add(storiesBeans.getTopStories().get(i).getTitle());
+                    images.add(newsBeans.getTopStories().get(i).getImage());
+                    titles.add(newsBeans.getTopStories().get(i).getTitle());
                 }
 
                 getActivity().runOnUiThread(new Runnable() {
@@ -105,7 +103,7 @@ public class ZhihuFragment extends Fragment{
                         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
                         zhihuRecyclerView.setLayoutManager(layoutManager);
                         //加载adpter适配器
-                        ZhihuFragmentAdapter adapter = new ZhihuFragmentAdapter(getContext(), storiesBeans.getStories());
+                        ZhihuFragmentAdapter adapter = new ZhihuFragmentAdapter(getContext(), newsBeans.getStories());
                         zhihuRecyclerView.setAdapter(adapter);
 
                         /**

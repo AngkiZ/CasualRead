@@ -8,7 +8,7 @@ import java.util.List;
  * 知乎日报每天推荐JSON数据类每日新闻类
  */
 
-public class StoriesBean {
+public class NewsBean {
     private int type = 0;
     private String id;
     private String ga_prefix;
@@ -57,7 +57,7 @@ public class StoriesBean {
 
     @Override
     public String toString() {
-        return "StoriesBean{" +
+        return "NewsBean{" +
                 "type=" + type +
                 ", id='" + id + '\'' +
                 ", ga_prefix='" + ga_prefix + '\'' +

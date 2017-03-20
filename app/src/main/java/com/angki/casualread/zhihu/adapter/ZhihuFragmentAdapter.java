@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.angki.casualread.R;
-import com.angki.casualread.zhihu.gson.ZhihuDailyNews.StoriesBean;
+import com.angki.casualread.zhihu.gson.ZhihuDailyNews.NewsBean;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
@@ -24,7 +24,7 @@ public class ZhihuFragmentAdapter extends RecyclerView.Adapter<ZhihuFragmentAdap
 
     private final Context mcontext;
 
-    private List<StoriesBean> mZhihuDailyNewsList;
+    private List<NewsBean> mZhihuDailyNewsList;
 
     static class ViewHolder extends RecyclerView.ViewHolder{
 
@@ -40,7 +40,7 @@ public class ZhihuFragmentAdapter extends RecyclerView.Adapter<ZhihuFragmentAdap
 
     }
 
-    public ZhihuFragmentAdapter(Context context, List<StoriesBean> ZhihuDailyNewsList){
+    public ZhihuFragmentAdapter(Context context, List<NewsBean> ZhihuDailyNewsList){
 
         mcontext = context;
 
@@ -59,7 +59,7 @@ public class ZhihuFragmentAdapter extends RecyclerView.Adapter<ZhihuFragmentAdap
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
-        StoriesBean zhihuDailyNews = mZhihuDailyNewsList.get(position);
+        NewsBean zhihuDailyNews = mZhihuDailyNewsList.get(position);
         holder.zhihuTitle.setText(zhihuDailyNews.getTitle());
         Glide.with(mcontext)
                 .load(zhihuDailyNews.getImages().get(0))

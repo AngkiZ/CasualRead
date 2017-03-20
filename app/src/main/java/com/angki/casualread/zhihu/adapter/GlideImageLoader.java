@@ -1,4 +1,4 @@
-package com.angki.casualread.zhihu.gson;
+package com.angki.casualread.zhihu.adapter;
 
 import android.content.Context;
 import android.widget.ImageView;
@@ -9,6 +9,7 @@ import com.youth.banner.loader.ImageLoader;
 
 /**
  * Created by tengyu on 2017/3/18.
+ * 轮播图的图片加载器
  */
 
 public class GlideImageLoader extends ImageLoader{
