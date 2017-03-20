@@ -6,7 +6,7 @@ import java.util.List;
  * Created by tengyu on 2017/3/14.
  */
 
-public class ZhihuDailyStory {
+public class StoryBean {
 
     private String body;
 
@@ -70,7 +70,7 @@ public class ZhihuDailyStory {
 
     @Override
     public String toString() {
-        return "ZhihuDailyStory{" +
+        return "StoryBean{" +
                 "body='" + body + '\'' +
                 ", title='" + title + '\'' +
                 ", image='" + image + '\'' +

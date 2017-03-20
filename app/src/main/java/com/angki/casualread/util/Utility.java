@@ -1,8 +1,11 @@
 package com.angki.casualread.util;
 
+import com.angki.casualread.gank.gson.GankDate;
+import com.angki.casualread.gank.gson.GankDates;
 import com.angki.casualread.zhihu.gson.ZhihuDailyNews.NewsBean;
 import com.angki.casualread.zhihu.gson.ZhihuDailyNews.NewsBeans;
 import com.angki.casualread.zhihu.gson.ZhihuDailyNews.TopNewsBean;
+import com.angki.casualread.zhihu.gson.ZhihuDailyStory.StoryBean;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -22,7 +25,7 @@ public class Utility {
 
 
     /**
-     * 将知乎每日推荐返回的JSON数据解析成Weather实体类
+     * 将知乎每日推荐返回的JSON数据解析成实体类
      */
     public static NewsBeans handleZHDNResponse(String data) {
         try {
@@ -81,6 +84,58 @@ public class Utility {
         } catch (JSONException e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    /**
+     * 解析知乎日报Json数据
+     */
+    public static StoryBean handleZHNResponse(String data) {
+
+        try {
+
+            StoryBean bean = new StoryBean();
+            JSONObject object = new JSONObject(data);
+            //解析非图片数据
+            bean.setBody(object.optString("body"));
+            bean.setTitle(object.optString("title"));
+            bean.setImage_source(object.optString("image_source"));
+            bean.setId(object.optInt("id"));
+            bean.setShare_url(object.optString("share_url"));
+            //解析图片数据
+            bean.setImage(object.optString("image"));
+            return bean;
+
+        }catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
+    /**
+     * 解析Gank Json数据
+     */
+    public static GankDates handleGankResponse(String data) {
+
+        try {
+
+            GankDates bens = new GankDates();
+            JSONObject object = new JSONObject(data);
+            //解析数据
+            bens.setError(object.optString("error"));
+            //解析results数组
+            JSONArray array = object.optJSONArray("results");
+            //如果数组不为空且有长度进行解析
+            if (array != null && array.length() > 0) {
+                List<GankDate> gankdate = new ArrayList<>();
+                for (int i = 0; i < array.length(); ++i) {
+                    object = array.optJSONObject(i);
+                    GankDate bean = new GankDate();
+                    //开始解析非图片数据
+
+                }
+            }
         }
     }
 
