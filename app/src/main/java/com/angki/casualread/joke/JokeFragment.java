@@ -1,4 +1,4 @@
-package com.angki.casualread.xiushi;
+package com.angki.casualread.joke;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,7 +13,7 @@ import com.angki.casualread.R;
  * Created by tengyu on 2017/3/20.
  */
 
-public class XiushiFragment extends Fragment{
+public class JokeFragment extends Fragment{
 
     @Nullable
     @Override

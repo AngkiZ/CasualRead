@@ -1,7 +1,11 @@
 package com.angki.casualread.util;
 
-import com.angki.casualread.gank.gson.GankDate;
-import com.angki.casualread.gank.gson.GankDates;
+import com.angki.casualread.gank.gson.GankDatas;
+import com.angki.casualread.gank.gson.GankData;
+import com.angki.casualread.gank.gson.GankWelfareData;
+import com.angki.casualread.gank.gson.GankWelfareDatas;
+import com.angki.casualread.joke.gson.JokeDate;
+import com.angki.casualread.joke.gson.JokeDates;
 import com.angki.casualread.zhihu.gson.ZhihuDailyNews.NewsBean;
 import com.angki.casualread.zhihu.gson.ZhihuDailyNews.NewsBeans;
 import com.angki.casualread.zhihu.gson.ZhihuDailyNews.TopNewsBean;
@@ -116,27 +120,115 @@ public class Utility {
     /**
      * 解析Gank Json数据
      */
-    public static GankDates handleGankResponse(String data) {
+    public static GankDatas handleGankResponse(String data) {
 
         try {
 
-            GankDates bens = new GankDates();
+            GankDatas beans = new GankDatas();
             JSONObject object = new JSONObject(data);
             //解析数据
-            bens.setError(object.optString("error"));
+            beans.setError(object.optString("error"));
             //解析results数组
             JSONArray array = object.optJSONArray("results");
             //如果数组不为空且有长度进行解析
             if (array != null && array.length() > 0) {
-                List<GankDate> gankdate = new ArrayList<>();
+                List<GankData> gankdate = new ArrayList<>();
                 for (int i = 0; i < array.length(); ++i) {
-                    object = array.optJSONObject(i);
-                    GankDate bean = new GankDate();
+                    JSONObject object1 = array.optJSONObject(i);
+                    GankData bean = new GankData();
                     //开始解析非图片数据
-
+                    bean.setDesc(object1.optString("desc"));
+                    bean.setType(object1.optString("type"));
+                    bean.setUrl(object1.optString("url"));
+                    bean.setWho(object1.optString("who"));
+                    //解析图片数据
+                    JSONArray imgArr = object1.optJSONArray("images");
+                    //检查图片数组是否有数据，如果有进行解析
+                    if (imgArr != null && imgArr.length() > 0) {
+                        List<String> images = new ArrayList<>();
+                        for (int j = 0; j < imgArr.length(); ++i) {
+                            images.add(imgArr.optString(j));
+                        }
+                        //添加到bean中
+                        bean.setImages(images);
+                    }
+                    gankdate.add(bean);
                 }
+                beans.setResults(gankdate);
             }
+            return beans;
+        }catch (JSONException e) {
+            e.printStackTrace();
+            return null;
         }
     }
 
+    /**
+     * 解析GankWelfare数据
+     */
+    public static GankWelfareDatas handleGankWelfareResponse(String data) {
+
+        try {
+            GankWelfareDatas beans = new GankWelfareDatas();
+            JSONObject object = new JSONObject(data);
+            //开始解析数据
+            beans.setError(object.optString("error"));
+            //解析results数组
+            JSONArray array = object.optJSONArray("results");
+            //如果数组不为空且有长度进行解析
+            if (array != null && array.length() > 0) {
+                List<GankWelfareData> gankwelfare = new ArrayList<>();
+                for (int i = 0; i < array.length(); ++i) {
+                    object = array.optJSONObject(i);
+                    GankWelfareData bean = new GankWelfareData();
+                    bean.set_id(object.optString("_id"));
+                    bean.setDesc(object.optString("desc"));
+                    bean.setType(object.optString("type"));
+                    bean.setUrl(object.optString("url"));
+                    bean.setWho(object.optString("who"));
+
+                    gankwelfare.add(bean);
+                }
+                beans.setResults(gankwelfare);
+            }
+            return beans;
+        }catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    /**
+     * 解析糗事百科
+     */
+    public static JokeDates handleJokeResponse(String data) {
+
+        try {
+            JokeDates beans = new JokeDates();
+            JSONObject object = new JSONObject(data);
+            //解析数据
+            beans.setReason(object.optString("reason"));
+            //解析result数组
+            JSONArray array = object.optJSONArray("result");
+            //如果数组不为空且有长度进行解析
+            if (array != null && array.length() > 0) {
+                List<JokeDate> jokedate = new ArrayList<>();
+                for (int i = 0; i < array.length(); ++i) {
+                    object = array.optJSONObject(i);
+                    JokeDate bean = new JokeDate();
+                    //开始解析数据
+                    bean.setContent(object.optString("content"));
+                    bean.setUnixtime(object.optString("unixtime"));
+                    bean.setUpdatetime(object.optString("updatetime"));
+
+                    jokedate.add(bean);
+                }
+                beans.setResult(jokedate);
+            }
+            return beans;
+        }catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

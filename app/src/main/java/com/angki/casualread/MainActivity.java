@@ -14,7 +14,7 @@ import android.widget.TextView;
 import com.angki.casualread.gank.GankFragment;
 import com.angki.casualread.gank.WelfareFragment;
 import com.angki.casualread.recommend.RecommendFragemnt;
-import com.angki.casualread.xiushi.XiushiFragment;
+import com.angki.casualread.joke.JokeFragment;
 import com.angki.casualread.zhihu.ZhihuFragment;
 
 import java.util.ArrayList;
@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
         //初始化各个Fragment
         RecommendFragemnt recommendFragemnt = new RecommendFragemnt();//推荐fragment
         ZhihuFragment zhihuFragment = new ZhihuFragment();//知乎fragment
-        XiushiFragment xiushiFragment = new XiushiFragment();//糗事fragment
+        JokeFragment jokeFragment = new JokeFragment();//笑话fragment
         GankFragment gankFragment = new GankFragment();//Gank fragment
         WelfareFragment welfareFragment = new WelfareFragment();//福利fragment
 
@@ -86,17 +86,17 @@ public class MainActivity extends AppCompatActivity {
         fragmentList = new ArrayList<>();
         fragmentList.add(recommendFragemnt);
         fragmentList.add(zhihuFragment);
-        fragmentList.add(xiushiFragment);
+        fragmentList.add(jokeFragment);
         fragmentList.add(gankFragment);
         fragmentList.add(welfareFragment);
 
         //将名称加载tab名字列表
         tabTitle = new ArrayList<>();
-        tabTitle.add("每日推荐");
-        tabTitle.add("知乎日报");
-        tabTitle.add("每日糗事");
-        tabTitle.add("每日干货");
-        tabTitle.add("每日福利");
+        tabTitle.add("推荐");
+        tabTitle.add("知乎");
+        tabTitle.add("笑货");
+        tabTitle.add("干货");
+        tabTitle.add("福利");
 
         //加载适配器
         MainViewPagerAdapter adapter = new MainViewPagerAdapter(getSupportFragmentManager(),
@@ -104,5 +104,9 @@ public class MainActivity extends AppCompatActivity {
         //建立联系
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager, true);
+    }
+
+    public ViewPager getViewPager() {
+        return viewPager;
     }
 }

@@ -3,14 +3,14 @@ package com.angki.casualread.gank.gson;
 import java.util.List;
 
 /**
- * Created by tengyu on 2017/3/20.
+ * Created by tengyu on 2017/3/21.
  */
 
-public class GankDate {
+public class GankWelfareData {
+
+    private String _id;
 
     private String desc;
-
-    private List<String> images;
 
     private String type;
 
@@ -18,20 +18,20 @@ public class GankDate {
 
     private String who;
 
+    public String get_id() {
+        return _id;
+    }
+
+    public void set_id(String _id) {
+        this._id = _id;
+    }
+
     public String getDesc() {
         return desc;
     }
 
     public void setDesc(String desc) {
         this.desc = desc;
-    }
-
-    public List<String> getImages() {
-        return images;
-    }
-
-    public void setImages(List<String> images) {
-        this.images = images;
     }
 
     public String getType() {
@@ -60,9 +60,9 @@ public class GankDate {
 
     @Override
     public String toString() {
-        return "GankDate{" +
-                "desc='" + desc + '\'' +
-                ", images=" + images +
+        return "GankWelfareDate{" +
+                "_id='" + _id + '\'' +
+                ", desc='" + desc + '\'' +
                 ", type='" + type + '\'' +
                 ", url='" + url + '\'' +
                 ", who='" + who + '\'' +

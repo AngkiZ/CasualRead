@@ -69,7 +69,8 @@ public class ZhihuFragmentAdapter extends RecyclerView.Adapter<ZhihuFragmentAdap
 
     @Override
     public int getItemCount() {
-        Log.d("Adapter", "getItemCount: " + mZhihuDailyNewsList.size());
         return mZhihuDailyNewsList.size();
     }
+
+
 }

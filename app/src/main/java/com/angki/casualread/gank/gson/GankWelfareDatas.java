@@ -3,14 +3,15 @@ package com.angki.casualread.gank.gson;
 import java.util.List;
 
 /**
- * Created by tengyu on 2017/3/20.
+ * Created by tengyu on 2017/3/21.
  */
 
-public class GankDates {
+public class GankWelfareDatas {
+
 
     private String error;
 
-    private List<GankDate> results;
+    private List<GankWelfareData> results;
 
     public String getError() {
         return error;
@@ -20,17 +21,17 @@ public class GankDates {
         this.error = error;
     }
 
-    public List<GankDate> getResults() {
+    public List<GankWelfareData> getResults() {
         return results;
     }
 
-    public void setResults(List<GankDate> results) {
+    public void setResults(List<GankWelfareData> results) {
         this.results = results;
     }
 
     @Override
     public String toString() {
-        return "GankDates{" +
+        return "GankWelfareDatas{" +
                 "error='" + error + '\'' +
                 ", results=" + results +
                 '}';
