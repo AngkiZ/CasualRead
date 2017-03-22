@@ -1,8 +1,8 @@
-package com.angki.casualread.zhihu.adapter;
+package com.angki.casualread.recommend.adapter;
 
 import android.content.Context;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,32 +17,33 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import java.util.List;
 
 /**
- * Created by tengyu on 2017/3/15.
+ * Created by tengyu on 2017/3/22.
  */
 
-public class ZhihuFragmentAdapter extends RecyclerView.Adapter<ZhihuFragmentAdapter.ViewHolder>{
+public class ZhihuContentAdapter extends RecyclerView.Adapter<ZhihuContentAdapter.ViewHolder> {
 
-    private Context mcontext;
+    private Context mContext;
 
     private List<NewsBean> mZhihuDailyNewsList;
 
-    static class ViewHolder extends RecyclerView.ViewHolder{
+    static class ViewHolder extends RecyclerView.ViewHolder {
 
-        ImageView zhihuImage;
-        TextView zhihuTitle;
+        CardView cardView;
+        ImageView image;
+        TextView title;
 
-        public ViewHolder(View view){
+        public ViewHolder(View view) {
 
             super(view);
-            zhihuImage = (ImageView) view.findViewById(R.id.list_item_image);
-            zhihuTitle = (TextView) view.findViewById(R.id.list_item_title);
+            cardView = (CardView) view;
+            image = (ImageView) view.findViewById(R.id.recommand_zhihu_recyclerview_image);
+            title = (TextView) view.findViewById(R.id.recommand_zhihu_recyclerview_title);
         }
-
     }
 
-    public ZhihuFragmentAdapter(Context context, List<NewsBean> ZhihuDailyNewsList){
+    public ZhihuContentAdapter(Context context, List<NewsBean> ZhihuDailyNewsList) {
 
-        mcontext = context;
+        mContext = context;
 
         mZhihuDailyNewsList = ZhihuDailyNewsList;
     }
@@ -50,27 +51,25 @@ public class ZhihuFragmentAdapter extends RecyclerView.Adapter<ZhihuFragmentAdap
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        View view = LayoutInflater.from(parent.getContext()).
-                inflate(R.layout.list_item_layout, parent, false);
-        ViewHolder holder = new ViewHolder(view);
-        return holder;
+        View view = LayoutInflater.from(mContext).
+                inflate(R.layout.recommand_content_zhihu, parent , false);
+        return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
         NewsBean zhihuDailyNews = mZhihuDailyNewsList.get(position);
-        holder.zhihuTitle.setText(zhihuDailyNews.getTitle());
-        Glide.with(mcontext)
+        holder.title.setText(zhihuDailyNews.getTitle());
+        Glide.with(mContext)
                 .load(zhihuDailyNews.getImages().get(0))
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .into(holder.zhihuImage);
+                .into(holder.image);
     }
 
     @Override
     public int getItemCount() {
+
         return mZhihuDailyNewsList.size();
     }
-
-
 }
