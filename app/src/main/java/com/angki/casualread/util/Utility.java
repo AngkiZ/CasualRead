@@ -1,11 +1,14 @@
 package com.angki.casualread.util;
 
+import android.util.Log;
+
 import com.angki.casualread.gank.gson.GankDatas;
 import com.angki.casualread.gank.gson.GankData;
 import com.angki.casualread.gank.gson.GankWelfareData;
 import com.angki.casualread.gank.gson.GankWelfareDatas;
-import com.angki.casualread.joke.gson.JokeDate;
-import com.angki.casualread.joke.gson.JokeDates;
+import com.angki.casualread.joke.gson.Data;
+import com.angki.casualread.joke.gson.JokeData;
+import com.angki.casualread.joke.gson.JokeDatas;
 import com.angki.casualread.zhihu.gson.ZhihuDailyNews.NewsBean;
 import com.angki.casualread.zhihu.gson.ZhihuDailyNews.NewsBeans;
 import com.angki.casualread.zhihu.gson.ZhihuDailyNews.TopNewsBean;
@@ -146,7 +149,7 @@ public class Utility {
                     //检查图片数组是否有数据，如果有进行解析
                     if (imgArr != null && imgArr.length() > 0) {
                         List<String> images = new ArrayList<>();
-                        for (int j = 0; j < imgArr.length(); ++i) {
+                        for (int j = 0; j < imgArr.length(); ++j) {
                             images.add(imgArr.optString(j));
                         }
                         //添加到bean中
@@ -201,30 +204,36 @@ public class Utility {
     /**
      * 解析糗事百科
      */
-    public static JokeDates handleJokeResponse(String data) {
+    public static JokeDatas handleJokeResponse(String data) {
 
         try {
-            JokeDates beans = new JokeDates();
+            JokeDatas beans = new JokeDatas();
             JSONObject object = new JSONObject(data);
             //解析数据
             beans.setReason(object.optString("reason"));
-            //解析result数组
-            JSONArray array = object.optJSONArray("result");
+            //解析result
+            JSONObject object1 = new JSONObject("result");
+
+            JokeData bean = new JokeData();
+
+            JSONArray array = object1.optJSONArray("data");
             //如果数组不为空且有长度进行解析
             if (array != null && array.length() > 0) {
-                List<JokeDate> jokedate = new ArrayList<>();
+                List<Data> date = new ArrayList<>();
                 for (int i = 0; i < array.length(); ++i) {
                     object = array.optJSONObject(i);
-                    JokeDate bean = new JokeDate();
+                    Data bean1 = new Data();
                     //开始解析数据
-                    bean.setContent(object.optString("content"));
-                    bean.setUnixtime(object.optString("unixtime"));
-                    bean.setUpdatetime(object.optString("updatetime"));
+                    bean1.setContent(object.optString("content"));
+                    bean1.setUnixtime(object.optString("unixtime"));
+                    bean1.setUpdatetime(object.optString("updatetime"));
 
-                    jokedate.add(bean);
+                    date.add(bean1);
+                    Log.d(TAG, "jokedate " + date);
                 }
-                beans.setResult(jokedate);
+                bean.setData(date);
             }
+            beans.setResult(bean);
             return beans;
         }catch (JSONException e) {
             e.printStackTrace();

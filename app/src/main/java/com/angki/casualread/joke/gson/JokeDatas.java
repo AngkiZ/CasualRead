@@ -6,11 +6,11 @@ import java.util.List;
  * Created by tengyu on 2017/3/21.
  */
 
-public class JokeDates {
+public class JokeDatas {
 
     private String reason;
 
-    private List<JokeDate> result;
+    private JokeData result;
 
     public String getReason() {
         return reason;
@@ -20,17 +20,17 @@ public class JokeDates {
         this.reason = reason;
     }
 
-    public List<JokeDate> getResult() {
+    public JokeData getResult() {
         return result;
     }
 
-    public void setResult(List<JokeDate> result) {
+    public void setResult(JokeData result) {
         this.result = result;
     }
 
     @Override
     public String toString() {
-        return "JokeDates{" +
+        return "JokeDatas{" +
                 "reason='" + reason + '\'' +
                 ", result=" + result +
                 '}';

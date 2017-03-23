@@ -37,10 +37,32 @@
                 android:id="@+id/recommand_welfare"
                 android:layout_width="match_parent"
                 android:layout_height="180dp"
-                app:cardCornerRadius="4dp"
-                />
+                app:cardCornerRadius="4dp">
+
+                <ImageView
+                    android:id="@+id/recommand_welfare_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"/>
+
+            </android.support.v7.widget.CardView>
+
+            <include layout="@layout/recommand_title_gank"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recommand_gank_recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            </android.support.v7.widget.RecyclerView>
 
             <include layout="@layout/recommend_title_joke"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recommand_joke_recyclerview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
         </LinearLayout>
 
     </ScrollView>

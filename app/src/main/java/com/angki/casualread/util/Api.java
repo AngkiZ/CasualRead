@@ -27,6 +27,12 @@ public class Api {
     public static final String JOKE = "http://japi.juhe.cn/joke/content/text.from";
 
     /**
-     *
+     * API说明：
+     * API由干货集中营提供，
+     * 来源：http://gank.io
+     * 拼接"/请求个数/页数"
      */
+    public static final String WELFARE = "http://gank.io/api/data/%E7%A6%8F%E5%88%A9/";
+    public static final String GANK = "http://gank.io/api/data/Android/";
+
 }

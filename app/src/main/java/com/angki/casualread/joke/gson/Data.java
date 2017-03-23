@@ -1,10 +1,10 @@
 package com.angki.casualread.joke.gson;
 
 /**
- * Created by tengyu on 2017/3/21.
+ * Created by tengyu on 2017/3/23.
  */
 
-public class JokeDate {
+public class Data {
 
     private String content;
 
@@ -38,7 +38,7 @@ public class JokeDate {
 
     @Override
     public String toString() {
-        return "JokeDate{" +
+        return "JokeData{" +
                 "content='" + content + '\'' +
                 ", unixtime='" + unixtime + '\'' +
                 ", updatetime='" + updatetime + '\'' +
