@@ -14,7 +14,7 @@
         android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/recommand_gank_recyclerview_title"
+            android:id="@+id/gank_item_title_2"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginLeft="15dp"
@@ -23,7 +23,7 @@
             android:textSize="18sp"/>
 
         <TextView
-            android:id="@+id/recommand_gank_recyclerview_author"
+            android:id="@+id/gank_item_author_2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"

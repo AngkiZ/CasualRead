@@ -1,20 +1,65 @@
 package com.angki.casualread.joke.gson;
 
-import java.util.List;
-
 /**
- * Created by tengyu on 2017/3/21.
+ * Created by tengyu on 2017/3/24.
  */
 
 public class JokeData {
 
-    private List<Data> data;
+    private String content;
 
-    public List<Data> getData() {
-        return data;
+    private String unixtime;
+
+    private String hashId;
+
+    private String updatetime;
+
+    public JokeData(String content, String unixtime, String hashId, String updatetime) {
+        this.content = content;
+        this.unixtime = unixtime;
+        this.hashId = hashId;
+        this.updatetime = updatetime;
     }
 
-    public void setData(List<Data> data) {
-        this.data = data;
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    public String getUnixtime() {
+        return unixtime;
+    }
+
+    public void setUnixtime(String unixtime) {
+        this.unixtime = unixtime;
+    }
+
+    public String getHashId() {
+        return hashId;
+    }
+
+    public void setHashId(String hashId) {
+        this.hashId = hashId;
+    }
+
+    public String getUpdatetime() {
+        return updatetime;
+    }
+
+    public void setUpdatetime(String updatetime) {
+        this.updatetime = updatetime;
+    }
+
+    @Override
+    public String toString() {
+        return "JokeData{" +
+                "content='" + content + '\'' +
+                ", unixtime='" + unixtime + '\'' +
+                ", hashId='" + hashId + '\'' +
+                ", updatetime='" + updatetime + '\'' +
+                '}';
     }
 }

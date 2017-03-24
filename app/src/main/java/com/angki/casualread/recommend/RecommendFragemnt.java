@@ -3,6 +3,7 @@ package com.angki.casualread.recommend;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,18 +12,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.angki.casualread.MainActivity;
 import com.angki.casualread.R;
 import com.angki.casualread.gank.gson.GankDatas;
 import com.angki.casualread.gank.gson.GankWelfareDatas;
-import com.angki.casualread.joke.gson.JokeDatas;
+import com.angki.casualread.joke.gson.JokeData;
 import com.angki.casualread.recommend.adapter.GankContentAdapter;
 import com.angki.casualread.recommend.adapter.JokeContentAdapter;
 import com.angki.casualread.recommend.adapter.ZhihuContentAdapter;
 import com.angki.casualread.util.Api;
 import com.angki.casualread.util.HttpUtil;
 import com.angki.casualread.util.Utility;
-import com.angki.casualread.zhihu.adapter.GlideImageLoader;
+import com.angki.casualread.recommend.adapter.GlideImageLoader;
 import com.angki.casualread.zhihu.gson.ZhihuDailyNews.NewsBean;
 import com.angki.casualread.zhihu.gson.ZhihuDailyNews.NewsBeans;
 import com.bumptech.glide.Glide;
@@ -42,7 +45,7 @@ import okhttp3.Response;
  * Created by tengyu on 2017/3/20.
  */
 
-public class RecommendFragemnt extends Fragment{
+public class RecommendFragemnt extends Fragment {
 
     private static final String TAG = "RecommendFragemnt";
 
@@ -56,6 +59,8 @@ public class RecommendFragemnt extends Fragment{
 
     private Banner banner;
 
+    private TextView zhihuMore, welfareMore, jokeMore, gankMore;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
@@ -63,11 +68,16 @@ public class RecommendFragemnt extends Fragment{
 
         View view = inflater.inflate(R.layout.recommend_fragment, container, false);
 
-        //loadZhihuContent(view);
+        zhihuMore = (TextView) view.findViewById(R.id.title_zhihu_more);
+        welfareMore = (TextView) view.findViewById(R.id.title_welfare_more);
+        jokeMore = (TextView) view.findViewById(R.id.title_joke_more);
+        gankMore = (TextView) view.findViewById(R.id.title_gank_more);
 
-        //loadWelfareContent(view);
+        loadZhihuContent(view);
 
-       // loadGankContent(view);
+        loadWelfareContent(view);
+
+        loadGankContent(view);
 
         loadJokeContent(view);
 
@@ -78,8 +88,38 @@ public class RecommendFragemnt extends Fragment{
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        final MainActivity mainActivity = (MainActivity) getActivity();
+        final ViewPager viewPager = mainActivity.getViewPager();
 
+        zhihuMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                viewPager.setCurrentItem(1);
+            }
+        });
+
+        welfareMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                viewPager.setCurrentItem(4);
+            }
+        });
+
+        gankMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                viewPager.setCurrentItem(2);
+            }
+        });
+
+        jokeMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                viewPager.setCurrentItem(3);
+            }
+        });
     }
+
 
     /**
      * 加载推荐碎片中知乎模块部分内容
@@ -241,7 +281,7 @@ public class RecommendFragemnt extends Fragment{
      */
     private void loadJokeContent(final View view) {
 
-        String url = Api.JOKE + "?key=f24ebcac31973eebf02a0391b1e8953a&page=1&pagesize=4";
+        String url = Api.JOKE + "?key=f24ebcac31973eebf02a0391b1e8953a&page=1&pagesize=3";
 
         HttpUtil.sendOkHttpRequest(url, new Callback() {
             @Override
@@ -254,10 +294,8 @@ public class RecommendFragemnt extends Fragment{
 
                 //获取JSON数据
                 final String responseData = response.body().string();
-                Log.d(TAG, "responseData: " + responseData);
                 //解析数据
-                final JokeDatas jokeDatas = Utility.handleJokeResponse(responseData);
-                Log.d(TAG, "jokeDatas: " + jokeDatas);
+                final List<JokeData> jokeData = Utility.handleJokeResponse(responseData);
                 //加载数据
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
@@ -268,7 +306,7 @@ public class RecommendFragemnt extends Fragment{
                         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
                         jokeContent.setLayoutManager(layoutManager);
                         //加载adapter
-                        JokeContentAdapter adapter = new JokeContentAdapter(getContext(), jokeDatas.getResult().getData());
+                        JokeContentAdapter adapter = new JokeContentAdapter(getContext(), jokeData);
                         jokeContent.setAdapter(adapter);
                     }
                 });
@@ -276,4 +314,5 @@ public class RecommendFragemnt extends Fragment{
             }
         });
     }
+
 }

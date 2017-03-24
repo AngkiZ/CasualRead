@@ -14,11 +14,9 @@ import com.angki.casualread.R;
 import com.angki.casualread.util.Api;
 import com.angki.casualread.util.HttpUtil;
 import com.angki.casualread.util.Utility;
-import com.angki.casualread.zhihu.adapter.ZhihuFragmentAdapter;
-import com.angki.casualread.zhihu.adapter.GlideImageLoader;
+import com.angki.casualread.zhihu.adapter.ZhihuFragmentRecycleViewAdapter;
 import com.angki.casualread.zhihu.gson.ZhihuDailyNews.NewsBeans;
 import com.youth.banner.Banner;
-import com.youth.banner.BannerConfig;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -103,25 +101,9 @@ public class ZhihuFragment extends Fragment{
                         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
                         zhihuRecyclerView.setLayoutManager(layoutManager);
                         //加载adpter适配器
-                        ZhihuFragmentAdapter adapter = new ZhihuFragmentAdapter(getContext(), newsBeans.getStories());
+                        ZhihuFragmentRecycleViewAdapter adapter = new ZhihuFragmentRecycleViewAdapter(getContext(), newsBeans.getStories());
                         zhihuRecyclerView.setAdapter(adapter);
 
-                        /**
-                         * 加载轮播图控件banner
-                         */
-                        banner = (Banner) view.findViewById(R.id.zhihu_daily_hot);
-                        //设置banner样式
-                        banner.setBannerStyle(BannerConfig.NUM_INDICATOR_TITLE);
-                        //设置图片加载器
-                        banner.setImageLoader(new GlideImageLoader());
-                        //设置图片集合
-                        banner.setImages(images);
-                        //设置标题集合
-                        banner.setBannerTitles(titles);
-                        //设置指示器位置
-                        banner.setIndicatorGravity(BannerConfig.CENTER);
-                        //banner设置方法全部调用完毕时最后调用
-                        banner.start();
 
                     }
                 });

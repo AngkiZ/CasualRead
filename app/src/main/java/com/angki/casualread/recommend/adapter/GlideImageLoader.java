@@ -1,4 +1,4 @@
-package com.angki.casualread.zhihu.adapter;
+package com.angki.casualread.recommend.adapter;
 
 import android.content.Context;
 import android.widget.ImageView;

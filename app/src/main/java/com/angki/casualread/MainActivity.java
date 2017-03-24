@@ -86,16 +86,16 @@ public class MainActivity extends AppCompatActivity {
         fragmentList = new ArrayList<>();
         fragmentList.add(recommendFragemnt);
         fragmentList.add(zhihuFragment);
-        fragmentList.add(jokeFragment);
         fragmentList.add(gankFragment);
+        fragmentList.add(jokeFragment);
         fragmentList.add(welfareFragment);
 
         //将名称加载tab名字列表
         tabTitle = new ArrayList<>();
         tabTitle.add("推荐");
         tabTitle.add("知乎");
-        tabTitle.add("笑货");
         tabTitle.add("干货");
+        tabTitle.add("笑话");
         tabTitle.add("福利");
 
         //加载适配器

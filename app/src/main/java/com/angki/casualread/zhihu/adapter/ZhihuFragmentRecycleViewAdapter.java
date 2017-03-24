@@ -2,7 +2,6 @@ package com.angki.casualread.zhihu.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,7 +19,7 @@ import java.util.List;
  * Created by tengyu on 2017/3/15.
  */
 
-public class ZhihuFragmentAdapter extends RecyclerView.Adapter<ZhihuFragmentAdapter.ViewHolder>{
+public class ZhihuFragmentRecycleViewAdapter extends RecyclerView.Adapter<ZhihuFragmentRecycleViewAdapter.ViewHolder>{
 
     private Context mcontext;
 
@@ -34,13 +33,13 @@ public class ZhihuFragmentAdapter extends RecyclerView.Adapter<ZhihuFragmentAdap
         public ViewHolder(View view){
 
             super(view);
-            zhihuImage = (ImageView) view.findViewById(R.id.list_item_image);
-            zhihuTitle = (TextView) view.findViewById(R.id.list_item_title);
+            zhihuImage = (ImageView) view.findViewById(R.id.zhihu_item_image);
+            zhihuTitle = (TextView) view.findViewById(R.id.zhihu_item_title);
         }
 
     }
 
-    public ZhihuFragmentAdapter(Context context, List<NewsBean> ZhihuDailyNewsList){
+    public ZhihuFragmentRecycleViewAdapter(Context context, List<NewsBean> ZhihuDailyNewsList){
 
         mcontext = context;
 
@@ -51,7 +50,7 @@ public class ZhihuFragmentAdapter extends RecyclerView.Adapter<ZhihuFragmentAdap
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View view = LayoutInflater.from(parent.getContext()).
-                inflate(R.layout.list_item_layout, parent, false);
+                inflate(R.layout.zhihu_item_layout, parent, false);
         ViewHolder holder = new ViewHolder(view);
         return holder;
     }

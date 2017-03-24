@@ -1,14 +1,10 @@
 package com.angki.casualread.util;
 
-import android.util.Log;
-
 import com.angki.casualread.gank.gson.GankDatas;
 import com.angki.casualread.gank.gson.GankData;
 import com.angki.casualread.gank.gson.GankWelfareData;
 import com.angki.casualread.gank.gson.GankWelfareDatas;
-import com.angki.casualread.joke.gson.Data;
 import com.angki.casualread.joke.gson.JokeData;
-import com.angki.casualread.joke.gson.JokeDatas;
 import com.angki.casualread.zhihu.gson.ZhihuDailyNews.NewsBean;
 import com.angki.casualread.zhihu.gson.ZhihuDailyNews.NewsBeans;
 import com.angki.casualread.zhihu.gson.ZhihuDailyNews.TopNewsBean;
@@ -204,37 +200,32 @@ public class Utility {
     /**
      * 解析糗事百科
      */
-    public static JokeDatas handleJokeResponse(String data) {
+    public static List<JokeData> handleJokeResponse(String data) {
 
         try {
-            JokeDatas beans = new JokeDatas();
             JSONObject object = new JSONObject(data);
-            //解析数据
-            beans.setReason(object.optString("reason"));
-            //解析result
-            JSONObject object1 = new JSONObject("result");
-
-            JokeData bean = new JokeData();
-
-            JSONArray array = object1.optJSONArray("data");
-            //如果数组不为空且有长度进行解析
-            if (array != null && array.length() > 0) {
-                List<Data> date = new ArrayList<>();
-                for (int i = 0; i < array.length(); ++i) {
-                    object = array.optJSONObject(i);
-                    Data bean1 = new Data();
-                    //开始解析数据
-                    bean1.setContent(object.optString("content"));
-                    bean1.setUnixtime(object.optString("unixtime"));
-                    bean1.setUpdatetime(object.optString("updatetime"));
-
-                    date.add(bean1);
-                    Log.d(TAG, "jokedate " + date);
+            String  reason = object.optString("reason");
+            //如果请求成功
+            if (reason.equals("Success")) {
+                //获取数据json
+                object = object.optJSONObject("result");
+                JSONArray datas = object.optJSONArray("data");
+                //有数据则进行解析
+                if (datas != null && datas.length() > 0) {
+                    List<JokeData> beans = new ArrayList<>();
+                    for (int i = 0; i < datas.length(); ++i) {
+                        object = datas.optJSONObject(i);
+                        beans.add(new JokeData(
+                                object.optString("content"),
+                                object.optString("unixtime"),
+                                object.optString("hashId"),
+                                object.optString("updatetime")
+                        ));
+                    }
+                    return beans;
                 }
-                bean.setData(date);
             }
-            beans.setResult(bean);
-            return beans;
+            return null;
         }catch (JSONException e) {
             e.printStackTrace();
             return null;
