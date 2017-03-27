@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group
+        android:id="@+id/group1"
+        android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/drawer_layout_home"
+            android:icon="@drawable/ic_format"
+            android:title="主页"/>
+        <item
+            android:id="@+id/drawer_layout_collect"
+            android:icon="@drawable/ic_star"
+            android:title="收藏"/>
+    </group>
+
+    <group
+        android:id="@+id/group2">
+
+        <item
+            android:id="@+id/drawer_layout_theme"
+            android:icon="@drawable/ic_brightness"
+            android:title="切换主题"/>
+        <item
+            android:id="@+id/drawer_layout_about"
+            android:icon="@drawable/ic_info"
+            android:title="关于"/>
+        <item
+            android:id="@+id/drawer_layout_quit"
+            android:icon="@drawable/ic_power"
+            android:title="退出"/>
+
+    </group>
+</menu>

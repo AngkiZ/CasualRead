@@ -2,6 +2,7 @@ package com.angki.casualread.gank.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.LinearLayout;
 
 import com.angki.casualread.R;
 import com.angki.casualread.gank.gson.GankWelfareData;
+import com.angki.casualread.util.MarginUtil;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
@@ -56,6 +58,14 @@ public class WelfareFragmentRecycleViewAdapter extends
 
     @Override
     public void onBindViewHolder(WelfareFragmentRecycleViewAdapter.ViewHoler holder, int position) {
+
+        if (position % 2 == 0) {
+
+            MarginUtil.setViewMargin(holder.linearLayout, 12, 12, 6, 0);
+        }else {
+
+            MarginUtil.setViewMargin(holder.linearLayout, 6, 12, 12, 0);
+        }
 
         Glide.with(mcontext).load(mDataList.get(position).getUrl())
                 .skipMemoryCache(true)//跳过内存缓存
