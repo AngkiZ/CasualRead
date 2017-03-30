@@ -47,8 +47,9 @@ public class ZhihuFragment extends Fragment{
 
     private ZhihuFragmentRecycleViewAdapter adapter;
 
-    private Calendar c;
+    private String url;
 
+    private Calendar c;//获取时间类
 
     @Nullable
     @Override
@@ -57,7 +58,7 @@ public class ZhihuFragment extends Fragment{
 
         View view = inflater.inflate(R.layout.zhihu_fragment, container, false);
         //加载RecycleView知乎日报数据
-        loadZhihuDailyNews(view);
+        loadZhihuDailyNews(view, true);
         loadModule(view);
         return view;
     }
@@ -65,9 +66,13 @@ public class ZhihuFragment extends Fragment{
     /**
      * 加载知乎日报RecycleView新闻数据
      */
-    private void loadZhihuDailyNews(final View view){
+    private void loadZhihuDailyNews(final View view, boolean b){
 
-        String url = Api.ZHIHU_BEFORE + date();
+        if (b) {
+            url = Api.ZHIHU_BEFORE + date();
+        }else {
+            url = Api.ZHIHU_BEFORE + bedate();
+        }
         HttpUtil.sendOkHttpRequest(url, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
@@ -89,8 +94,11 @@ public class ZhihuFragment extends Fragment{
                 //解析Json数据
                 NewsBeans newsBeans = Utility.handleZHDNResponse(responseData);
 
+                //获取之前集合大小
+                int a = dataList.size();
+
                 for (int i = 0; i < newsBeans.getStories().size(); i++) {
-                    dataList.add(i, newsBeans.getStories().get(i));
+                    dataList.add(i + a, newsBeans.getStories().get(i));
                 }
 
                 getActivity().runOnUiThread(new Runnable() {
@@ -127,7 +135,7 @@ public class ZhihuFragment extends Fragment{
                 new Handler().postDelayed(new Runnable(){
                     public void run() {
                         dataList.clear();
-                        loadZhihuDailyNews(getView());
+                        loadZhihuDailyNews(getView(), true);
                         zhihuRecyclerView.refreshComplete();
                     }
 
@@ -140,7 +148,7 @@ public class ZhihuFragment extends Fragment{
 
                 new Handler().postDelayed(new Runnable(){
                     public void run() {
-                        loadZhihuDailyNews(getView());
+                        loadZhihuDailyNews(getView(), false);
                         zhihuRecyclerView.loadMoreComplete();
                     }
                 }, 1000);
@@ -152,15 +160,47 @@ public class ZhihuFragment extends Fragment{
         zhihuRecyclerView.setAdapter(adapter);
     }
 
+    /**
+     * 今日date
+     * @return
+     */
     private String date(){
 
         c = Calendar.getInstance();
 
+        /**
+         * 因为数据请求需要，获取今日内容需要的日期是第二天
+         */
         c.add(Calendar.DAY_OF_MONTH, +1);
+
+        return Analysis(c);
+    }
+
+    /**
+     * 之前date
+     * @return
+     */
+    private String bedate() {
+
+        /**
+         * 将时间往前一天
+         */
+        c.add(c.DAY_OF_MONTH, -1);
+
+        return Analysis(c);
+    }
+
+    /**
+     * 将时间转换成字符串
+     * @param c
+     * @return
+     */
+    private String Analysis(Calendar c) {
 
         int year = c.get(Calendar.YEAR);
         int month = c.get(Calendar.MONTH)+1;
         int day = c.get(Calendar.DATE);
+
 
         if (month < 10 && day < 10) {
 
