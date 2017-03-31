@@ -105,6 +105,7 @@ public class GankFragmentRecycleViewAdapter extends
             ((ViewHolder1) holder).title1.setText(gankData.getDesc());
             ((ViewHolder1) holder).author1.setText(gankData.getWho());
             Glide.with(mcontext).load(gankData.getImages().get(0))
+                    .asBitmap()
                     .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                     .override(80, 80)
                     .centerCrop()

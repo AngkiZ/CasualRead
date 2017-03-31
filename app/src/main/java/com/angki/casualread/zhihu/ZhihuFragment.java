@@ -5,7 +5,6 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +23,6 @@ import com.jcodecraeer.xrecyclerview.XRecyclerView;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 import okhttp3.Call;
@@ -123,12 +121,13 @@ public class ZhihuFragment extends Fragment{
         //指定布局方式
         layoutManager = new LinearLayoutManager(getContext());
         zhihuRecyclerView.setLayoutManager(layoutManager);
-
+        //加载XRecycleView的刷新风格
         zhihuRecyclerView.setRefreshProgressStyle(ProgressStyle.BallSpinFadeLoader);
         zhihuRecyclerView.setLoadingMoreProgressStyle(ProgressStyle.BallRotate);
         zhihuRecyclerView.setArrowImageView(R.drawable.iconfont_downgrey);
-
+        //下拉刷新，上拉加载事件
         zhihuRecyclerView.setLoadingListener(new XRecyclerView.LoadingListener() {
+            //下拉刷新
             @Override
             public void onRefresh() {
 
@@ -141,7 +140,7 @@ public class ZhihuFragment extends Fragment{
 
                 }, 1000);
             }
-
+            //上拉加载
             @Override
             public void onLoadMore() {
 

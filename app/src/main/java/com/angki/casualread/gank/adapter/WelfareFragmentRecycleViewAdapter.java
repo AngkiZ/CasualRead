@@ -68,7 +68,7 @@ public class WelfareFragmentRecycleViewAdapter extends
         }
 
         Glide.with(mcontext).load(mDataList.get(position).getUrl())
-                .skipMemoryCache(true)//跳过内存缓存
+//                .skipMemoryCache(true)//跳过内存缓存
                 .diskCacheStrategy(DiskCacheStrategy.RESULT)
                 .into(holder.image);
     }
