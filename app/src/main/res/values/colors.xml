@@ -10,4 +10,6 @@
     <color name="colorTabText">#585858</color>
     <!--正文文字颜色-->
     <color name="colorContent">#ff333333</color>
+    <!--刷新进度条的的颜色-->
+    <color name="swipeColor">#26b6da</color>
 </resources>

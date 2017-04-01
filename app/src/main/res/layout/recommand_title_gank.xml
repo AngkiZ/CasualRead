@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/recommand_title_gank"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:layout_margin="15dp">
+    android:layout_marginTop="15dp"
+    android:layout_marginRight="15dp"
+    android:layout_marginLeft="15dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -44,7 +47,8 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recommand_gank_recyclerview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp">
     </android.support.v7.widget.RecyclerView>
 
 </LinearLayout>
