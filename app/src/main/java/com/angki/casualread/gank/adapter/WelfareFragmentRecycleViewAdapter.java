@@ -1,6 +1,8 @@
 package com.angki.casualread.gank.adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,11 +12,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.angki.casualread.R;
+import com.angki.casualread.gank.WelfareActivity;
 import com.angki.casualread.gank.gson.GankWelfareData;
 import com.angki.casualread.util.MarginUtil;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -52,8 +56,22 @@ public class WelfareFragmentRecycleViewAdapter extends
 
         View view = LayoutInflater.from(mcontext)
                 .inflate(R.layout.welfare_item_layout, parent, false);
+        final ViewHoler holer = new ViewHoler(view);
 
-        return new ViewHoler(view);
+        holer.linearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int position = holer.getAdapterPosition() - 1;
+                Bundle bundle = new Bundle();
+                bundle.putStringArrayList("urlList", UrlList());
+                bundle.putInt("code", position);
+                Intent intent = new Intent(mcontext, WelfareActivity.class);
+                intent.putExtras(bundle);
+                mcontext.startActivity(intent);
+            }
+        });
+
+        return holer;
     }
 
     @Override
@@ -77,5 +95,14 @@ public class WelfareFragmentRecycleViewAdapter extends
     public int getItemCount() {
 
         return mDataList.size();
+    }
+
+    private ArrayList<String> UrlList() {
+
+        ArrayList<String> mUrlList = new ArrayList<>();
+        for (int i = 0; i < mDataList.size(); i++) {
+            mUrlList.add(mDataList.get(i).getUrl());
+        }
+        return mUrlList;
     }
 }

@@ -3,6 +3,8 @@
     package="com.angki.casualread">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -17,7 +19,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".zhihu.ZhihuActivity"></activity>
+        <activity android:name=".zhihu.ZhihuActivity" />
+        <activity android:name=".gank.GankActivity" />
+        <activity android:name=".gank.WelfareActivity"
+            android:theme="@style/ViewBigPicTheme"/>
     </application>
 
 </manifest>

@@ -1,6 +1,7 @@
 package com.angki.casualread.gank.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.angki.casualread.R;
+import com.angki.casualread.gank.GankActivity;
 import com.angki.casualread.gank.gson.GankData;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -79,19 +81,41 @@ public class GankFragmentRecycleViewAdapter extends
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        View view1 = LayoutInflater.from(mcontext)
-                .inflate(R.layout.gank_item_layout_1, parent, false);
-
-        View view2 = LayoutInflater.from(mcontext)
-                .inflate(R.layout.gank_item_layout_2, parent, false);
-
         //加载Item View的时候根据不同TYPE加载不同的布局
         if (viewType == ITEM_TYPE.ITEM1.ordinal()) {
 
-            return new ViewHolder1(view1);
+            View view1 = LayoutInflater.from(mcontext)
+                    .inflate(R.layout.gank_item_layout_1, parent, false);
+            final ViewHolder1 holder1 = new ViewHolder1(view1);
+
+            holder1.cardView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int position = holder1.getAdapterPosition() - 1;
+                    Intent intent = new Intent(mcontext, GankActivity.class);
+                    intent.putExtra("gank_url", mDataList.get(position).getUrl());
+                    mcontext.startActivity(intent);
+                }
+            });
+
+            return holder1;
         } else {
 
-            return new ViewHolder2(view2);
+            View view2 = LayoutInflater.from(mcontext)
+                    .inflate(R.layout.gank_item_layout_2, parent, false);
+            final ViewHolder2 holder2 = new ViewHolder2(view2);
+
+            holder2.cardView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int position = holder2.getAdapterPosition() - 1;
+                    Intent intent = new Intent(mcontext, GankActivity.class);
+                    intent.putExtra("gank_url", mDataList.get(position).getUrl());
+                    mcontext.startActivity(intent);
+                }
+            });
+
+            return holder2;
         }
     }
 
