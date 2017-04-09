@@ -1,6 +1,7 @@
 package com.angki.casualread.recommend.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.angki.casualread.R;
+import com.angki.casualread.zhihu.ZhihuActivity;
 import com.angki.casualread.zhihu.gson.ZhihuDailyNews.NewsBean;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -53,7 +55,17 @@ public class ZhihuContentAdapter extends RecyclerView.Adapter<ZhihuContentAdapte
 
         View view = LayoutInflater.from(mContext).
                 inflate(R.layout.recommand_content_zhihu, parent , false);
-        return new ViewHolder(view);
+        final ViewHolder holder = new ViewHolder(view);
+        holder.cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int position = holder.getAdapterPosition();
+                Intent intent = new Intent(mContext, ZhihuActivity.class);
+                intent.putExtra("news_id", mZhihuDailyNewsList.get(position).getId());
+                mContext.startActivity(intent);
+            }
+        });
+        return holder;
     }
 
     @Override

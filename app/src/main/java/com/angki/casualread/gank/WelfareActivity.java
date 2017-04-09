@@ -66,11 +66,13 @@ public class WelfareActivity extends AppCompatActivity implements ViewPager.OnPa
      */
     private String getImagePath(String imgUrl) {
         String path = null;
+        //下载图片
         FutureTarget<File> future = Glide.with(WelfareActivity.this)
                 .load(imgUrl)
                 .downloadOnly(500, 500);
         try {
             File cacheFile = future.get();
+            //获取绝对路径
             path = cacheFile.getAbsolutePath();
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
@@ -84,13 +86,16 @@ public class WelfareActivity extends AppCompatActivity implements ViewPager.OnPa
     private static void saveImageToGallery(Context context, Bitmap bitmap) {
         // 首先保存图片
         File appDir = new File(Environment.getExternalStorageDirectory(), "瞎Read相册");
+        //判断这个文件是否存在，不存在就创建该目录
         if (!appDir.exists()) {
             appDir.mkdir();
         }
+        //文件命名使用下载时间+.jpg
         String fileName = System.currentTimeMillis() + ".jpg";
         File file = new File(appDir, fileName);
         try {
             FileOutputStream fos = new FileOutputStream(file);
+            //图片压缩，其中100表示不压缩
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
             fos.flush();
             fos.close();

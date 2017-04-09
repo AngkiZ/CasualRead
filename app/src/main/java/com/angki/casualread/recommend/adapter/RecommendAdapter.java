@@ -1,6 +1,8 @@
 package com.angki.casualread.recommend.adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,14 +15,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.angki.casualread.R;
+import com.angki.casualread.gank.WelfareActivity;
 import com.angki.casualread.gank.gson.GankData;
 import com.angki.casualread.gank.gson.GankWelfareData;
 import com.angki.casualread.joke.gson.JokeData;
+import com.angki.casualread.zhihu.ZhihuActivity;
 import com.angki.casualread.zhihu.gson.ZhihuDailyNews.NewsBean;
+import com.angki.casualread.zhihu.gson.ZhihuDailyNews.TopNewsBean;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
+import com.youth.banner.listener.OnBannerListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,12 +35,13 @@ import java.util.List;
  * Created by tengyu on 2017/3/31.
  */
 
-public class RecommendAdapter extends RecyclerView.Adapter{
+public class RecommendAdapter extends RecyclerView.Adapter implements OnBannerListener{
 
     private Context mcontext;
 
     private List<String> images = new ArrayList<>();
     private List<String> titles = new ArrayList<>();
+    private List<String> topId = new ArrayList<>();
     private List<NewsBean> zhihuData = new ArrayList<>();
     private List<GankWelfareData> welfareData = new ArrayList<>();
     private List<GankData> gankData = new ArrayList<>();
@@ -53,7 +60,7 @@ public class RecommendAdapter extends RecyclerView.Adapter{
     public RecommendAdapter (Context context, List<String> images, List<String> titles,
                              List<NewsBean> zhihuData, List<GankWelfareData> welfareData,
                              List<GankData> gankData, List<JokeData> jokeData,
-                             ViewPager viewPager) {
+                             ViewPager viewPager, List<String> topId) {
 
         this.mcontext = context;
         this.images = images;
@@ -63,6 +70,7 @@ public class RecommendAdapter extends RecyclerView.Adapter{
         this.gankData = gankData;
         this.jokeData = jokeData;
         this.viewPager = viewPager;
+        this.topId = topId;
     }
 
 
@@ -218,6 +226,8 @@ public class RecommendAdapter extends RecyclerView.Adapter{
                 .setBannerTitles(titles)
                 //设置指示器位置
                 .setIndicatorGravity(BannerConfig.CENTER)
+                //设置点击事件
+                .setOnBannerListener(this)
                 //banner设置方法全部调用完毕时最后调用
                 .start();
     }
@@ -247,6 +257,18 @@ public class RecommendAdapter extends RecyclerView.Adapter{
                     .load(R.drawable.big_image)
                     .into(((ViewHolder3) holder).imageView);
         }
+        ((ViewHolder3) holder).imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Bundle bundle = new Bundle();
+                bundle.putStringArrayList("urlList", UrlList());
+                bundle.putInt("code", 0);
+                Intent intent = new Intent(mcontext, WelfareActivity.class);
+                intent.putExtras(bundle);
+                mcontext.startActivity(intent);
+            }
+        });
         ((ViewHolder3) holder).textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -281,5 +303,26 @@ public class RecommendAdapter extends RecyclerView.Adapter{
                 viewPager.setCurrentItem(3);
             }
         });
+    }
+
+    /**
+     * Banner的点击事件
+     * @param position
+     */
+    @Override
+    public void OnBannerClick(int position) {
+
+        Intent intent = new Intent(mcontext, ZhihuActivity.class);
+        intent.putExtra("news_id", topId.get(position));
+        mcontext.startActivity(intent);
+    }
+
+    private ArrayList<String> UrlList() {
+
+        ArrayList<String> mUrlList = new ArrayList<>();
+        for (int i = 0; i < welfareData.size(); i++) {
+            mUrlList.add(welfareData.get(i).getUrl());
+        }
+        return mUrlList;
     }
 }

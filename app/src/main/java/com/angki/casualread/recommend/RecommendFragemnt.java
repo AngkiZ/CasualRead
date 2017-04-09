@@ -25,6 +25,7 @@ import com.angki.casualread.util.HttpUtil;
 import com.angki.casualread.util.Utility;
 import com.angki.casualread.zhihu.gson.ZhihuDailyNews.NewsBean;
 import com.angki.casualread.zhihu.gson.ZhihuDailyNews.NewsBeans;
+import com.angki.casualread.zhihu.gson.ZhihuDailyNews.TopNewsBean;
 
 
 import java.io.IOException;
@@ -46,6 +47,7 @@ public class RecommendFragemnt extends Fragment {
 
     private List<String> images = new ArrayList<>();
     private List<String> titles = new ArrayList<>();
+    private List<String> topid = new ArrayList<>();
     private List<NewsBean> zhihuData = new ArrayList<>();
     private List<GankWelfareData> welfareData = new ArrayList<>();
     private List<GankData> gankData = new ArrayList<>();
@@ -100,7 +102,7 @@ public class RecommendFragemnt extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
 
         adapter = new RecommendAdapter(getContext(),
-                images, titles, zhihuData, welfareData, gankData, jokeData, viewPager);
+                images, titles, zhihuData, welfareData, gankData, jokeData, viewPager, topid);
         recyclerView.setAdapter(adapter);
     }
 
@@ -129,6 +131,7 @@ public class RecommendFragemnt extends Fragment {
                 zhihuData.clear();
                 images.clear();
                 titles.clear();
+                topid.clear();
                 //知乎模块显示内容的集合
                 for (int i = 0; i < 4; i++) {
 
@@ -140,6 +143,8 @@ public class RecommendFragemnt extends Fragment {
 
                     images.add(newsBeans.getTopStories().get(i).getImage());
                     titles.add(newsBeans.getTopStories().get(i).getTitle());
+                    topid.add(newsBeans.getTopStories().get(i).getId());
+
                 }
 
                 getActivity().runOnUiThread(new Runnable() {

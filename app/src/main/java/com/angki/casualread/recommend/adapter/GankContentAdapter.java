@@ -1,6 +1,7 @@
 package com.angki.casualread.recommend.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.angki.casualread.R;
+import com.angki.casualread.gank.GankActivity;
 import com.angki.casualread.gank.gson.GankData;
 
 import java.util.List;
@@ -50,8 +52,17 @@ public class GankContentAdapter extends RecyclerView.Adapter<GankContentAdapter.
 
         View view = LayoutInflater.from(mcontext).
                 inflate(R.layout.recommand_content_gank, parent, false);
-
-        return new ViewHolder(view);
+        final ViewHolder holder = new ViewHolder(view);
+        holder.cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int position = holder.getAdapterPosition();
+                Intent intent = new Intent(mcontext, GankActivity.class);
+                intent.putExtra("gank_url", mGankDataList.get(position).getUrl());
+                mcontext.startActivity(intent);
+            }
+        });
+        return holder;
     }
 
     @Override

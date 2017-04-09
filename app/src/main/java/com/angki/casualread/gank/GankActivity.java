@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
@@ -28,6 +29,8 @@ public class GankActivity extends AppCompatActivity {
         String url = getIntent().getStringExtra("gank_url");
 
         LoadMoudle(url);
+        SiteWebView();
+
     }
 
     private void LoadMoudle(String url) {
@@ -72,6 +75,18 @@ public class GankActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    /**
+     * 设置WebView
+     */
+    private void SiteWebView() {
+
+        WebSettings ws = webView.getSettings();
+        // 告诉WebView启用JavaScript执行,默认的是false
+        ws.setJavaScriptEnabled(true);
+        // 使用localStorage则必须打开
+        ws.setDomStorageEnabled(true);
     }
 
     /**

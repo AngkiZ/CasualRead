@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,8 +69,10 @@ public class ZhihuFragment extends Fragment{
 
         if (b) {
             url = Api.ZHIHU_BEFORE + date();
+            Log.d("------", "url: " + url);
         }else {
             url = Api.ZHIHU_BEFORE + bedate();
+            Log.d("------", "beurl: " + url);
         }
         HttpUtil.sendOkHttpRequest(url, new Callback() {
             @Override
@@ -204,10 +207,10 @@ public class ZhihuFragment extends Fragment{
         if (month < 10 && day < 10) {
 
             return "" + year + "0" + month + "0" + day;
-        }else if (month > 10 && day < 10) {
+        }else if (month >= 10 && day < 10) {
 
             return "" + year + month + "0" + day;
-        }else if (month < 10 && day > 10) {
+        }else if (month < 10 && day >= 10) {
 
             return "" + year + "0" + month + day;
         }
