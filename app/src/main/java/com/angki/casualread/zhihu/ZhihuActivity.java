@@ -1,5 +1,10 @@
 package com.angki.casualread.zhihu;
 
+import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkInfo;
+import android.preference.PreferenceManager;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -8,12 +13,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ImageView;
 
 import com.angki.casualread.R;
 import com.angki.casualread.util.Api;
 import com.angki.casualread.util.HttpUtil;
+import com.angki.casualread.util.ToastUtil;
 import com.angki.casualread.util.Utility;
 import com.angki.casualread.zhihu.gson.ZhihuDailyNews.NewsBeans;
 import com.angki.casualread.zhihu.gson.ZhihuDailyStory.StoryBean;
@@ -56,6 +63,16 @@ public class ZhihuActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call call, IOException e) {
 
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ZhihuActivity.this);
+                        String JSON = prefs.getString("Data", null);
+                        storyBean = Utility.handleZHNResponse(JSON);
+                        String html = CombinedData(storyBean);
+                        LoadModule(html);
+                    }
+                });
             }
 
             @Override
@@ -69,6 +86,10 @@ public class ZhihuActivity extends AppCompatActivity {
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        SharedPreferences.Editor editor = PreferenceManager
+                                .getDefaultSharedPreferences(ZhihuActivity.this).edit();
+                        editor.putString("Data", responseData);
+                        editor.apply();
                         String html = CombinedData(storyBean);
                         LoadModule(html);
                     }
@@ -109,6 +130,7 @@ public class ZhihuActivity extends AppCompatActivity {
         collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.activity_zhihu_layout_collapsing);
         imageView = (ImageView) findViewById(R.id.activity_zhihu_layout_collapsing_image);
         webView = (WebView) findViewById(R.id.activity_zhihu_layout_webview);
+        test();
         //设置标题栏
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
@@ -148,5 +170,17 @@ public class ZhihuActivity extends AppCompatActivity {
             webView = null;
         }
         super.onDestroy();
+    }
+
+    private void test() {
+
+        WebSettings ws = webView.getSettings();
+        ConnectivityManager manager = (ConnectivityManager) getApplicationContext().getSystemService(CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = manager.getActiveNetworkInfo();
+        if (networkInfo != null && networkInfo.isAvailable()) {
+            ws.setCacheMode(WebSettings.LOAD_DEFAULT);
+        }else {
+            ws.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+        }
     }
 }

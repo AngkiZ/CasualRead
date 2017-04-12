@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.angki.casualread.R;
 import com.angki.casualread.zhihu.ZhihuActivity;
+import com.angki.casualread.zhihu.db.dbZhihuNews;
 import com.angki.casualread.zhihu.gson.ZhihuDailyNews.NewsBean;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -27,7 +28,7 @@ public class ZhihuFragmentRecycleViewAdapter extends RecyclerView.Adapter<ZhihuF
 
     private Context mcontext;
 
-    private List<NewsBean> mZhihuDailyNewsList;
+    private List<dbZhihuNews> mZhihuDailyNewsList;
 
     static class ViewHolder extends RecyclerView.ViewHolder{
 
@@ -45,7 +46,7 @@ public class ZhihuFragmentRecycleViewAdapter extends RecyclerView.Adapter<ZhihuF
 
     }
 
-    public ZhihuFragmentRecycleViewAdapter(Context context, List<NewsBean> ZhihuDailyNewsList){
+    public ZhihuFragmentRecycleViewAdapter(Context context, List<dbZhihuNews> ZhihuDailyNewsList){
 
         mcontext = context;
 
@@ -58,13 +59,14 @@ public class ZhihuFragmentRecycleViewAdapter extends RecyclerView.Adapter<ZhihuF
         View view = LayoutInflater.from(parent.getContext()).
                 inflate(R.layout.zhihu_item_layout, parent, false);
         final ViewHolder holder = new ViewHolder(view);
+        //点击事件
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 int position = holder.getAdapterPosition() - 1;
                 Log.d("onClick", "position: " + position);
                 Intent intent = new Intent(mcontext, ZhihuActivity.class);
-                intent.putExtra("news_id", mZhihuDailyNewsList.get(position).getId());
+                intent.putExtra("news_id", mZhihuDailyNewsList.get(position).getDb_zn_id());
                 mcontext.startActivity(intent);
             }
         });
@@ -74,10 +76,10 @@ public class ZhihuFragmentRecycleViewAdapter extends RecyclerView.Adapter<ZhihuF
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
-        NewsBean zhihuDailyNews = mZhihuDailyNewsList.get(position);
-        holder.zhihuTitle.setText(zhihuDailyNews.getTitle());
+        dbZhihuNews zhihuDailyNews = mZhihuDailyNewsList.get(position);
+        holder.zhihuTitle.setText(zhihuDailyNews.getDb_zn_title());
         Glide.with(mcontext)
-                .load(zhihuDailyNews.getImages().get(0))
+                .load(zhihuDailyNews.getDb_zn_image())
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .into(holder.zhihuImage);
     }

@@ -14,12 +14,19 @@ import android.widget.Toast;
 import com.angki.casualread.R;
 import com.angki.casualread.util.Api;
 import com.angki.casualread.util.HttpUtil;
+import com.angki.casualread.util.NetworkStatus;
+import com.angki.casualread.util.ToastUtil;
 import com.angki.casualread.util.Utility;
+import com.angki.casualread.util.dbUtil;
 import com.angki.casualread.zhihu.adapter.ZhihuFragmentRecycleViewAdapter;
+import com.angki.casualread.zhihu.db.dbZhihuNews;
+import com.angki.casualread.zhihu.db.dbZhihuNewsDate;
 import com.angki.casualread.zhihu.gson.ZhihuDailyNews.NewsBean;
 import com.angki.casualread.zhihu.gson.ZhihuDailyNews.NewsBeans;
 import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
+
+import org.litepal.crud.DataSupport;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -42,7 +49,7 @@ public class ZhihuFragment extends Fragment{
 
     private LinearLayoutManager layoutManager;
 
-    private List<NewsBean> dataList = new ArrayList<>();
+    private List<dbZhihuNews> dataList = new ArrayList<>();
 
     private ZhihuFragmentRecycleViewAdapter adapter;
 
@@ -50,12 +57,17 @@ public class ZhihuFragment extends Fragment{
 
     private Calendar c;//获取时间类
 
+    private List<dbZhihuNews> l;
+
+    private boolean isnetwork;//判断是否有网
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.zhihu_fragment, container, false);
+
+        isnetwork = new NetworkStatus().judgment(getContext());
         //加载RecycleView知乎日报数据
         loadZhihuDailyNews(view, true);
         loadModule(view);
@@ -65,23 +77,43 @@ public class ZhihuFragment extends Fragment{
     /**
      * 加载知乎日报RecycleView新闻数据
      */
-    private void loadZhihuDailyNews(final View view, boolean b){
+    private void loadZhihuDailyNews(final View view,final boolean b){
 
         if (b) {
-            url = Api.ZHIHU_BEFORE + date();
+            url = Api.ZHIHU_BEFORE + date(true);
             Log.d("------", "url: " + url);
         }else {
-            url = Api.ZHIHU_BEFORE + bedate();
+            url = Api.ZHIHU_BEFORE + bedate(false);
             Log.d("------", "beurl: " + url);
         }
         HttpUtil.sendOkHttpRequest(url, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
 
+                if (b) {
+                    int id = DataSupport.select("db_znd_date")
+                            .where("db_znd_date like ?", "%" + date(false) + "%")
+                            .find(dbZhihuNewsDate.class).get(0).getId();
+                    l = DataSupport.where("dbzhihunewsdate_id like ?", "%" + id + "%")
+                            .find(dbZhihuNews.class);
+                } else {
+                    int id = DataSupport.select("db_znd_date")
+                            .where("db_znd_date like ?", "%" + bedate(false) + "%")
+                            .find(dbZhihuNewsDate.class).get(0).getId();
+                    l = DataSupport.where("dbzhihunewsdate_id like ?", "%" + id + "%")
+                            .find(dbZhihuNews.class);
+                }
+                //获取之前集合大小
+                int a = dataList.size();
+
+                for (int i = 0; i < l.size(); i++) {
+                    dataList.add(i + a, l.get(i));
+                }
+
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(view.getContext(), "加载失败..", Toast.LENGTH_SHORT).show();
+                        adapter.notifyDataSetChanged();
                     }
                 });
             }
@@ -99,12 +131,20 @@ public class ZhihuFragment extends Fragment{
                 int a = dataList.size();
 
                 for (int i = 0; i < newsBeans.getStories().size(); i++) {
-                    dataList.add(i + a, newsBeans.getStories().get(i));
+                    dbZhihuNews d = new dbZhihuNews();
+                    d.setDb_zn_id(newsBeans.getStories().get(i).getId());
+                    d.setDb_zn_title(newsBeans.getStories().get(i).getTitle());
+                    d.setDb_zn_image(newsBeans.getStories().get(i).getImages().get(0));
+                    dataList.add(i + a, d);
                 }
+
+                //存储数据
+                new dbUtil().dbzhihuSave(newsBeans,b);
 
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+
                         adapter.notifyDataSetChanged();
                     }
                 });
@@ -133,27 +173,38 @@ public class ZhihuFragment extends Fragment{
             //下拉刷新
             @Override
             public void onRefresh() {
+                if (isnetwork) {
+                    new Handler().postDelayed(new Runnable(){
+                        public void run() {
+                            dataList.clear();
+                            loadZhihuDailyNews(getView(), true);
+                            zhihuRecyclerView.refreshComplete();
+                        }
 
-                new Handler().postDelayed(new Runnable(){
-                    public void run() {
-                        dataList.clear();
-                        loadZhihuDailyNews(getView(), true);
-                        zhihuRecyclerView.refreshComplete();
-                    }
-
-                }, 1000);
+                    }, 1000);
+                } else {
+                    ToastUtil.showToast(getContext(), "没有网哟~");
+                    zhihuRecyclerView.refreshComplete();
+                }
             }
             //上拉加载
             @Override
             public void onLoadMore() {
 
-
-                new Handler().postDelayed(new Runnable(){
-                    public void run() {
-                        loadZhihuDailyNews(getView(), false);
-                        zhihuRecyclerView.loadMoreComplete();
-                    }
-                }, 1000);
+                List<dbZhihuNewsDate> date = DataSupport.select("db_znd_date")
+                        .where("db_znd_date like ?", "%" + bedate(true) + "%")
+                        .find(dbZhihuNewsDate.class);
+                if (date.size() != 0) {
+                    new Handler().postDelayed(new Runnable(){
+                        public void run() {
+                            loadZhihuDailyNews(getView(), false);
+                            zhihuRecyclerView.loadMoreComplete();
+                        }
+                    }, 1000);
+                } else {
+                    ToastUtil.showToast(getContext(), "已经到底了哟~");
+                    zhihuRecyclerView.refreshComplete();
+                }
             }
         });
 
@@ -165,16 +216,17 @@ public class ZhihuFragment extends Fragment{
     /**
      * 今日date
      * @return
+     * @boolean b 判断是否有网
      */
-    private String date(){
+    private String date(boolean b){
 
         c = Calendar.getInstance();
-
-        /**
-         * 因为数据请求需要，获取今日内容需要的日期是第二天
-         */
-        c.add(Calendar.DAY_OF_MONTH, +1);
-
+        if (b) {
+            /**
+             * 有网时，因为数据请求需要，获取今日内容需要的日期是第二天
+             */
+            c.add(Calendar.DAY_OF_MONTH, +1);
+        }
         return Analysis(c);
     }
 
@@ -182,13 +234,14 @@ public class ZhihuFragment extends Fragment{
      * 之前date
      * @return
      */
-    private String bedate() {
+    private String bedate(boolean b) {
 
-        /**
-         * 将时间往前一天
-         */
-        c.add(c.DAY_OF_MONTH, -1);
-
+        if (b) {
+            /**
+             * 将时间往前一天
+             */
+            c.add(c.DAY_OF_MONTH, -1);
+        }
         return Analysis(c);
     }
 
@@ -217,4 +270,5 @@ public class ZhihuFragment extends Fragment{
 
         return "" + year + month +day;
     }
+
 }

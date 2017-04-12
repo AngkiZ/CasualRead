@@ -103,7 +103,7 @@ public class Utility {
             bean.setBody(object.optString("body"));
             bean.setTitle(object.optString("title"));
             bean.setImage_source(object.optString("image_source"));
-            bean.setId(object.optInt("id"));
+            bean.setId(object.optString("id"));
             bean.setShare_url(object.optString("share_url"));
             //解析图片数据
             bean.setImage(object.optString("image"));

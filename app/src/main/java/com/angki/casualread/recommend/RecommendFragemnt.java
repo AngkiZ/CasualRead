@@ -1,7 +1,9 @@
 package com.angki.casualread.recommend;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
@@ -22,7 +24,10 @@ import com.angki.casualread.joke.gson.JokeData;
 import com.angki.casualread.recommend.adapter.RecommendAdapter;
 import com.angki.casualread.util.Api;
 import com.angki.casualread.util.HttpUtil;
+import com.angki.casualread.util.NetworkStatus;
+import com.angki.casualread.util.ToastUtil;
 import com.angki.casualread.util.Utility;
+import com.angki.casualread.zhihu.ZhihuActivity;
 import com.angki.casualread.zhihu.gson.ZhihuDailyNews.NewsBean;
 import com.angki.casualread.zhihu.gson.ZhihuDailyNews.NewsBeans;
 import com.angki.casualread.zhihu.gson.ZhihuDailyNews.TopNewsBean;
@@ -54,6 +59,7 @@ public class RecommendFragemnt extends Fragment {
     private List<JokeData> jokeData = new ArrayList<>();
 
     private RecommendAdapter adapter;
+    private NetworkStatus networkStatus;
 
     @Nullable
     @Override
@@ -61,12 +67,11 @@ public class RecommendFragemnt extends Fragment {
 
         View view = inflater.inflate(R.layout.recommend_fragment, container, false);
 
-        loadZhihuContent(view);
-        loadWelfareContent(view);
-        loadGankContent(view);
-        loadJokeContent(view);
+        loadZhihuContent();
+        loadWelfareContent();
+        loadGankContent();
+        loadJokeContent();
         loadModule(view);
-
         return view;
     }
 
@@ -87,11 +92,16 @@ public class RecommendFragemnt extends Fragment {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        loadZhihuContent(view);
-                        loadWelfareContent(view);
-                        loadGankContent(view);
-                        loadJokeContent(view);
-                        loadModule(view);
+                        networkStatus = new NetworkStatus();
+                        if (networkStatus.judgment(getContext())) {
+                            loadZhihuContent();
+                            loadWelfareContent();
+                            loadGankContent();
+                            loadJokeContent();
+                            loadModule(view);
+                        }else {
+                            ToastUtil.showToast(getContext(), "没有网络..");
+                        }
                         swipeRefreshLayout.setRefreshing(false);
                     }
                 }, 1000);
@@ -108,16 +118,41 @@ public class RecommendFragemnt extends Fragment {
 
     /**
      * 加载推荐碎片中知乎模块部分内容
-     * @param view
      */
-    private void loadZhihuContent(final View view) {
+    private void loadZhihuContent() {
 
         String url = Api.ZHIHU_NEWS + "latest";
 
         HttpUtil.sendOkHttpRequest(url, new Callback() {
+            //没有网时加载
             @Override
             public void onFailure(Call call, IOException e) {
 
+                SharedPreferences prefs = PreferenceManager
+                        .getDefaultSharedPreferences(getActivity());
+                String JSON = prefs.getString("zhihu", null);
+                final NewsBeans newsBeans = Utility.handleZHDNResponse(JSON);
+                for (int i = 0; i < 4; i++) {
+
+                    zhihuData.add(newsBeans.getStories().get(i));
+                }
+
+                //轮播图显示内容的集合
+                for(int i = 0; i < newsBeans.getTopStories().size(); i++){
+
+                    images.add(newsBeans.getTopStories().get(i).getImage());
+                    titles.add(newsBeans.getTopStories().get(i).getTitle());
+                    topid.add(newsBeans.getTopStories().get(i).getId());
+
+                }
+
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        adapter.notifyDataSetChanged();
+                    }
+                });
             }
 
             @Override
@@ -150,6 +185,11 @@ public class RecommendFragemnt extends Fragment {
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        //存储
+                        SharedPreferences.Editor editor = PreferenceManager
+                                .getDefaultSharedPreferences(getActivity()).edit();
+                        editor.putString("zhihu", responseData);
+                        editor.apply();
                         adapter.notifyDataSetChanged();
                     }
                 });
@@ -160,7 +200,7 @@ public class RecommendFragemnt extends Fragment {
     /**
      * 加载推荐碎片中福利部分内容
      */
-    private void loadWelfareContent(final View view) {
+    private void loadWelfareContent() {
 
         String url = Api.WELFARE + "1/1";
 
@@ -168,17 +208,12 @@ public class RecommendFragemnt extends Fragment {
             @Override
             public void onFailure(Call call, IOException e) {
 
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-
-                //获取JSON数据
-                final String responseData = response.body().string();
+                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                String JSON = prefs.getString("Welfare", null);
                 //解析数据
-                final GankWelfareDatas gankWelfareDatas = Utility.handleGankWelfareResponse(responseData);
+                final GankWelfareDatas gankWelfareDatas =
+                        Utility.handleGankWelfareResponse(JSON);
 
-                welfareData.clear();
                 for (int i = 0; i < gankWelfareDatas.getResults().size(); i++) {
 
                     welfareData.add(gankWelfareDatas.getResults().get(i));
@@ -191,13 +226,40 @@ public class RecommendFragemnt extends Fragment {
                     }
                 });
             }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+
+                //获取JSON数据
+                final String responseData = response.body().string();
+                //解析数据
+                final GankWelfareDatas gankWelfareDatas =
+                        Utility.handleGankWelfareResponse(responseData);
+
+                welfareData.clear();
+                for (int i = 0; i < gankWelfareDatas.getResults().size(); i++) {
+
+                    welfareData.add(gankWelfareDatas.getResults().get(i));
+                }
+                //加载图片
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapter.notifyDataSetChanged();
+                        SharedPreferences.Editor editor = PreferenceManager
+                                .getDefaultSharedPreferences(getActivity()).edit();
+                        editor.putString("Welfare", responseData);
+                        editor.apply();
+                    }
+                });
+            }
         });
     }
 
     /**
      * 加载推荐碎片中干货部分内容
      */
-    private void loadGankContent(final View view) {
+    private void loadGankContent() {
 
         String url = Api.GANK + "4/1";
 
@@ -205,6 +267,23 @@ public class RecommendFragemnt extends Fragment {
             @Override
             public void onFailure(Call call, IOException e) {
 
+                SharedPreferences prefs = PreferenceManager
+                        .getDefaultSharedPreferences(getActivity());
+                String JSON = prefs.getString("Gank", null);
+                //解析数据
+                final GankDatas gankDatas = Utility.handleGankResponse(JSON);
+                for (int i = 0; i < gankDatas.getResults().size(); i++) {
+
+                    gankData.add(gankDatas.getResults().get(i));
+                }
+                //加载数据
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapter.notifyDataSetChanged();
+
+                    }
+                });
             }
 
             @Override
@@ -225,6 +304,10 @@ public class RecommendFragemnt extends Fragment {
                     @Override
                     public void run() {
                         adapter.notifyDataSetChanged();
+                        SharedPreferences.Editor editor = PreferenceManager
+                                .getDefaultSharedPreferences(getActivity()).edit();
+                        editor.putString("Gank", reponseData);
+                        editor.apply();
                     }
                 });
             }
@@ -234,7 +317,7 @@ public class RecommendFragemnt extends Fragment {
     /**
      * 加载推荐碎片中笑话部分内容
      */
-    private void loadJokeContent(final View view) {
+    private void loadJokeContent() {
 
         String url = Api.JOKE + "?key=f24ebcac31973eebf02a0391b1e8953a&page=1&pagesize=3";
 
@@ -242,6 +325,22 @@ public class RecommendFragemnt extends Fragment {
             @Override
             public void onFailure(Call call, IOException e) {
 
+                SharedPreferences prefs = PreferenceManager
+                        .getDefaultSharedPreferences(getActivity());
+                String JSON = prefs.getString("Joke", null);
+                //解析数据
+                final List<JokeData> jokeDatas = Utility.handleJokeResponse(JSON);
+                for (int i = 0; i < jokeDatas.size(); i++) {
+
+                    jokeData.add(jokeDatas.get(i));
+                }
+                //加载数据
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        adapter.notifyDataSetChanged();
+                    }
+                });
             }
 
             @Override
@@ -262,6 +361,10 @@ public class RecommendFragemnt extends Fragment {
                     @Override
                     public void run() {
                         adapter.notifyDataSetChanged();
+                        SharedPreferences.Editor editor = PreferenceManager
+                                .getDefaultSharedPreferences(getActivity()).edit();
+                        editor.putString("Joke", responseData);
+                        editor.apply();
                     }
                 });
 
