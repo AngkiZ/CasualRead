@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.angki.casualread.R;
 import com.angki.casualread.gank.GankActivity;
+import com.angki.casualread.gank.db.dbGank;
 import com.angki.casualread.gank.gson.GankData;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -27,7 +28,7 @@ public class GankFragmentRecycleViewAdapter extends
 
     private Context mcontext;
 
-    private List<GankData> mDataList;
+    private List<dbGank> mDataList;
 
     //建立枚举 2个item 类型
     public enum ITEM_TYPE {
@@ -72,7 +73,7 @@ public class GankFragmentRecycleViewAdapter extends
         }
     }
 
-    public GankFragmentRecycleViewAdapter(Context context, List<GankData> dataList) {
+    public GankFragmentRecycleViewAdapter(Context context, List<dbGank> dataList) {
 
         mcontext = context;
         mDataList = dataList;
@@ -93,7 +94,7 @@ public class GankFragmentRecycleViewAdapter extends
                 public void onClick(View view) {
                     int position = holder1.getAdapterPosition() - 1;
                     Intent intent = new Intent(mcontext, GankActivity.class);
-                    intent.putExtra("gank_url", mDataList.get(position).getUrl());
+                    intent.putExtra("gank_url", mDataList.get(position).getDb_gank_url());
                     mcontext.startActivity(intent);
                 }
             });
@@ -110,7 +111,7 @@ public class GankFragmentRecycleViewAdapter extends
                 public void onClick(View view) {
                     int position = holder2.getAdapterPosition() - 1;
                     Intent intent = new Intent(mcontext, GankActivity.class);
-                    intent.putExtra("gank_url", mDataList.get(position).getUrl());
+                    intent.putExtra("gank_url", mDataList.get(position).getDb_gank_url());
                     mcontext.startActivity(intent);
                 }
             });
@@ -122,13 +123,13 @@ public class GankFragmentRecycleViewAdapter extends
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 
-        GankData gankData = mDataList.get(position);
+        dbGank gankData = mDataList.get(position);
 
         if (holder instanceof ViewHolder1) {
 
-            ((ViewHolder1) holder).title1.setText(gankData.getDesc());
-            ((ViewHolder1) holder).author1.setText(gankData.getWho());
-            Glide.with(mcontext).load(gankData.getImages().get(0))
+            ((ViewHolder1) holder).title1.setText(gankData.getDb_gank_title());
+            ((ViewHolder1) holder).author1.setText(gankData.getDb_gank_who());
+            Glide.with(mcontext).load(gankData.getDb_gank_image())
                     .asBitmap()
                     .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                     .override(80, 80)
@@ -137,8 +138,8 @@ public class GankFragmentRecycleViewAdapter extends
 
         } else if (holder instanceof ViewHolder2){
 
-            ((ViewHolder2) holder).title2.setText(gankData.getDesc());
-            ((ViewHolder2) holder).author2.setText(gankData.getWho());
+            ((ViewHolder2) holder).title2.setText(gankData.getDb_gank_title());
+            ((ViewHolder2) holder).author2.setText(gankData.getDb_gank_who());
         }
     }
 
@@ -146,7 +147,7 @@ public class GankFragmentRecycleViewAdapter extends
     @Override
     public int getItemViewType(int position) {
 
-        if (mDataList.get(position).getImages() == null){
+        if (mDataList.get(position).getDb_gank_image().equals("null")){
 
             return ITEM_TYPE.ITEM2.ordinal();
         }else {

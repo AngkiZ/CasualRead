@@ -13,6 +13,12 @@ public class dbZhihuNewsDate extends DataSupport{
 
     private int id;
 
+    private String db_znd_date;//日期
+
+    private List<dbZhihuNews> dbZhihuNewsList = new ArrayList<>();//对应的文章
+
+    private int dbnewscount;//文章数量
+
     public int getId() {
         return id;
     }
@@ -20,12 +26,6 @@ public class dbZhihuNewsDate extends DataSupport{
     public void setId(int id) {
         this.id = id;
     }
-
-    private String db_znd_date;
-
-    private List<dbZhihuNews> dbZhihuNewsList = new ArrayList<>();
-
-    private int dbnewscount;
 
     public int getDbnewscount() {
         return dbnewscount;

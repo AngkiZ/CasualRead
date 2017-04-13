@@ -8,15 +8,25 @@ import java.util.List;
 
 public class GankData {
 
-    private String desc;
+    private String _id;//文章id
 
-    private List<String> images;
+    private String desc;//标题
 
-    private String type;
+    private List<String> images;//配图
 
-    private String url;
+    private String type;//类型
 
-    private String who;
+    private String url;//网址
+
+    private String who;//作者
+
+    public String get_id() {
+        return _id;
+    }
+
+    public void set_id(String _id) {
+        this._id = _id;
+    }
 
     public String getDesc() {
         return desc;

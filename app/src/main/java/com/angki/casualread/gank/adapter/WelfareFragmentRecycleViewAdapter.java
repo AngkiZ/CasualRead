@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 
 import com.angki.casualread.R;
 import com.angki.casualread.gank.WelfareActivity;
+import com.angki.casualread.gank.db.dbWelfare;
 import com.angki.casualread.gank.gson.GankWelfareData;
 import com.angki.casualread.util.MarginUtil;
 import com.bumptech.glide.Glide;
@@ -30,7 +31,7 @@ public class WelfareFragmentRecycleViewAdapter extends
 
     private Context mcontext;
 
-    private List<GankWelfareData> mDataList;
+    private List<dbWelfare> mDataList;
 
     static class ViewHoler extends RecyclerView.ViewHolder{
 
@@ -45,7 +46,7 @@ public class WelfareFragmentRecycleViewAdapter extends
         }
     }
 
-    public WelfareFragmentRecycleViewAdapter(Context context, List<GankWelfareData> dataList) {
+    public WelfareFragmentRecycleViewAdapter(Context context, List<dbWelfare> dataList) {
 
         mcontext = context;
         mDataList = dataList;
@@ -85,7 +86,7 @@ public class WelfareFragmentRecycleViewAdapter extends
             MarginUtil.setViewMargin(holder.linearLayout, 6, 12, 12, 0);
         }
 
-        Glide.with(mcontext).load(mDataList.get(position).getUrl())
+        Glide.with(mcontext).load(mDataList.get(position).getDb_we_url())
 //                .skipMemoryCache(true)//跳过内存缓存
                 .diskCacheStrategy(DiskCacheStrategy.RESULT)
                 .into(holder.image);
@@ -96,12 +97,12 @@ public class WelfareFragmentRecycleViewAdapter extends
 
         return mDataList.size();
     }
-
+    //转换数组属性
     private ArrayList<String> UrlList() {
 
         ArrayList<String> mUrlList = new ArrayList<>();
         for (int i = 0; i < mDataList.size(); i++) {
-            mUrlList.add(mDataList.get(i).getUrl());
+            mUrlList.add(mDataList.get(i).getDb_we_url());
         }
         return mUrlList;
     }

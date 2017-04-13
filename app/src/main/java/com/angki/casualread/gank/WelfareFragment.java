@@ -15,13 +15,20 @@ import android.widget.Toast;
 
 import com.angki.casualread.R;
 import com.angki.casualread.gank.adapter.WelfareFragmentRecycleViewAdapter;
+import com.angki.casualread.gank.db.dbGank;
+import com.angki.casualread.gank.db.dbWelfare;
 import com.angki.casualread.gank.gson.GankWelfareData;
 import com.angki.casualread.gank.gson.GankWelfareDatas;
 import com.angki.casualread.util.Api;
 import com.angki.casualread.util.HttpUtil;
+import com.angki.casualread.util.NetworkStatus;
+import com.angki.casualread.util.ToastUtil;
 import com.angki.casualread.util.Utility;
+import com.angki.casualread.util.dbUtil;
 import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
+
+import org.litepal.crud.DataSupport;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -39,11 +46,15 @@ public class WelfareFragment extends Fragment{
 
     private XRecyclerView welfareRecyclerView;
 
-    private List<GankWelfareData> dataList = new ArrayList<>();
+    private List<dbWelfare> dataList = new ArrayList<>();
 
     private WelfareFragmentRecycleViewAdapter adapter;
 
+    private dbWelfare mdbWelfare;
+
     private int pager = 1;
+
+    private boolean isnetwork;//判断是否有网
 
     @Nullable
     @Override
@@ -51,7 +62,7 @@ public class WelfareFragment extends Fragment{
                              @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.welfare_fragment, container, false);
-
+        isnetwork = new NetworkStatus().judgment(getContext());
         loadWelfareList(view, pager);
         loadModule(view);
         return view;
@@ -61,18 +72,26 @@ public class WelfareFragment extends Fragment{
      * 加载数据
      * @param view
      */
-    private void loadWelfareList(final View view, int pager) {
+    private void loadWelfareList(final View view, final int pager) {
 
         String url = Api.WELFARE + "10/" + pager;
 
         HttpUtil.sendOkHttpRequest(url, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-
+                //获取指定页数的内容集合
+                List<dbWelfare> welfareList = DataSupport
+                            .where("db_we_pager like ?", "%" + pager + "%")
+                            .order("db_we_listSorting asc").find(dbWelfare.class);
+                //获取之前集合大小
+                int a = dataList.size();
+                for (int i = 0; i < welfareList.size(); i++) {
+                    dataList.add(i + a, welfareList.get(i));
+                }
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(view.getContext(), "加载失败..", Toast.LENGTH_SHORT).show();
+                        adapter.notifyDataSetChanged();
                     }
                 });
             }
@@ -88,8 +107,16 @@ public class WelfareFragment extends Fragment{
                 //获取之前集合大小
                 int a = dataList.size();
                 for (int i = 0; i < gankWelfareDatas.getResults().size(); i++) {
-                    dataList.add(i + a, gankWelfareDatas.getResults().get(i));
+                    mdbWelfare = new dbWelfare();
+                    mdbWelfare.setDb_we_id(gankWelfareDatas.getResults().get(i).get_id());
+                    mdbWelfare.setDb_we_title(gankWelfareDatas.getResults().get(i).getDesc());
+                    mdbWelfare.setDb_we_url(gankWelfareDatas.getResults().get(i).getUrl());
+                    mdbWelfare.setDb_we_pager(pager);
+                    mdbWelfare.setDb_we_listSorting(i);
+                    dataList.add(i + a, mdbWelfare);
                 }
+                //存储数据
+                new dbUtil().dbwelfareSave(gankWelfareDatas, pager);
                 Log.d("------", "dataList: " + dataList.size());
                 //加载页面
                 getActivity().runOnUiThread(new Runnable() {
@@ -120,30 +147,41 @@ public class WelfareFragment extends Fragment{
         welfareRecyclerView.setLoadingListener(new XRecyclerView.LoadingListener() {
             @Override
             public void onRefresh() {
+                if (isnetwork) {
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
 
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        dataList.clear();
-                        pager = 1;
-                        loadWelfareList(getView(), pager);
-                        welfareRecyclerView.refreshComplete();
-                    }
-                }, 1000);
+                            dataList.clear();
+                            pager = 1;
+                            loadWelfareList(getView(), pager);
+                            welfareRecyclerView.refreshComplete();
+                        }
+                    }, 1000);
+                }else {
+                    ToastUtil.showToast(getContext(), "没有网哟~");
+                    welfareRecyclerView.refreshComplete();
+                }
             }
 
             @Override
             public void onLoadMore() {
-
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        pager++;
-                        loadWelfareList(getView(), pager);
-                        welfareRecyclerView.refreshComplete();
-                    }
-                },1000);
+                pager++;
+                List<dbWelfare> welfareList = DataSupport
+                        .where("db_we_pager like ?", "%" + pager + "%")
+                        .order("db_we_listSorting asc").find(dbWelfare.class);
+                if (welfareList.size() == 0 && isnetwork == false) {
+                    ToastUtil.showToast(getContext(), "已经到底了哟~");
+                    welfareRecyclerView.refreshComplete();
+                }else {
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            loadWelfareList(getView(), pager);
+                            welfareRecyclerView.refreshComplete();
+                        }
+                    },1000);
+                }
             }
         });
         //加载adapter

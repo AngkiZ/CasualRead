@@ -20,14 +20,20 @@ import android.widget.ImageView;
 import com.angki.casualread.R;
 import com.angki.casualread.util.Api;
 import com.angki.casualread.util.HttpUtil;
+import com.angki.casualread.util.NetworkStatus;
 import com.angki.casualread.util.ToastUtil;
 import com.angki.casualread.util.Utility;
+import com.angki.casualread.util.dbUtil;
+import com.angki.casualread.zhihu.db.dbZhihuStors;
 import com.angki.casualread.zhihu.gson.ZhihuDailyNews.NewsBeans;
 import com.angki.casualread.zhihu.gson.ZhihuDailyStory.StoryBean;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
+import org.litepal.crud.DataSupport;
+
 import java.io.IOException;
+import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -44,6 +50,8 @@ public class ZhihuActivity extends AppCompatActivity {
     private ImageView imageView;
 
     private StoryBean storyBean = new StoryBean();
+
+    private dbZhihuStors mdbZhihuStors;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,14 +71,19 @@ public class ZhihuActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call call, IOException e) {
 
+                final List<dbZhihuStors> data = DataSupport
+                        .where("db_zs_id like ?", "%" + newsId + "%")
+                        .find(dbZhihuStors.class);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(ZhihuActivity.this);
-                        String JSON = prefs.getString("Data", null);
-                        storyBean = Utility.handleZHNResponse(JSON);
-                        String html = CombinedData(storyBean);
-                        LoadModule(html);
+                        if (data.size() == 0) {
+
+                            ToastUtil.showToast(getApplicationContext(), "哇，没有网络也没有缓存");
+                        } else {
+                            String html = CombinedData(data.get(0));
+                            LoadModule(html, data.get(0));
+                        }
                     }
                 });
             }
@@ -82,16 +95,14 @@ public class ZhihuActivity extends AppCompatActivity {
                 final String responseData = response.body().string();
                 //解析Json数据
                 storyBean = Utility.handleZHNResponse(responseData);
+                //储存数据
+                mdbZhihuStors = new dbUtil().dbzhihustorsSave(storyBean);
 
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        SharedPreferences.Editor editor = PreferenceManager
-                                .getDefaultSharedPreferences(ZhihuActivity.this).edit();
-                        editor.putString("Data", responseData);
-                        editor.apply();
-                        String html = CombinedData(storyBean);
-                        LoadModule(html);
+                        String html = CombinedData(mdbZhihuStors);
+                        LoadModule(html, mdbZhihuStors);
                     }
                 });
             }
@@ -101,10 +112,10 @@ public class ZhihuActivity extends AppCompatActivity {
     /**
      * 组合数据
      */
-    private String CombinedData(StoryBean storyBean) {
+    private String CombinedData(dbZhihuStors mdbZhihuStors) {
 
         String css = "<link rel=\"stylesheet\" href=\"file:///android_asset/zhihu_daily.css\" type=\"text/css\">";
-        String data = storyBean.getBody();
+        String data = mdbZhihuStors.getDb_zs_body();
         data = data.replace("<div class=\"img-place-holder\">", "");
         data = data.replace("<div class=\"headline\">", "");
 
@@ -124,21 +135,28 @@ public class ZhihuActivity extends AppCompatActivity {
     /**
      * 加载组件
      */
-    private void LoadModule(String result) {
+    private void LoadModule(String result, dbZhihuStors mdbZhihuStors) {
 
         toolbar = (Toolbar) findViewById(R.id.activity_zhihu_layout_collapsing_toolbar);
         collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.activity_zhihu_layout_collapsing);
         imageView = (ImageView) findViewById(R.id.activity_zhihu_layout_collapsing_image);
         webView = (WebView) findViewById(R.id.activity_zhihu_layout_webview);
-        test();
+        //设置webview的缓存机制
+        WebSettings ws = webView.getSettings();
+        boolean b = new NetworkStatus().judgment(getApplicationContext());
+        if (b) {
+            ws.setCacheMode(WebSettings.LOAD_DEFAULT);//有网时加载
+        } else {
+            ws.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);//没有网时加载
+        }
         //设置标题栏
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-        collapsingToolbar.setTitle(storyBean.getTitle());
-        Glide.with(this).load(storyBean.getImage())
+        collapsingToolbar.setTitle(mdbZhihuStors.getDb_zs_title());
+        Glide.with(this).load(mdbZhihuStors.getDb_zs_image())
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .into(imageView);
         //设置正文
@@ -172,15 +190,4 @@ public class ZhihuActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-    private void test() {
-
-        WebSettings ws = webView.getSettings();
-        ConnectivityManager manager = (ConnectivityManager) getApplicationContext().getSystemService(CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = manager.getActiveNetworkInfo();
-        if (networkInfo != null && networkInfo.isAvailable()) {
-            ws.setCacheMode(WebSettings.LOAD_DEFAULT);
-        }else {
-            ws.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
-        }
-    }
 }

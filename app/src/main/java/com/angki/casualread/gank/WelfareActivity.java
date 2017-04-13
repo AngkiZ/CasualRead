@@ -206,7 +206,7 @@ public class WelfareActivity extends AppCompatActivity implements ViewPager.OnPa
                     .listener(new RequestListener<String, GlideDrawable>() {
                         @Override
                         public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                            Toast.makeText(mcontext, "图片加载异常", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mcontext, "图片无缓存！0.0", Toast.LENGTH_SHORT).show();
                             progressBar.setVisibility(View.GONE);
                             return false;
                         }
@@ -218,7 +218,7 @@ public class WelfareActivity extends AppCompatActivity implements ViewPager.OnPa
                         }
                     }).into(photoView);
 
-            photoView.setOnPhotoTapListener(WelfareActivity.this);//设置点击事件
+            photoView.setOnPhotoTapListener(WelfareActivity.this);//设置单点点击事件
             container.addView(view, 0);
             return view;
         }

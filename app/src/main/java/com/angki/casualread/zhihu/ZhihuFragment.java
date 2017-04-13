@@ -53,11 +53,11 @@ public class ZhihuFragment extends Fragment{
 
     private ZhihuFragmentRecycleViewAdapter adapter;
 
-    private String url;
+    private String url;//请求的地址
 
     private Calendar c;//获取时间类
 
-    private List<dbZhihuNews> l;
+    private List<dbZhihuNews> l;//没有网时加载的数据
 
     private boolean isnetwork;//判断是否有网
     @Nullable
@@ -95,12 +95,14 @@ public class ZhihuFragment extends Fragment{
                             .where("db_znd_date like ?", "%" + date(false) + "%")
                             .find(dbZhihuNewsDate.class).get(0).getId();
                     l = DataSupport.where("dbzhihunewsdate_id like ?", "%" + id + "%")
+                            .order("listSorting asc")
                             .find(dbZhihuNews.class);
                 } else {
                     int id = DataSupport.select("db_znd_date")
                             .where("db_znd_date like ?", "%" + bedate(false) + "%")
                             .find(dbZhihuNewsDate.class).get(0).getId();
                     l = DataSupport.where("dbzhihunewsdate_id like ?", "%" + id + "%")
+                            .order("listSorting asc")
                             .find(dbZhihuNews.class);
                 }
                 //获取之前集合大小
@@ -139,7 +141,7 @@ public class ZhihuFragment extends Fragment{
                 }
 
                 //存储数据
-                new dbUtil().dbzhihuSave(newsBeans,b);
+                new dbUtil().dbzhihuSave(newsBeans);
 
                 getActivity().runOnUiThread(new Runnable() {
                     @Override

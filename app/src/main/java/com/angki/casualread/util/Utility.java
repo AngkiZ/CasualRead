@@ -136,6 +136,7 @@ public class Utility {
                     JSONObject object1 = array.optJSONObject(i);
                     GankData bean = new GankData();
                     //开始解析非图片数据
+                    bean.set_id(object1.optString("_id"));
                     bean.setDesc(object1.optString("desc"));
                     bean.setType(object1.optString("type"));
                     bean.setUrl(object1.optString("url"));

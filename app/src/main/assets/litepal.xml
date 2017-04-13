@@ -3,12 +3,13 @@
     <!--数据库名-->
     <dbname value="casual_read"/>
     <!--数据库版本-->
-    <version value="1"/>
+    <version value="3"/>
 
     <list>
         <mapping class="com.angki.casualread.zhihu.db.dbZhihuNews"/>
-        <mapping class="com.angki.casualread.zhihu.db.dbZhihuTopNews"/>
         <mapping class="com.angki.casualread.zhihu.db.dbZhihuStors"/>
         <mapping class="com.angki.casualread.zhihu.db.dbZhihuNewsDate"/>
+        <mapping class="com.angki.casualread.gank.db.dbGank"/>
+        <mapping class="com.angki.casualread.gank.db.dbWelfare"/>
     </list>
 </litepal>

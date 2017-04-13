@@ -8,15 +8,25 @@ import org.litepal.crud.DataSupport;
 
 public class dbZhihuNews extends DataSupport{
 
-    private String db_zn_id;
+    private String db_zn_id;//文章id
 
-    private String db_zn_title;
+    private String db_zn_title;//文章标题
 
-    private String db_zn_image;
+    private String db_zn_image;//文章配图
 
-    private dbZhihuNewsDate date;
+    private dbZhihuNewsDate date;//与日期的表联系
 
-    private int dbzhihunewsdate_id;
+    private int dbzhihunewsdate_id;//文章对应的日期
+
+    private int listSorting;//日期内的所有文章的序号
+
+    public int getListSorting() {
+        return listSorting;
+    }
+
+    public void setListSorting(int listSorting) {
+        this.listSorting = listSorting;
+    }
 
     public int getDbzhihunewsdate_id() {
         return dbzhihunewsdate_id;
@@ -65,6 +75,8 @@ public class dbZhihuNews extends DataSupport{
                 ", db_zn_title='" + db_zn_title + '\'' +
                 ", db_zn_image='" + db_zn_image + '\'' +
                 ", date=" + date +
+                ", dbzhihunewsdate_id=" + dbzhihunewsdate_id +
+                ", listSorting=" + listSorting +
                 '}';
     }
 }
