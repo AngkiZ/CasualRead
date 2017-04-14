@@ -131,6 +131,12 @@ public class WelfareActivity extends AppCompatActivity implements ViewPager.OnPa
         viewPager.setEnabled(false);
         //ViewPager的滑动监听
         viewPager.addOnPageChangeListener(this);
+        viewPager.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
         // 设定当前的页数和总页数
         if (urlList.size() > 2) {
             imagecount.setText((code + 1) + "/" + urlList.size());

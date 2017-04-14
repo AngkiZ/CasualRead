@@ -6,6 +6,8 @@ import com.angki.casualread.gank.db.dbGank;
 import com.angki.casualread.gank.db.dbWelfare;
 import com.angki.casualread.gank.gson.GankDatas;
 import com.angki.casualread.gank.gson.GankWelfareDatas;
+import com.angki.casualread.joke.db.dbJoke;
+import com.angki.casualread.joke.gson.JokeData;
 import com.angki.casualread.zhihu.db.dbZhihuNews;
 import com.angki.casualread.zhihu.db.dbZhihuNewsDate;
 import com.angki.casualread.zhihu.db.dbZhihuStors;
@@ -33,6 +35,8 @@ public class dbUtil {
     private dbGank mdbGank;
 
     private dbWelfare mdbWelfare;
+
+    private dbJoke mdbJoke;
 
     /**
      * 存储知乎的数据
@@ -179,6 +183,28 @@ public class dbUtil {
                 mdbWelfare.setDb_we_pager(pager);
                 mdbWelfare.setDb_we_listSorting(i);
                 mdbWelfare.updateAll("db_we_id = ?", content.get(0).getDb_we_id());
+            }
+        }
+    }
+
+    public void dbjokeSave(List<JokeData> jokeData, int page) {
+
+        for (int i = 0; i < jokeData.size(); i++) {
+            List<dbJoke> content = DataSupport.select("db_joke_id")
+                    .where("db_joke_id like ?", "%" + jokeData.get(i).getHashId() + "%")
+                    .find(dbJoke.class);
+            mdbJoke = new dbJoke();
+            if (content.size() == 0) {
+                mdbJoke.setDb_joke_id(jokeData.get(i).getHashId());
+                mdbJoke.setDb_joke_content(jokeData.get(i).getContent());
+                mdbJoke.setDb_joke_listSorting(i);
+                mdbJoke.setDb_joke_page(page);
+                mdbJoke.setDb_joke_collection(false);
+                mdbJoke.save();
+            }else {
+                mdbJoke.setDb_joke_listSorting(i);
+                mdbJoke.setDb_joke_page(page);
+                mdbJoke.updateAll("db_joke_id = ?", content.get(0).getDb_joke_id());
             }
         }
     }

@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.angki.casualread.R;
+import com.angki.casualread.joke.db.dbJoke;
 import com.angki.casualread.joke.gson.JokeData;
 
 import java.util.List;
@@ -23,7 +24,7 @@ public class JokeFragmentRecyclerViewAdapter extends RecyclerView.Adapter<JokeFr
 
     private Context mcontext;
 
-    private List<JokeData> mDataList;
+    private List<dbJoke> mDataList;
 
     static class ViewHoler extends RecyclerView.ViewHolder {
 
@@ -38,7 +39,7 @@ public class JokeFragmentRecyclerViewAdapter extends RecyclerView.Adapter<JokeFr
         }
     }
 
-    public JokeFragmentRecyclerViewAdapter(Context context, List<JokeData> dataList) {
+    public JokeFragmentRecyclerViewAdapter(Context context, List<dbJoke> dataList) {
 
         mcontext = context;
         mDataList = dataList;
@@ -56,9 +57,9 @@ public class JokeFragmentRecyclerViewAdapter extends RecyclerView.Adapter<JokeFr
     @Override
     public void onBindViewHolder(ViewHoler holder, int position) {
 
-        JokeData jokeData = mDataList.get(position);
+        dbJoke jokeData = mDataList.get(position);
 
-        holder.content.setText(jokeData.getContent());
+        holder.content.setText(jokeData.getDb_joke_content());
     }
 
     @Override

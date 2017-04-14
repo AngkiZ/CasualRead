@@ -48,7 +48,7 @@ public class GankFragment extends Fragment{
 
     private dbGank mdbGank;
 
-    private int pager = 1;
+    private int pager;
 
     private boolean isnetwork;//判断是否有网
 
@@ -58,6 +58,8 @@ public class GankFragment extends Fragment{
                              @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.gank_fragment, container, false);
+        dataList.clear();//清空列表
+        pager = 1;
         isnetwork = new NetworkStatus().judgment(getContext());
         loadGankList(view, pager);
         loadModule(view);
@@ -174,7 +176,7 @@ public class GankFragment extends Fragment{
                 pager++;
                 List<dbGank> gankList = DataSupport
                         .where("db_gank_page like ?", "%" + pager + "%")
-                        .order("db_gank_listSorting asc").find(dbGank.class);
+                        .find(dbGank.class);
                 if (gankList.size() == 0 && isnetwork == false) {
                     ToastUtil.showToast(getContext(), "已经到底了哟~");
                     gankRecyclerView.refreshComplete();

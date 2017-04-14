@@ -66,7 +66,7 @@ public class ZhihuFragment extends Fragment{
                              @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.zhihu_fragment, container, false);
-
+        dataList.clear();//清空列表
         isnetwork = new NetworkStatus().judgment(getContext());
         //加载RecycleView知乎日报数据
         loadZhihuDailyNews(view, true);

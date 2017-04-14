@@ -52,7 +52,7 @@ public class WelfareFragment extends Fragment{
 
     private dbWelfare mdbWelfare;
 
-    private int pager = 1;
+    private int pager;
 
     private boolean isnetwork;//判断是否有网
 
@@ -62,6 +62,8 @@ public class WelfareFragment extends Fragment{
                              @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.welfare_fragment, container, false);
+        dataList.clear();//清空列表
+        pager = 1;
         isnetwork = new NetworkStatus().judgment(getContext());
         loadWelfareList(view, pager);
         loadModule(view);
@@ -117,7 +119,6 @@ public class WelfareFragment extends Fragment{
                 }
                 //存储数据
                 new dbUtil().dbwelfareSave(gankWelfareDatas, pager);
-                Log.d("------", "dataList: " + dataList.size());
                 //加载页面
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
@@ -151,7 +152,6 @@ public class WelfareFragment extends Fragment{
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-
                             dataList.clear();
                             pager = 1;
                             loadWelfareList(getView(), pager);
@@ -188,4 +188,5 @@ public class WelfareFragment extends Fragment{
         adapter = new WelfareFragmentRecycleViewAdapter(getContext(), dataList);
         welfareRecyclerView.setAdapter(adapter);
     }
+
 }

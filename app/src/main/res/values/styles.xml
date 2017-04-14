@@ -10,10 +10,13 @@
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
 
+    <style name="Toolbar.TitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textSize">30sp</item>
+    </style>
+
     <style name="ExpandedAppBar" parent="@android:style/TextAppearance.Medium">
         <item name="android:textSize">21sp</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:maxLines">3</item>
     </style>
 
     <!--查看大图页面，全屏显示-->

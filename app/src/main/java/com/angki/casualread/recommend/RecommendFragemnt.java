@@ -66,6 +66,14 @@ public class RecommendFragemnt extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.recommend_fragment, container, false);
+        //清空列表
+        zhihuData.clear();
+        topid.clear();
+        images.clear();
+        titles.clear();
+        welfareData.clear();
+        gankData.clear();
+        jokeData.clear();
 
         loadZhihuContent();
         loadWelfareContent();
@@ -163,10 +171,6 @@ public class RecommendFragemnt extends Fragment {
                 //解析Json数据
                 final NewsBeans newsBeans = Utility.handleZHDNResponse(responseData);
 
-                zhihuData.clear();
-                images.clear();
-                titles.clear();
-                topid.clear();
                 //知乎模块显示内容的集合
                 for (int i = 0; i < 4; i++) {
 
@@ -213,7 +217,7 @@ public class RecommendFragemnt extends Fragment {
                 //解析数据
                 final GankWelfareDatas gankWelfareDatas =
                         Utility.handleGankWelfareResponse(JSON);
-
+                welfareData.clear();
                 for (int i = 0; i < gankWelfareDatas.getResults().size(); i++) {
 
                     welfareData.add(gankWelfareDatas.getResults().get(i));
@@ -236,7 +240,6 @@ public class RecommendFragemnt extends Fragment {
                 final GankWelfareDatas gankWelfareDatas =
                         Utility.handleGankWelfareResponse(responseData);
 
-                welfareData.clear();
                 for (int i = 0; i < gankWelfareDatas.getResults().size(); i++) {
 
                     welfareData.add(gankWelfareDatas.getResults().get(i));
@@ -272,6 +275,7 @@ public class RecommendFragemnt extends Fragment {
                 String JSON = prefs.getString("Gank", null);
                 //解析数据
                 final GankDatas gankDatas = Utility.handleGankResponse(JSON);
+
                 for (int i = 0; i < gankDatas.getResults().size(); i++) {
 
                     gankData.add(gankDatas.getResults().get(i));
@@ -294,7 +298,6 @@ public class RecommendFragemnt extends Fragment {
                 //解析数据
                 final GankDatas gankDatas = Utility.handleGankResponse(reponseData);
 
-                gankData.clear();
                 for (int i = 0; i < gankDatas.getResults().size(); i++) {
 
                     gankData.add(gankDatas.getResults().get(i));
@@ -330,6 +333,7 @@ public class RecommendFragemnt extends Fragment {
                 String JSON = prefs.getString("Joke", null);
                 //解析数据
                 final List<JokeData> jokeDatas = Utility.handleJokeResponse(JSON);
+
                 for (int i = 0; i < jokeDatas.size(); i++) {
 
                     jokeData.add(jokeDatas.get(i));
@@ -351,7 +355,6 @@ public class RecommendFragemnt extends Fragment {
                 //解析数据
                 final List<JokeData> jokeDatas = Utility.handleJokeResponse(responseData);
 
-                jokeData.clear();
                 for (int i = 0; i < jokeDatas.size(); i++) {
 
                     jokeData.add(jokeDatas.get(i));
