@@ -1,8 +1,9 @@
-package com.angki.casualread;
+package com.angki.casualread.main.adpter;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.util.Log;
 
 import java.util.List;
 
@@ -24,6 +25,7 @@ public class MainViewPagerAdapter extends FragmentPagerAdapter{
         super(fm);
         this.list_fragment = list_fragment;
         this.list_title = list_title;
+        Log.d("11111", "MainViewPagerAdapter: ");
     }
 
     @Override

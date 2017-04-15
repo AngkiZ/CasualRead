@@ -14,7 +14,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.angki.casualread.MainActivity;
+import com.angki.casualread.main.HomeFragemnt;
+import com.angki.casualread.main.MainActivity;
 import com.angki.casualread.R;
 import com.angki.casualread.gank.gson.GankData;
 import com.angki.casualread.gank.gson.GankDatas;
@@ -27,10 +28,8 @@ import com.angki.casualread.util.HttpUtil;
 import com.angki.casualread.util.NetworkStatus;
 import com.angki.casualread.util.ToastUtil;
 import com.angki.casualread.util.Utility;
-import com.angki.casualread.zhihu.ZhihuActivity;
 import com.angki.casualread.zhihu.gson.ZhihuDailyNews.NewsBean;
 import com.angki.casualread.zhihu.gson.ZhihuDailyNews.NewsBeans;
-import com.angki.casualread.zhihu.gson.ZhihuDailyNews.TopNewsBean;
 
 
 import java.io.IOException;
@@ -87,7 +86,7 @@ public class RecommendFragemnt extends Fragment {
     private void loadModule(final View view) {
 
         final MainActivity mainActivity = (MainActivity) getActivity();
-        final ViewPager viewPager = mainActivity.getViewPager();
+        final ViewPager viewPager = HomeFragemnt.getViewPager();
 
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swip_refresh);
         recyclerView = (RecyclerView) view.findViewById(R.id.recommand_xrecyclerview);
