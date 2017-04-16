@@ -16,8 +16,6 @@ public class dbZhihuStors extends DataSupport{
 
     private String db_zs_image;
 
-    private boolean db_zs_collection;
-
     public String getDb_zs_id() {
         return db_zs_id;
     }
@@ -50,13 +48,6 @@ public class dbZhihuStors extends DataSupport{
         this.db_zs_image = db_zs_image;
     }
 
-    public boolean isDb_zs_collection() {
-        return db_zs_collection;
-    }
-
-    public void setDb_zs_collection(boolean db_zs_collection) {
-        this.db_zs_collection = db_zs_collection;
-    }
 
     @Override
     public String toString() {
@@ -65,7 +56,6 @@ public class dbZhihuStors extends DataSupport{
                 ", db_zs_body='" + db_zs_body + '\'' +
                 ", db_zs_title='" + db_zs_title + '\'' +
                 ", db_zs_image='" + db_zs_image + '\'' +
-                ", db_zs_collection=" + db_zs_collection +
                 '}';
     }
 }

@@ -143,6 +143,8 @@ public class GankFragment extends Fragment{
     private void loadModule(View view) {
 
         gankRecyclerView = (XRecyclerView) view.findViewById(R.id.gank_content);
+        //如果可以确定每个item的高度是固定的，设置这个选项可以提高性能
+        gankRecyclerView.setHasFixedSize(true);
         //指定加载布局
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         gankRecyclerView.setLayoutManager(layoutManager);

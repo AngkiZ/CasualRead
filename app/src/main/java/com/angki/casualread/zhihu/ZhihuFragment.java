@@ -163,6 +163,8 @@ public class ZhihuFragment extends Fragment{
          * 加载RecyclerView
          */
         zhihuRecyclerView = (XRecyclerView) view.findViewById(R.id.zhihu_daily_list);
+        //如果可以确定每个item的高度是固定的，设置这个选项可以提高性能
+        zhihuRecyclerView.setHasFixedSize(true);
         //指定布局方式
         layoutManager = new LinearLayoutManager(getContext());
         zhihuRecyclerView.setLayoutManager(layoutManager);

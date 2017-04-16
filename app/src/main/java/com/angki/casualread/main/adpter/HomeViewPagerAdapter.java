@@ -12,20 +12,20 @@ import java.util.List;
  * ViewPager的adapter
  */
 
-public class MainViewPagerAdapter extends FragmentPagerAdapter{
+public class HomeViewPagerAdapter extends FragmentPagerAdapter{
 
     //fragment列表
     private List<Fragment> list_fragment;
     //tab名的列表
     private List<String> list_title;
 
-    public MainViewPagerAdapter(FragmentManager fm, List<Fragment> list_fragment,
+    public HomeViewPagerAdapter(FragmentManager fm, List<Fragment> list_fragment,
                                 List<String> list_title) {
 
         super(fm);
         this.list_fragment = list_fragment;
         this.list_title = list_title;
-        Log.d("11111", "MainViewPagerAdapter: ");
+        Log.d("11111", "HomeViewPagerAdapter: ");
     }
 
     @Override

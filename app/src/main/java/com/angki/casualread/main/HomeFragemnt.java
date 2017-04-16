@@ -4,10 +4,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -15,7 +13,7 @@ import com.angki.casualread.R;
 import com.angki.casualread.gank.GankFragment;
 import com.angki.casualread.gank.WelfareFragment;
 import com.angki.casualread.joke.JokeFragment;
-import com.angki.casualread.main.adpter.MainViewPagerAdapter;
+import com.angki.casualread.main.adpter.HomeViewPagerAdapter;
 import com.angki.casualread.recommend.RecommendFragemnt;
 import com.angki.casualread.zhihu.ZhihuFragment;
 
@@ -81,7 +79,7 @@ public class HomeFragemnt extends Fragment{
         tabTitle.add("福利");
 
         //加载适配器
-        MainViewPagerAdapter adapter = new MainViewPagerAdapter(getChildFragmentManager(),
+        HomeViewPagerAdapter adapter = new HomeViewPagerAdapter(getChildFragmentManager(),
                 fragmentList, tabTitle);
         //建立联系
         viewPager.setAdapter(adapter);

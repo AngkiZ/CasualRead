@@ -6,6 +6,7 @@ import android.net.Network;
 import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -24,6 +25,7 @@ import com.angki.casualread.util.NetworkStatus;
 import com.angki.casualread.util.ToastUtil;
 import com.angki.casualread.util.Utility;
 import com.angki.casualread.util.dbUtil;
+import com.angki.casualread.zhihu.db.dbZhihuNews;
 import com.angki.casualread.zhihu.db.dbZhihuStors;
 import com.angki.casualread.zhihu.gson.ZhihuDailyNews.NewsBeans;
 import com.angki.casualread.zhihu.gson.ZhihuDailyStory.StoryBean;
@@ -52,6 +54,8 @@ public class ZhihuActivity extends AppCompatActivity {
     private StoryBean storyBean = new StoryBean();
 
     private dbZhihuStors mdbZhihuStors;
+
+    private FloatingActionButton floatingActionButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,6 +145,7 @@ public class ZhihuActivity extends AppCompatActivity {
         collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.activity_zhihu_layout_collapsing);
         imageView = (ImageView) findViewById(R.id.activity_zhihu_layout_collapsing_image);
         webView = (WebView) findViewById(R.id.activity_zhihu_layout_webview);
+        floatingActionButton = (FloatingActionButton) findViewById(R.id.activity_zhihu_layout_float);
         //设置webview的缓存机制
         WebSettings ws = webView.getSettings();
         boolean b = new NetworkStatus().judgment(getApplicationContext());
@@ -161,6 +166,30 @@ public class ZhihuActivity extends AppCompatActivity {
                 .into(imageView);
         //设置正文
         webView.loadDataWithBaseURL("x-data://base",result,"text/html","utf-8",null);
+
+        final List<dbZhihuNews> news = DataSupport.select("db_zn_id", "db_zn_collection")
+                .where("db_zn_id = ?", mdbZhihuStors.getDb_zs_id())
+                .find(dbZhihuNews.class);
+        if (news.get(0).isDb_zn_collection()) {
+            floatingActionButton.setImageResource(R.mipmap.ic_on_star);
+        }else {
+            floatingActionButton.setImageResource(R.mipmap.ic_no_star);
+        }
+        //设置FloatingActionButton的点击事件
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dbZhihuNews mdbZhihuNews = new dbZhihuNews();
+                if (news.get(0).isDb_zn_collection()) {
+                    mdbZhihuNews.setDb_zn_collection(false);
+                    floatingActionButton.setImageResource(R.mipmap.ic_no_star);
+                }else {
+                    mdbZhihuNews.setDb_zn_collection(true);
+                    floatingActionButton.setImageResource(R.mipmap.ic_on_star);
+                }
+                mdbZhihuNews.updateAll("db_zn_id = ?", news.get(0).getDb_zn_id());
+            }
+        });
     }
 
     @Override

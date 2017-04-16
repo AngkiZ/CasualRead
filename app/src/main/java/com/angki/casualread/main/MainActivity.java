@@ -16,17 +16,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.angki.casualread.R;
-import com.angki.casualread.gank.GankFragment;
-import com.angki.casualread.gank.WelfareFragment;
-import com.angki.casualread.main.adpter.MainViewPagerAdapter;
-import com.angki.casualread.recommend.RecommendFragemnt;
-import com.angki.casualread.joke.JokeFragment;
-import com.angki.casualread.zhihu.ZhihuFragment;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.angki.casualread.R.id.cancel_action;
 import static com.angki.casualread.R.id.drawer_layout_collect;
 import static com.angki.casualread.R.id.drawer_layout_home;
 
@@ -113,6 +103,7 @@ public class MainActivity extends AppCompatActivity {
     private void replaceFragment(Fragment fragment) {
 
         FragmentManager fragmentManager = getSupportFragmentManager();
+        //启动编辑操作
         FragmentTransaction transaction = fragmentManager.beginTransaction();
         transaction.replace(R.id.activity_main_fragment, fragment);
         transaction.commit();

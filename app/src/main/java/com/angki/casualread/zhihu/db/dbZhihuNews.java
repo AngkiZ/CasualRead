@@ -8,6 +8,8 @@ import org.litepal.crud.DataSupport;
 
 public class dbZhihuNews extends DataSupport{
 
+    private boolean db_zn_collection;//文章是否收藏
+
     private String db_zn_id;//文章id
 
     private String db_zn_title;//文章标题
@@ -19,6 +21,14 @@ public class dbZhihuNews extends DataSupport{
     private int dbzhihunewsdate_id;//文章对应的日期
 
     private int listSorting;//日期内的所有文章的序号
+
+    public boolean isDb_zn_collection() {
+        return db_zn_collection;
+    }
+
+    public void setDb_zn_collection(boolean db_zn_collection) {
+        this.db_zn_collection = db_zn_collection;
+    }
 
     public int getListSorting() {
         return listSorting;

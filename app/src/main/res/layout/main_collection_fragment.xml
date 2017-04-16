@@ -4,11 +4,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/test"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/collection_recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="收藏碎片"
-        android:textSize="50dp"/>
+        android:layout_height="match_parent"/>
 
 </LinearLayout>

@@ -51,4 +51,12 @@
 
     </android.support.v4.widget.NestedScrollView>
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/activity_zhihu_layout_float"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:src="@mipmap/ic_no_star"
+        android:layout_margin="16dp"/>
+
 </android.support.design.widget.CoordinatorLayout>

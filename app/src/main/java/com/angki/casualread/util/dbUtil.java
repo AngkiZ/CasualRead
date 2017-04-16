@@ -57,6 +57,7 @@ public class dbUtil {
                 mdbZhihuNews = new dbZhihuNews();
                 //判断该id是否存在，存在就跳过，不存在则添加数据
                 if ( new_id.size() == 0) {
+                    mdbZhihuNews.setDb_zn_collection(false);
                     mdbZhihuNews.setDb_zn_id(newsBeans.getStories().get(i).getId());
                     mdbZhihuNews.setDb_zn_title(newsBeans.getStories().get(i).getTitle());
                     mdbZhihuNews.setDb_zn_image(newsBeans.getStories().get(i).getImages().get(0));
@@ -72,7 +73,6 @@ public class dbUtil {
             mdbZhihuNewsDate.save();
 
         }else {
-            int id = date.get(0).getId();
             Log.d(TAG, "db_znd_date: flase");
             int count = 0;
             for (int i = 0; i < newsBeans.getStories().size(); i++) {
@@ -80,10 +80,11 @@ public class dbUtil {
                 mdbZhihuNews = new dbZhihuNews();
                 if (new_id.size() == 0) {
                     Log.d(TAG, "updata: add");
+                    mdbZhihuNews.setDb_zn_collection(false);
                     mdbZhihuNews.setDb_zn_id(newsBeans.getStories().get(i).getId());
                     mdbZhihuNews.setDb_zn_title(newsBeans.getStories().get(i).getTitle());
                     mdbZhihuNews.setDb_zn_image(newsBeans.getStories().get(i).getImages().get(0));
-                    mdbZhihuNews.setDbzhihunewsdate_id(id);
+                    mdbZhihuNews.setDbzhihunewsdate_id(i);
                     mdbZhihuNews.save();
                     mdbZhihuNewsDate.getDbZhihuNewsList().add(mdbZhihuNews);
                 }else {
@@ -115,7 +116,6 @@ public class dbUtil {
             mdbZhihuStors.setDb_zs_id(storyBean.getId());
             mdbZhihuStors.setDb_zs_title(storyBean.getTitle());
             mdbZhihuStors.setDb_zs_image(storyBean.getImage());
-            mdbZhihuStors.setDb_zs_collection(false);
             mdbZhihuStors.save();
 
             return mdbZhihuStors;

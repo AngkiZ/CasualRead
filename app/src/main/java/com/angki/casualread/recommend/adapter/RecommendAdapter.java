@@ -232,7 +232,9 @@ public class RecommendAdapter extends RecyclerView.Adapter implements OnBannerLi
                 .start();
     }
     private void loadholder2(RecyclerView.ViewHolder holder) {
-
+        //如果可以确定每个item的高度是固定的，设置这个选项可以提高性能
+        ((ViewHolder2) holder).recyclerView
+                .setHasFixedSize(true);
         ((ViewHolder2) holder).recyclerView
                 .setLayoutManager(new GridLayoutManager(mcontext, 2));
         ((ViewHolder2) holder).recyclerView
@@ -279,6 +281,9 @@ public class RecommendAdapter extends RecyclerView.Adapter implements OnBannerLi
 
     private void loadholder4(RecyclerView.ViewHolder holder) {
 
+        //如果可以确定每个item的高度是固定的，设置这个选项可以提高性能
+        ((ViewHolder4) holder).recyclerView
+                .setHasFixedSize(true);
         ((ViewHolder4) holder).recyclerView
                 .setLayoutManager(new LinearLayoutManager(mcontext));
         ((ViewHolder4) holder).recyclerView
