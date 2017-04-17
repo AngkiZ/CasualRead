@@ -213,7 +213,7 @@ public class ZhihuFragment extends Fragment{
         });
 
         //加载adpter适配器
-        adapter = new ZhihuFragmentRecycleViewAdapter(getContext(), dataList);
+        adapter = new ZhihuFragmentRecycleViewAdapter(getContext(), dataList, 1);
         zhihuRecyclerView.setAdapter(adapter);
     }
 

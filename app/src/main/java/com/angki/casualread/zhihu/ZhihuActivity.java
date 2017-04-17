@@ -7,10 +7,12 @@ import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -57,6 +59,8 @@ public class ZhihuActivity extends AppCompatActivity {
 
     private FloatingActionButton floatingActionButton;
 
+    private boolean isCollection;//是否被收藏
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,6 +106,7 @@ public class ZhihuActivity extends AppCompatActivity {
                 //储存数据
                 mdbZhihuStors = new dbUtil().dbzhihustorsSave(storyBean);
 
+                Log.d("-----", "storyBean: " + storyBean.getImages().get(0));
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -166,28 +171,40 @@ public class ZhihuActivity extends AppCompatActivity {
                 .into(imageView);
         //设置正文
         webView.loadDataWithBaseURL("x-data://base",result,"text/html","utf-8",null);
-
+        //设置悬浮按钮的图案，判断这个内容是否被收藏
         final List<dbZhihuNews> news = DataSupport.select("db_zn_id", "db_zn_collection")
                 .where("db_zn_id = ?", mdbZhihuStors.getDb_zs_id())
                 .find(dbZhihuNews.class);
-        if (news.get(0).isDb_zn_collection()) {
-            floatingActionButton.setImageResource(R.mipmap.ic_on_star);
+        if (news.size() != 0) {
+            if (news.get(0).isDb_zn_collection()){
+                floatingActionButton.setImageResource(R.mipmap.ic_on_star);
+                isCollection = true;
+            }else {
+                floatingActionButton.setImageResource(R.mipmap.ic_no_star);
+                isCollection = false;
+            }
         }else {
             floatingActionButton.setImageResource(R.mipmap.ic_no_star);
+            isCollection = false;
         }
         //设置FloatingActionButton的点击事件
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 dbZhihuNews mdbZhihuNews = new dbZhihuNews();
-                if (news.get(0).isDb_zn_collection()) {
-                    mdbZhihuNews.setDb_zn_collection(false);
+                if (isCollection) {
+                    mdbZhihuNews.setToDefault("db_zn_collection");
                     floatingActionButton.setImageResource(R.mipmap.ic_no_star);
+                    Snackbar.make(view, "取消收藏~", Snackbar.LENGTH_SHORT).show();
+                    isCollection = false;
                 }else {
                     mdbZhihuNews.setDb_zn_collection(true);
                     floatingActionButton.setImageResource(R.mipmap.ic_on_star);
+                    Snackbar.make(view, "已收藏~", Snackbar.LENGTH_SHORT).show();
+                    isCollection = true;
                 }
                 mdbZhihuNews.updateAll("db_zn_id = ?", news.get(0).getDb_zn_id());
+                floatingActionButton.invalidate();//刷新floatingActionButton的图标
             }
         });
     }

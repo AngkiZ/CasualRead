@@ -40,6 +40,7 @@
     </android.support.design.widget.AppBarLayout>
 
     <android.support.v4.widget.NestedScrollView
+        android:id="@+id/activity_zhihu_layout_nest"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
@@ -47,7 +48,7 @@
         <WebView
             android:id="@+id/activity_zhihu_layout_webview"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="match_parent"/>
 
     </android.support.v4.widget.NestedScrollView>
 
@@ -57,6 +58,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:src="@mipmap/ic_no_star"
-        android:layout_margin="16dp"/>
+        android:layout_margin="16dp"
+        app:layout_behavior="com.angki.casualread.util.ScrollAwareFABBehavior"/>
 
 </android.support.design.widget.CoordinatorLayout>

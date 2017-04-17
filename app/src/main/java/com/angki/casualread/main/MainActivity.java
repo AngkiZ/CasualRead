@@ -32,18 +32,6 @@ public class MainActivity extends AppCompatActivity {
     //侧滑菜单所用控件
     private NavigationView navigationView;
 
-    //TabLayout标题栏
-    private TabLayout tabLayout;
-
-    private ViewPager viewPager;
-
-
-//    //所用到Fragment
-//    private List<Fragment> fragmentList;
-//
-//    //TabLyout标题名字
-//    private List<String> tabTitle;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,14 +49,10 @@ public class MainActivity extends AppCompatActivity {
         }
         replaceFragment(new HomeFragemnt());
 
-        //loadFragment();
-
         //滑动菜单中的点击事件
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-//                drawerLayout.closeDrawers();
-//                return true;
                 switch (item.getItemId()) {
                     case drawer_layout_home:
                         replaceFragment(new HomeFragemnt());

@@ -60,8 +60,7 @@ public class CollectionRecyclerAdapter extends RecyclerView.Adapter<CollectionRe
         holder.bind(position, title);
         if (position == 0) {
             holder.content.setLayoutManager(new LinearLayoutManager(mcontext));
-            holder.content.setAdapter(new ZhihuFragmentRecycleViewAdapter(mcontext, mcollection_zhihu_list));
-        Log.d("onBindViewHolder", "mcollection_zhihu_list: " + mcollection_gank_list.toString());
+            holder.content.setAdapter(new ZhihuFragmentRecycleViewAdapter(mcontext, mcollection_zhihu_list, 2));
         }else if (position == 1) {
             holder.content.setLayoutManager(new LinearLayoutManager(mcontext));
             holder.content.setAdapter(new GankFragmentRecycleViewAdapter(mcontext, mcollection_gank_list));
@@ -103,9 +102,9 @@ public class CollectionRecyclerAdapter extends RecyclerView.Adapter<CollectionRe
                 notifyItemChanged(getPosition());
             }
             else {
-                int oldOpened = opened;
+//                int oldOpened = opened;
                 opened = getPosition();
-                notifyItemChanged(oldOpened);
+//                notifyItemChanged(oldOpened);
                 notifyItemChanged(opened);
             }
         }

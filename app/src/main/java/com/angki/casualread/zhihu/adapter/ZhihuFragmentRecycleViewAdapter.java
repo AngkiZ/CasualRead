@@ -30,6 +30,8 @@ public class ZhihuFragmentRecycleViewAdapter extends RecyclerView.Adapter<ZhihuF
 
     private List<dbZhihuNews> mZhihuDailyNewsList;
 
+    private int msource;//请求来自哪个碎片，1为知乎列表，2为收藏列表
+
     static class ViewHolder extends RecyclerView.ViewHolder{
 
         CardView cardView;
@@ -46,11 +48,14 @@ public class ZhihuFragmentRecycleViewAdapter extends RecyclerView.Adapter<ZhihuF
 
     }
 
-    public ZhihuFragmentRecycleViewAdapter(Context context, List<dbZhihuNews> ZhihuDailyNewsList){
+    public ZhihuFragmentRecycleViewAdapter
+            (Context context, List<dbZhihuNews> ZhihuDailyNewsList, int source){
 
         mcontext = context;
 
         mZhihuDailyNewsList = ZhihuDailyNewsList;
+
+        msource = source;
     }
 
     @Override
@@ -63,11 +68,19 @@ public class ZhihuFragmentRecycleViewAdapter extends RecyclerView.Adapter<ZhihuF
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int position = holder.getAdapterPosition() - 1;
-                Log.d("onClick", "position: " + position);
-                Intent intent = new Intent(mcontext, ZhihuActivity.class);
-                intent.putExtra("news_id", mZhihuDailyNewsList.get(position).getDb_zn_id());
-                mcontext.startActivity(intent);
+                if (msource == 1) {
+                    int position = holder.getAdapterPosition() - 1;
+                    Log.d("onClick", "position: " + position);
+                    Intent intent = new Intent(mcontext, ZhihuActivity.class);
+                    intent.putExtra("news_id", mZhihuDailyNewsList.get(position).getDb_zn_id());
+                    mcontext.startActivity(intent);
+                }else if (msource == 2) {
+                    int position = holder.getAdapterPosition();
+                    Log.d("onClick", "position: " + position);
+                    Intent intent = new Intent(mcontext, ZhihuActivity.class);
+                    intent.putExtra("news_id", mZhihuDailyNewsList.get(position).getDb_zn_id());
+                    mcontext.startActivity(intent);
+                }
             }
         });
         return holder;

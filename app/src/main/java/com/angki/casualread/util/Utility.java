@@ -105,10 +105,20 @@ public class Utility {
             bean.setImage_source(object.optString("image_source"));
             bean.setId(object.optString("id"));
             bean.setShare_url(object.optString("share_url"));
-            //解析图片数据
+            //解析大图片数据
             bean.setImage(object.optString("image"));
+            //解析小图片数据
+            JSONArray imgArr = object.optJSONArray("images");
+            //检查图片数组是否有数据，如果有进行解析
+            if (imgArr != null && imgArr.length() > 0) {
+                List<String> images = new ArrayList<>();
+                for (int j = 0; j < imgArr.length(); ++j){
+                    images.add(imgArr.optString(j));
+                }
+                //添加到bean中
+                bean.setImages(images);
+            }
             return bean;
-
         }catch (JSONException e) {
             e.printStackTrace();
             return null;

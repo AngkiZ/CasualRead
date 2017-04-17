@@ -20,6 +20,8 @@ public class StoryBean {
 
     private String id;
 
+    private List<String> images;
+
     public String getBody() {
         return body;
     }
@@ -66,6 +68,14 @@ public class StoryBean {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public List<String> getImages() {
+        return images;
+    }
+
+    public void setImages(List<String> images) {
+        this.images = images;
     }
 
     @Override
