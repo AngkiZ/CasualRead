@@ -1,7 +1,9 @@
 package com.angki.casualread.zhihu;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -9,7 +11,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.angki.casualread.R;
 import com.angki.casualread.util.Api;
@@ -21,7 +22,6 @@ import com.angki.casualread.util.dbUtil;
 import com.angki.casualread.zhihu.adapter.ZhihuFragmentRecycleViewAdapter;
 import com.angki.casualread.zhihu.db.dbZhihuNews;
 import com.angki.casualread.zhihu.db.dbZhihuNewsDate;
-import com.angki.casualread.zhihu.gson.ZhihuDailyNews.NewsBean;
 import com.angki.casualread.zhihu.gson.ZhihuDailyNews.NewsBeans;
 import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
@@ -60,6 +60,16 @@ public class ZhihuFragment extends Fragment{
     private List<dbZhihuNews> l;//没有网时加载的数据
 
     private boolean isnetwork;//判断是否有网
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        SharedPreferences.Editor editor = PreferenceManager
+                .getDefaultSharedPreferences(getActivity()).edit();
+        editor.putString("date", date(false));
+        editor.apply();
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
@@ -76,6 +86,7 @@ public class ZhihuFragment extends Fragment{
 
     /**
      * 加载知乎日报RecycleView新闻数据
+     * boolean b为true时，表示第一次加载，为false时，表示加载更多
      */
     private void loadZhihuDailyNews(final View view,final boolean b){
 
@@ -91,8 +102,10 @@ public class ZhihuFragment extends Fragment{
             public void onFailure(Call call, IOException e) {
 
                 if (b) {
+                    SharedPreferences prefer = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                    String date = prefer.getString("date", null);
                     int id = DataSupport.select("db_znd_date")
-                            .where("db_znd_date like ?", "%" + date(false) + "%")
+                            .where("db_znd_date like ?", "%" + date + "%")
                             .find(dbZhihuNewsDate.class).get(0).getId();
                     l = DataSupport.where("dbzhihunewsdate_id like ?", "%" + id + "%")
                             .order("listSorting asc")

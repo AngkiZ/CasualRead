@@ -63,7 +63,7 @@ public class CollectionRecyclerAdapter extends RecyclerView.Adapter<CollectionRe
             holder.content.setAdapter(new ZhihuFragmentRecycleViewAdapter(mcontext, mcollection_zhihu_list, 2));
         }else if (position == 1) {
             holder.content.setLayoutManager(new LinearLayoutManager(mcontext));
-            holder.content.setAdapter(new GankFragmentRecycleViewAdapter(mcontext, mcollection_gank_list));
+            holder.content.setAdapter(new GankFragmentRecycleViewAdapter(mcontext, mcollection_gank_list, 2));
         }
     }
 

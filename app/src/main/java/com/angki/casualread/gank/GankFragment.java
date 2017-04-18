@@ -194,7 +194,7 @@ public class GankFragment extends Fragment{
             }
         });
         //加载adapter
-        adapter = new GankFragmentRecycleViewAdapter(getContext(), dataList);
+        adapter = new GankFragmentRecycleViewAdapter(getContext(), dataList, 1);
         gankRecyclerView.setAdapter(adapter);
     }
 

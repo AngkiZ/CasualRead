@@ -16,7 +16,7 @@ public class dbGank extends DataSupport{
 
     private String db_gank_url;//干货地址
 
-    private String db_gank_who;//干货地址
+    private String db_gank_who;//干货提供者
 
     private int db_gank_page;
 

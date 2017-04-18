@@ -30,6 +30,8 @@ public class GankFragmentRecycleViewAdapter extends
 
     private List<dbGank> mDataList;
 
+    private int msource;//请求来自哪个碎片，1为知乎列表，2为收藏列表
+
     //建立枚举 2个item 类型
     public enum ITEM_TYPE {
         ITEM1,
@@ -73,10 +75,11 @@ public class GankFragmentRecycleViewAdapter extends
         }
     }
 
-    public GankFragmentRecycleViewAdapter(Context context, List<dbGank> dataList) {
+    public GankFragmentRecycleViewAdapter(Context context, List<dbGank> dataList, int source) {
 
         mcontext = context;
         mDataList = dataList;
+        msource = source;
     }
 
     @Override
@@ -92,7 +95,12 @@ public class GankFragmentRecycleViewAdapter extends
             holder1.cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    int position = holder1.getAdapterPosition() - 1;
+                    int position = 0;
+                    if (msource == 1) {
+                        position = holder1.getAdapterPosition() - 1;
+                    }else if (msource == 2) {
+                        position = holder1.getAdapterPosition();
+                    }
                     Intent intent = new Intent(mcontext, GankActivity.class);
                     intent.putExtra("gank_url", mDataList.get(position).getDb_gank_url());
                     mcontext.startActivity(intent);
@@ -109,7 +117,12 @@ public class GankFragmentRecycleViewAdapter extends
             holder2.cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    int position = holder2.getAdapterPosition() - 1;
+                    int position = 0;
+                    if (msource == 1) {
+                        position = holder2.getAdapterPosition() - 1;
+                    }else if (msource == 2) {
+                        position = holder2.getAdapterPosition();
+                    }
                     Intent intent = new Intent(mcontext, GankActivity.class);
                     intent.putExtra("gank_url", mDataList.get(position).getDb_gank_url());
                     mcontext.startActivity(intent);

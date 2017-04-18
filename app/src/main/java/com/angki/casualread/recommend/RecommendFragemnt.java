@@ -28,6 +28,7 @@ import com.angki.casualread.util.HttpUtil;
 import com.angki.casualread.util.NetworkStatus;
 import com.angki.casualread.util.ToastUtil;
 import com.angki.casualread.util.Utility;
+import com.angki.casualread.util.dbUtil;
 import com.angki.casualread.zhihu.gson.ZhihuDailyNews.NewsBean;
 import com.angki.casualread.zhihu.gson.ZhihuDailyNews.NewsBeans;
 
@@ -101,6 +102,15 @@ public class RecommendFragemnt extends Fragment {
                     public void run() {
                         networkStatus = new NetworkStatus();
                         if (networkStatus.judgment(getContext())) {
+                            //清空列表
+                            zhihuData.clear();
+                            topid.clear();
+                            images.clear();
+                            titles.clear();
+                            welfareData.clear();
+                            gankData.clear();
+                            jokeData.clear();
+                            //加载组件
                             loadZhihuContent();
                             loadWelfareContent();
                             loadGankContent();
@@ -279,6 +289,8 @@ public class RecommendFragemnt extends Fragment {
 
                     gankData.add(gankDatas.getResults().get(i));
                 }
+                //存储数据
+                new dbUtil().dbgankSave(gankDatas, 1);
                 //加载数据
                 getActivity().runOnUiThread(new Runnable() {
                     @Override

@@ -10,17 +10,24 @@
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
 
-    <style name="Toolbar.TitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+    <!--mainActivity的toolbar字体设置-->
+    <style name="Toolbar.TitleText.main" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
         <item name="android:textSize">30sp</item>
-    </style>
-
-    <style name="ExpandedAppBar" parent="@android:style/TextAppearance.Medium">
-        <item name="android:textSize">21sp</item>
-        <item name="android:textStyle">bold</item>
     </style>
 
     <!--查看大图页面，全屏显示-->
     <style name="ViewBigPicTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowFullscreen">true</item>
+    </style>
+
+    <!--zhuhuActivity的CollapsingToolbarLayout展开后字体设置-->
+    <style name="ExpandedAppBar" parent="@android:style/TextAppearance.Medium">
+        <item name="android:textSize">21sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <!--zhuhuActivity的CollapsingToolbarLayout折叠后后字体设置-->
+    <style name="CollapsedAppBar" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textSize">21sp</item>
     </style>
 </resources>

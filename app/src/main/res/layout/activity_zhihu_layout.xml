@@ -18,8 +18,10 @@
             android:layout_height="match_parent"
             android:theme="@style/AppTheme.AppBarOverlay"
             app:expandedTitleTextAppearance="@style/ExpandedAppBar"
+            app:collapsedTitleTextAppearance="@style/CollapsedAppBar"
             app:contentScrim="@color/colorPrimary"
-            app:expandedTitleMarginStart="10dp"
+            app:expandedTitleMarginStart="20dp"
+            app:collapsedTitleGravity="left"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <ImageView
@@ -33,7 +35,8 @@
                 android:id="@+id/activity_zhihu_layout_collapsing_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                app:layout_collapseMode="pin"/>
+                app:layout_collapseMode="pin"
+                app:titleMarginStart="5dp"/>
 
         </android.support.design.widget.CollapsingToolbarLayout>
 

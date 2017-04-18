@@ -7,6 +7,7 @@ import android.view.MotionEvent;
 
 /**
  * Created by tengyu on 2017/4/6.
+ * PhotoView中的框架问题，尚未解决，暂时的解决方案是写这个捕获异常
  */
 
 public class HackyProblematicViewGroup extends ViewPager {

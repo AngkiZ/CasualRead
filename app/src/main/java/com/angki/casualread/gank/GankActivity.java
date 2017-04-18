@@ -1,5 +1,7 @@
 package com.angki.casualread.gank;
 
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,8 +19,14 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.angki.casualread.R;
+import com.angki.casualread.gank.db.dbGank;
 import com.angki.casualread.util.NetworkStatus;
 import com.angki.casualread.util.ToastUtil;
+import com.angki.casualread.zhihu.db.dbZhihuNews;
+
+import org.litepal.crud.DataSupport;
+
+import java.util.List;
 
 public class GankActivity extends AppCompatActivity {
 
@@ -26,7 +34,11 @@ public class GankActivity extends AppCompatActivity {
 
     private WebView webView;
 
+    private FloatingActionButton floatingActionButton;
+
     private boolean isnetwork;//判断是否有网
+
+    private boolean isCollection;//判断是否收藏
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +57,7 @@ public class GankActivity extends AppCompatActivity {
 
         toolbar = (Toolbar) findViewById(R.id.activity_gank_layout_toolbar);
         webView = (WebView) findViewById(R.id.activity_gank_layout_webview);
+        floatingActionButton = (FloatingActionButton) findViewById(R.id.activity_gank_layout_float);
 
         //设置标题栏
         setSupportActionBar(toolbar);
@@ -91,6 +104,43 @@ public class GankActivity extends AppCompatActivity {
                     //加载中
                     toolbar.setTitle("加载中~");
                 }
+            }
+        });
+        //设置悬浮按钮的图案，判断这个内容是否被收藏
+        final List<dbGank> news = DataSupport.select("db_gank_id", "db_gank_url", "db_gank_collection")
+                .where("db_gank_url = ?", url)
+                .find(dbGank.class);
+        if (news.size() != 0) {
+            if (news.get(0).isDb_gank_collection()){
+                floatingActionButton.setImageResource(R.mipmap.ic_on_star);
+                isCollection = true;
+            }else {
+                floatingActionButton.setImageResource(R.mipmap.ic_no_star);
+                isCollection = false;
+            }
+        } else {
+            floatingActionButton.setImageResource(R.mipmap.ic_no_star);
+            isCollection = false;
+        }
+        //设置FloatingActionButton的点击事件
+        floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dbGank mdbGank = new dbGank();
+                Log.d("----", "floatingActionButton: " + isCollection);
+                if (isCollection) {
+                    mdbGank.setToDefault("db_gank_collection");
+                    floatingActionButton.setImageResource(R.mipmap.ic_no_star);
+                    Snackbar.make(view, "取消收藏~", Snackbar.LENGTH_SHORT).show();
+                    isCollection = false;
+                }else {
+                    mdbGank.setDb_gank_collection(true);
+                    floatingActionButton.setImageResource(R.mipmap.ic_on_star);
+                    Snackbar.make(view, "已收藏~", Snackbar.LENGTH_SHORT).show();
+                    isCollection = true;
+                }
+                mdbGank.updateAll("db_gank_id = ?", news.get(0).getDb_gank_id());
+                floatingActionButton.invalidate();//刷新floatingActionButton的图标
             }
         });
     }
