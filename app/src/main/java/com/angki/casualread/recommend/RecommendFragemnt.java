@@ -385,5 +385,4 @@ public class RecommendFragemnt extends Fragment {
             }
         });
     }
-
 }
