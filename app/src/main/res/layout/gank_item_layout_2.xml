@@ -26,7 +26,7 @@
             android:layout_marginLeft="15dp"
             android:layout_centerVertical="true"
             android:ellipsize="end"
-            android:textColor="@color/black"
+            android:textColor="@color/colorContent"
             android:textSize="18sp"/>
 
         <TextView

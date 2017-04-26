@@ -43,16 +43,15 @@ import okhttp3.Response;
 public class JokeFragment extends Fragment{
 
     private XRecyclerView jokeRecyclerView;
-
     private JokeFragmentRecyclerViewAdapter adapter;
-
     private List<dbJoke> dataList = new ArrayList<>();
-
     private dbJoke mdbJoke;
-
     private boolean isnetwork;//判断是否有网
-
     private int page;
+
+    public static JokeFragment newInstance() {
+        return new JokeFragment();
+    }
 
     @Nullable
     @Override
@@ -63,7 +62,7 @@ public class JokeFragment extends Fragment{
         dataList.clear();//清空列表
         page = 1;
         isnetwork = new NetworkStatus().judgment(getContext());
-        loadJokeList(view, page);
+        loadJokeList(page);
         loadModule(view);
 
         return view;
@@ -71,9 +70,8 @@ public class JokeFragment extends Fragment{
 
     /**
      * 加载Joke碎片的内容
-     * @param view
      */
-    private void loadJokeList(final View view, final int page) {
+    private void loadJokeList(final int page) {
 
         String url = Api.JOKE + "?key=f24ebcac31973eebf02a0391b1e8953a&page=" + page + "&pagesize=20";
 
@@ -140,7 +138,6 @@ public class JokeFragment extends Fragment{
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         jokeRecyclerView.setLayoutManager(layoutManager);
         //加载XRecycleView的刷新风格
-        jokeRecyclerView.setRefreshProgressStyle(ProgressStyle.BallSpinFadeLoader);
         jokeRecyclerView.setLoadingMoreProgressStyle(ProgressStyle.BallRotate);
         jokeRecyclerView.setArrowImageView(R.drawable.iconfont_downgrey);
         //下拉刷新，上拉加载事件
@@ -153,7 +150,7 @@ public class JokeFragment extends Fragment{
                         public void run() {
                             dataList.clear();
                             page = 1;
-                            loadJokeList(getView(), page);
+                            loadJokeList(page);
                             jokeRecyclerView.refreshComplete();
                         }
 
@@ -177,7 +174,7 @@ public class JokeFragment extends Fragment{
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            loadJokeList(getView(), page);
+                            loadJokeList(page);
                             jokeRecyclerView.refreshComplete();
                         }
                     },1000);
@@ -185,7 +182,25 @@ public class JokeFragment extends Fragment{
             }
         });
         //加载adapter
-        adapter = new JokeFragmentRecyclerViewAdapter(getContext(), dataList);
+        adapter = new JokeFragmentRecyclerViewAdapter(dataList);
         jokeRecyclerView.setAdapter(adapter);
+    }
+
+    /**
+     * 销毁所占内存
+     */
+    private void end() {
+        jokeRecyclerView = null;
+        dataList.clear();
+        dataList = null;
+        adapter.clearMemory();
+        adapter = null;
+        mdbJoke = null;
+    }
+
+    @Override
+    public void onDestroy() {
+        end();
+        super.onDestroy();
     }
 }

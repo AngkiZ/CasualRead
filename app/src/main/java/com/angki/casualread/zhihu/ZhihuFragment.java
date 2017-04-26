@@ -1,5 +1,6 @@
 package com.angki.casualread.zhihu;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -44,42 +45,45 @@ import okhttp3.Response;
 public class ZhihuFragment extends Fragment{
 
     private static final String TAG = "ZhihuFragment";
-
     private XRecyclerView zhihuRecyclerView;
-
-    private LinearLayoutManager layoutManager;
-
     private List<dbZhihuNews> dataList = new ArrayList<>();
-
     private ZhihuFragmentRecycleViewAdapter adapter;
-
-    private String url;//请求的地址
-
     private Calendar c;//获取时间类
-
     private List<dbZhihuNews> l;//没有网时加载的数据
-
     private boolean isnetwork;//判断是否有网
 
+    public static ZhihuFragment newInstance() {
+        return new ZhihuFragment();
+    }
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        Log.d(TAG, "onAttach: ");
+        //记录最后一次打开软件并且从网络加载保存内容的日期
         SharedPreferences.Editor editor = PreferenceManager
                 .getDefaultSharedPreferences(getActivity()).edit();
         editor.putString("date", date(false));
+        Log.d(TAG, "onAttach: date:" + date(false));
         editor.apply();
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        Log.d(TAG, "onCreate: ");
+        super.onCreate(savedInstanceState);
+
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-
+        Log.d(TAG, "onCreateView: ");
         View view = inflater.inflate(R.layout.zhihu_fragment, container, false);
         dataList.clear();//清空列表
         isnetwork = new NetworkStatus().judgment(getContext());
         //加载RecycleView知乎日报数据
-        loadZhihuDailyNews(view, true);
+        loadZhihuDailyNews(true);
         loadModule(view);
         return view;
     }
@@ -88,8 +92,9 @@ public class ZhihuFragment extends Fragment{
      * 加载知乎日报RecycleView新闻数据
      * boolean b为true时，表示第一次加载，为false时，表示加载更多
      */
-    private void loadZhihuDailyNews(final View view,final boolean b){
-
+    private void loadZhihuDailyNews(final boolean b){
+        //请求的地址
+        String url;
         if (b) {
             url = Api.ZHIHU_BEFORE + date(true);
             Log.d("------", "url: " + url);
@@ -102,8 +107,10 @@ public class ZhihuFragment extends Fragment{
             public void onFailure(Call call, IOException e) {
 
                 if (b) {
+                    //提出记录的日期，按日期加载内容
                     SharedPreferences prefer = PreferenceManager.getDefaultSharedPreferences(getActivity());
                     String date = prefer.getString("date", null);
+                    Log.d(TAG, "onFailure: date:" + date);
                     int id = DataSupport.select("db_znd_date")
                             .where("db_znd_date like ?", "%" + date + "%")
                             .find(dbZhihuNewsDate.class).get(0).getId();
@@ -179,10 +186,11 @@ public class ZhihuFragment extends Fragment{
         //如果可以确定每个item的高度是固定的，设置这个选项可以提高性能
         zhihuRecyclerView.setHasFixedSize(true);
         //指定布局方式
-        layoutManager = new LinearLayoutManager(getContext());
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         zhihuRecyclerView.setLayoutManager(layoutManager);
         //加载XRecycleView的刷新风格
-        zhihuRecyclerView.setRefreshProgressStyle(ProgressStyle.BallSpinFadeLoader);
+        //.setRefreshProgressStyle会引发内存泄露
+        //zhihuRecyclerView.setRefreshProgressStyle(ProgressStyle.BallSpinFadeLoader);
         zhihuRecyclerView.setLoadingMoreProgressStyle(ProgressStyle.BallRotate);
         zhihuRecyclerView.setArrowImageView(R.drawable.iconfont_downgrey);
         //下拉刷新，上拉加载事件
@@ -194,7 +202,7 @@ public class ZhihuFragment extends Fragment{
                     new Handler().postDelayed(new Runnable(){
                         public void run() {
                             dataList.clear();
-                            loadZhihuDailyNews(getView(), true);
+                            loadZhihuDailyNews(true);
                             zhihuRecyclerView.refreshComplete();
                         }
 
@@ -214,7 +222,7 @@ public class ZhihuFragment extends Fragment{
                 if (date.size() != 0) {
                     new Handler().postDelayed(new Runnable(){
                         public void run() {
-                            loadZhihuDailyNews(getView(), false);
+                            loadZhihuDailyNews(false);
                             zhihuRecyclerView.loadMoreComplete();
                         }
                     }, 1000);
@@ -287,5 +295,21 @@ public class ZhihuFragment extends Fragment{
 
         return "" + year + month +day;
     }
-
+    /**
+     * 销毁所占内存
+     */
+    private void end() {
+        zhihuRecyclerView = null;
+        dataList.clear();
+        dataList = null;
+        adapter.clearMemory();//清除adapter中各个变量的内存
+        adapter = null;
+        c = null;
+    }
+    @Override
+    public void onDestroy() {
+        end();//当onDestroy()执行时执行end()方法释放内存
+        super.onDestroy();
+        Log.d(TAG, "onDestroy: ");
+    }
 }

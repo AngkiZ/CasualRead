@@ -32,7 +32,7 @@
                 android:layout_marginLeft="15dp"
                 android:lines="2"
                 android:ellipsize="end"
-                android:textColor="@color/black"
+                android:textColor="@color/colorContent"
                 android:textSize="18sp" />
 
             <TextView

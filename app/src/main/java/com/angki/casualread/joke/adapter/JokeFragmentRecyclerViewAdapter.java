@@ -21,9 +21,6 @@ import java.util.List;
 
 public class JokeFragmentRecyclerViewAdapter extends RecyclerView.Adapter<JokeFragmentRecyclerViewAdapter.ViewHoler>{
 
-
-    private Context mcontext;
-
     private List<dbJoke> mDataList;
 
     static class ViewHoler extends RecyclerView.ViewHolder {
@@ -39,16 +36,14 @@ public class JokeFragmentRecyclerViewAdapter extends RecyclerView.Adapter<JokeFr
         }
     }
 
-    public JokeFragmentRecyclerViewAdapter(Context context, List<dbJoke> dataList) {
-
-        mcontext = context;
+    public JokeFragmentRecyclerViewAdapter(List<dbJoke> dataList) {
         mDataList = dataList;
     }
 
     @Override
     public ViewHoler onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        View view = LayoutInflater.from(mcontext)
+        View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.joke_item_layout, parent, false);
 
         return new ViewHoler(view);
@@ -66,5 +61,13 @@ public class JokeFragmentRecyclerViewAdapter extends RecyclerView.Adapter<JokeFr
     public int getItemCount() {
 
         return mDataList.size();
+    }
+
+    /**
+     * 清除内存
+     */
+    public void clearMemory() {
+        mDataList.clear();
+        mDataList = null;
     }
 }

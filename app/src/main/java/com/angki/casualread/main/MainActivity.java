@@ -1,17 +1,14 @@
 package com.angki.casualread.main;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.os.PersistableBundle;
-import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -23,7 +20,9 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.angki.casualread.R;
+import com.angki.casualread.about.AboutActivity;
 
+import static com.angki.casualread.R.id.drawer_layout_about;
 import static com.angki.casualread.R.id.drawer_layout_collect;
 import static com.angki.casualread.R.id.drawer_layout_home;
 import static com.angki.casualread.R.id.drawer_layout_theme;
@@ -32,21 +31,18 @@ import static com.angki.casualread.R.id.drawer_layout_theme;
 
 public class MainActivity extends AppCompatActivity {
 
-    //toolbar标题栏
-    private Toolbar toolbar;
+    private static final String TAG = "!MainActivity";
     //侧滑菜单
     private DrawerLayout drawerLayout;
-    //侧滑菜单所用控件
-    private NavigationView navigationView;
     //主碎片
     private HomeFragemnt homeFragemnt;
     //收藏碎片
     private CollectionFragment collectionFragment;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(TAG, "onCreate: ");
         setContentView(R.layout.activity_main);
         //判断是否有保存数据
         if (savedInstanceState != null) {
@@ -54,8 +50,9 @@ public class MainActivity extends AppCompatActivity {
             collectionFragment = (CollectionFragment) getSupportFragmentManager().getFragment(savedInstanceState, "CollcetionFragment");
         } else {
             homeFragemnt = new HomeFragemnt();
+            collectionFragment = new CollectionFragment();
         }
-
+        //加载组件
         loadMoudle();
     }
 
@@ -63,10 +60,11 @@ public class MainActivity extends AppCompatActivity {
      * 加载组件
      */
     private void loadMoudle() {
-
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        navigationView = (NavigationView) findViewById(R.id.drawer_view);
-        toolbar = (Toolbar) findViewById(R.id.main_layout_toolbar);
+        //侧滑菜单所用控件
+        NavigationView navigationView = (NavigationView) findViewById(R.id.drawer_view);
+        //标题栏
+        Toolbar toolbar = (Toolbar) findViewById(R.id.main_layout_toolbar);
         //设置标题栏
         setSupportActionBar(toolbar);
         final ActionBar actionBar = getSupportActionBar();
@@ -74,19 +72,29 @@ public class MainActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);//显示导航按钮
             actionBar.setHomeAsUpIndicator(R.drawable.ic_menu);
         }
-        replaceFragment(homeFragemnt);
-
+        //在收藏碎片切换主题时，homeFragemnt为null，然后把标题改为收藏
+        if (homeFragemnt != null) {
+            replaceFragment(homeFragemnt);
+        }else {
+            actionBar.setTitle("收藏");
+        }
         //滑动菜单中的点击事件
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                Log.d(TAG, "onNavigationItemSelected: ");
                 drawerLayout.closeDrawers();
                 switch (item.getItemId()) {
                     case drawer_layout_home:
+                        //判断主页面碎片是否有实例，没有的话就新建一个
+                        if (homeFragemnt == null) {
+                            homeFragemnt = new HomeFragemnt();
+                        }
                         replaceFragment(homeFragemnt);
                         actionBar.setTitle("瞎读");
                         break;
                     case drawer_layout_collect:
+                        //判断收藏碎片是否有实例，没有的话就新建一个
                         if (collectionFragment == null) {
                             collectionFragment = new CollectionFragment();
                         }
@@ -107,20 +115,24 @@ public class MainActivity extends AppCompatActivity {
 
                             @Override
                             public void onDrawerClosed(View drawerView) {
+                                //设置切换主题时的动画过渡效果
+                                getWindow().setWindowAnimations(R.style.WindowAnimationFadeInOut);
+                                //获取当前主题
                                 int currentNightMode = getResources().getConfiguration().uiMode
                                         & Configuration.UI_MODE_NIGHT_MASK;
+                                Log.d("asd", "c2: " + currentNightMode);
+                                //记录下当前主题，下一次打开App保持当前主题
                                 SharedPreferences.Editor editor = getSharedPreferences("ThemeData", MODE_PRIVATE).edit();
+                                //根据当前主题来执行不同的主题设置
                                 if (currentNightMode == Configuration.UI_MODE_NIGHT_YES) {
-                                    getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                                    getDelegate().setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
                                     editor.putInt("theme", 1);
                                 }else {
-                                    getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                                    getDelegate().setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
                                     editor.putInt("theme", 2);
                                 }
-                                Log.d("theme", "onDrawerClosed: ");
-                                getWindow().setWindowAnimations(R.style.WindowAnimationFadeInOut);
                                 editor.apply();
-                                recreate();
+                                recreate();//刷新Activity
                             }
 
                             @Override
@@ -129,12 +141,23 @@ public class MainActivity extends AppCompatActivity {
                             }
                         });
                         break;
+                    case drawer_layout_about:
+                        Intent intent = new Intent(MainActivity.this, AboutActivity.class);
+                        startActivity(intent);
+                        break;
+                    default:
+                        return true;
                 }
                 return true;
             }
         });
     }
 
+    /**
+     * 继承ActionBar上的点击事件
+     * @param item
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -165,7 +188,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        Log.d("------", "onSaveInstanceState: ");
+        Log.d(TAG, "onSaveInstanceState: ");
         //判断homeFragemnt是否被添加
         if (homeFragemnt.isAdded()) {
             getSupportFragmentManager().putFragment(outState, "HomeFragment", homeFragemnt);
@@ -176,4 +199,31 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * 销毁所占内存
+     */
+    private void end() {
+        drawerLayout = null;
+        homeFragemnt = null;
+        collectionFragment = null;
+    }
+
+    @Override
+    public void onBackPressed() {
+        Log.d(TAG, "onBackPressed: ");
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawers();
+        }else {
+            end();
+            startActivity(new Intent(this, DummyActivity.class));
+            finish();
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        end();
+    }
 }

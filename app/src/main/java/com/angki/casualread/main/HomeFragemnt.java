@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,6 +37,33 @@ public class HomeFragemnt extends Fragment{
 
     private TabLayout tabLayout;
 
+    private RecommendFragemnt recommendFragemnt;
+    private ZhihuFragment zhihuFragment;
+    private JokeFragment jokeFragment;
+    private GankFragment gankFragment;
+    private WelfareFragment welfareFragment;
+    private HomeViewPagerAdapter adapter;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        //判断是否已有保存的内容，有的话直接加载，没有在获得新对象
+        if (savedInstanceState != null){
+            FragmentManager manager = getChildFragmentManager();
+            recommendFragemnt = (RecommendFragemnt) manager.getFragment(savedInstanceState, "recommand");
+            zhihuFragment = (ZhihuFragment) manager.getFragment(savedInstanceState, "zhihu");
+            gankFragment = (GankFragment) manager.getFragment(savedInstanceState, "gank");
+            jokeFragment = (JokeFragment) manager.getFragment(savedInstanceState, "joke");
+            welfareFragment = (WelfareFragment) manager.getFragment(savedInstanceState, "welfare");
+        }else {
+            recommendFragemnt = RecommendFragemnt.newInstance();
+            zhihuFragment = ZhihuFragment.newInstance();
+            gankFragment = GankFragment.newInstance();
+            jokeFragment = JokeFragment.newInstance();
+            welfareFragment = WelfareFragment.newInstance();
+        }
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -43,7 +71,6 @@ public class HomeFragemnt extends Fragment{
         View view = inflater.inflate(R.layout.main_home_fragment, container, false);
 
         loadFragment(view);
-
         return view;
     }
 
@@ -54,13 +81,6 @@ public class HomeFragemnt extends Fragment{
 
         tabLayout = (TabLayout) view.findViewById(R.id.tab_title);
         viewPager = (ViewPager) view.findViewById(R.id.tab_pager);
-
-        //初始化各个Fragment
-        RecommendFragemnt recommendFragemnt = new RecommendFragemnt();//推荐fragment
-        ZhihuFragment zhihuFragment = new ZhihuFragment();//知乎fragment
-        JokeFragment jokeFragment = new JokeFragment();//笑话fragment
-        GankFragment gankFragment = new GankFragment();//Gank fragment
-        WelfareFragment welfareFragment = new WelfareFragment();//福利fragment
 
         //将Fragment填入列表
         fragmentList = new ArrayList<>();
@@ -79,15 +99,34 @@ public class HomeFragemnt extends Fragment{
         tabTitle.add("福利");
 
         //加载适配器
-        HomeViewPagerAdapter adapter = new HomeViewPagerAdapter(getChildFragmentManager(),
+        adapter = new HomeViewPagerAdapter(getChildFragmentManager(),
                 fragmentList, tabTitle);
         //建立联系
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager, true);
+        //设置缓存碎片页数
+        viewPager.setOffscreenPageLimit(4);
     }
 
     static public ViewPager getViewPager() {
         return viewPager;
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        FragmentManager manager = getChildFragmentManager();
+        manager.putFragment(outState, "recommand", recommendFragemnt);
+        manager.putFragment(outState, "zhihu", zhihuFragment);
+        manager.putFragment(outState, "gank", gankFragment);
+        manager.putFragment(outState, "joke", jokeFragment);
+        manager.putFragment(outState, "welfare", welfareFragment);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        adapter = null;
+        viewPager = null;
+    }
 }

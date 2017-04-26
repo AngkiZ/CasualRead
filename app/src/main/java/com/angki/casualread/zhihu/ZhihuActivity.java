@@ -1,10 +1,6 @@
 package com.angki.casualread.zhihu;
 
-import android.content.SharedPreferences;
-import android.net.ConnectivityManager;
-import android.net.Network;
-import android.net.NetworkInfo;
-import android.preference.PreferenceManager;
+import android.content.res.Configuration;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -24,12 +20,10 @@ import com.angki.casualread.R;
 import com.angki.casualread.util.Api;
 import com.angki.casualread.util.HttpUtil;
 import com.angki.casualread.util.NetworkStatus;
-import com.angki.casualread.util.ToastUtil;
 import com.angki.casualread.util.Utility;
 import com.angki.casualread.util.dbUtil;
 import com.angki.casualread.zhihu.db.dbZhihuNews;
 import com.angki.casualread.zhihu.db.dbZhihuStors;
-import com.angki.casualread.zhihu.gson.ZhihuDailyNews.NewsBeans;
 import com.angki.casualread.zhihu.gson.ZhihuDailyStory.StoryBean;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -44,31 +38,37 @@ import okhttp3.Callback;
 import okhttp3.Response;
 
 public class ZhihuActivity extends AppCompatActivity {
-
+    private static final String TAG = "ZhihuActivity";
     private WebView webView;
-
     private Toolbar toolbar;
-
-    private CollapsingToolbarLayout collapsingToolbar;
-
     private ImageView imageView;
-
-    private StoryBean storyBean = new StoryBean();
-
+    private StoryBean storyBean;
     private dbZhihuStors mdbZhihuStors;
-
     private FloatingActionButton floatingActionButton;
-
     private boolean isCollection;//是否被收藏
+    private List<dbZhihuStors> cache;//缓存
+    private boolean isnetwork;//判断是否有网
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_zhihu_layout);
-
+        isnetwork = new NetworkStatus().judgment(ZhihuActivity.this);
         String newsId = getIntent().getStringExtra("news_id");
-        GetData(newsId);
-
+        cache = DataSupport.where("db_zs_id like ?", "%" + newsId + "%")
+                .find(dbZhihuStors.class);
+        //判断是否有网并且有无缓存，两者同时都没有的话便加载另一个布局
+        if (cache.size() == 0 && !isnetwork) {
+            setContentView(R.layout.activity_zhihu_null_layout);
+            toolbar = (Toolbar) findViewById(R.id.activity_zhihu_null_layout_collapsing_toolbar);
+            setSupportActionBar(toolbar);
+            ActionBar actionBar = getSupportActionBar();
+            if (actionBar != null) {
+                actionBar.setDisplayHomeAsUpEnabled(true);
+            }
+        }else {
+            setContentView(R.layout.activity_zhihu_layout);
+            GetData(newsId);
+        }
     }
 
     private void GetData(final String newsId) {
@@ -79,19 +79,12 @@ public class ZhihuActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call call, IOException e) {
 
-                final List<dbZhihuStors> data = DataSupport
-                        .where("db_zs_id like ?", "%" + newsId + "%")
-                        .find(dbZhihuStors.class);
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        if (data.size() == 0) {
 
-                            ToastUtil.showToast(getApplicationContext(), "哇，没有网络也没有缓存");
-                        } else {
-                            String html = CombinedData(data.get(0));
-                            LoadModule(html, data.get(0));
-                        }
+                        String html = CombinedData(cache.get(0));
+                        LoadModule(html, cache.get(0));
                     }
                 });
             }
@@ -128,6 +121,14 @@ public class ZhihuActivity extends AppCompatActivity {
         data = data.replace("<div class=\"img-place-holder\">", "");
         data = data.replace("<div class=\"headline\">", "");
 
+
+        // 根据主题的不同确定不同的加载内容
+        String theme = "<body className=\"\" onload=\"onLoaded()\">";
+        if ((getResources().getConfiguration().uiMode
+                & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES){
+
+            theme = "<body className=\"\" onload=\"onLoaded()\" class=\"night\">";
+        }
         String html = new StringBuffer()
                 .append("<!DOCTYPE html>\n")
                 .append("<html lang=\"en\" xmlns=\"http://www.w3.org/1999/xhtml\">\n")
@@ -135,6 +136,7 @@ public class ZhihuActivity extends AppCompatActivity {
                 .append("\t<meta charset=\"utf-8\" />")
                 .append(css)
                 .append("\n</head>\n")
+                .append(theme)
                 .append(data)
                 .append("</body></html>").toString();
 
@@ -145,16 +147,15 @@ public class ZhihuActivity extends AppCompatActivity {
      * 加载组件
      */
     private void LoadModule(String result, dbZhihuStors mdbZhihuStors) {
-
+        CollapsingToolbarLayout collapsingToolbar =
+                (CollapsingToolbarLayout) findViewById(R.id.activity_zhihu_layout_collapsing);
         toolbar = (Toolbar) findViewById(R.id.activity_zhihu_layout_collapsing_toolbar);
-        collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.activity_zhihu_layout_collapsing);
         imageView = (ImageView) findViewById(R.id.activity_zhihu_layout_collapsing_image);
         webView = (WebView) findViewById(R.id.activity_zhihu_layout_webview);
         floatingActionButton = (FloatingActionButton) findViewById(R.id.activity_zhihu_layout_float);
         //设置webview的缓存机制
         WebSettings ws = webView.getSettings();
-        boolean b = new NetworkStatus().judgment(getApplicationContext());
-        if (b) {
+        if (isnetwork) {
             ws.setCacheMode(WebSettings.LOAD_DEFAULT);//有网时加载
         } else {
             ws.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);//没有网时加载
@@ -214,26 +215,42 @@ public class ZhihuActivity extends AppCompatActivity {
 
         switch (item.getItemId()) {
             case android.R.id.home:
-                finish();
+                onBackPressed();
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
     /**
-     * 销毁Webview
+     * 销毁所占内存
      */
-    @Override
-    protected void onDestroy() {
+    private void end() {
+        //销毁Webview
         if (webView != null) {
+            //加载内容置为null
             webView.loadDataWithBaseURL(null, "", "text/html", "utf-8", null);
+            //清除历史
             webView.clearHistory();
-
+            //在父容器中把webview删除
             ((ViewGroup) webView.getParent()).removeView(webView);
             webView.destroy();
             webView = null;
         }
-        super.onDestroy();
+        Glide.clear(imageView);//停止加载
+        Glide.get(this).clearMemory();//清理内存缓存
+        //将各个组件置null，清除内存
+        imageView = null;
+        toolbar = null;
+        storyBean = null;
+        mdbZhihuStors = null;
+        floatingActionButton = null;
+        cache.clear();
+        cache = null;
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        end();
+    }
 }

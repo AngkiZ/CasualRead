@@ -1,8 +1,11 @@
 package com.angki.casualread.util;
 
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.support.v7.app.AppCompatDelegate;
 import android.util.Log;
+
+import com.squareup.leakcanary.LeakCanary;
 
 import org.litepal.LitePalApplication;
 
@@ -16,7 +19,9 @@ public class App extends LitePalApplication{
     @Override
     public void onCreate() {
         super.onCreate();
-
+        if (Build.VERSION.SDK_INT > 23) {
+            LeakCanary.install(this);
+        }
         SharedPreferences prefs = getSharedPreferences("ThemeData", MODE_PRIVATE);
         Log.d(TAG, "prefs: " + prefs.getInt("theme", 0));
         if (prefs != null) {

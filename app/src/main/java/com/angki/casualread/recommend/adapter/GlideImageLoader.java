@@ -19,6 +19,7 @@ public class GlideImageLoader extends ImageLoader{
 
         Glide.with(context).load(url)
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .centerCrop()
                 .into(imageView);
     }
 }

@@ -27,7 +27,6 @@ public class GankFragmentRecycleViewAdapter extends
         RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     private Context mcontext;
-
     private List<dbGank> mDataList;
 
     private int msource;//请求来自哪个碎片，1为知乎列表，2为收藏列表
@@ -88,7 +87,7 @@ public class GankFragmentRecycleViewAdapter extends
         //加载Item View的时候根据不同TYPE加载不同的布局
         if (viewType == ITEM_TYPE.ITEM1.ordinal()) {
 
-            View view1 = LayoutInflater.from(mcontext)
+            View view1 = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.gank_item_layout_1, parent, false);
             final ViewHolder1 holder1 = new ViewHolder1(view1);
 
@@ -101,16 +100,16 @@ public class GankFragmentRecycleViewAdapter extends
                     }else if (msource == 2) {
                         position = holder1.getAdapterPosition();
                     }
-                    Intent intent = new Intent(mcontext, GankActivity.class);
+                    Intent intent = new Intent(view.getContext(), GankActivity.class);
                     intent.putExtra("gank_url", mDataList.get(position).getDb_gank_url());
-                    mcontext.startActivity(intent);
+                    view.getContext().startActivity(intent);
                 }
             });
 
             return holder1;
         } else {
 
-            View view2 = LayoutInflater.from(mcontext)
+            View view2 = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.gank_item_layout_2, parent, false);
             final ViewHolder2 holder2 = new ViewHolder2(view2);
 
@@ -123,9 +122,9 @@ public class GankFragmentRecycleViewAdapter extends
                     }else if (msource == 2) {
                         position = holder2.getAdapterPosition();
                     }
-                    Intent intent = new Intent(mcontext, GankActivity.class);
+                    Intent intent = new Intent(view.getContext(), GankActivity.class);
                     intent.putExtra("gank_url", mDataList.get(position).getDb_gank_url());
-                    mcontext.startActivity(intent);
+                    view.getContext().startActivity(intent);
                 }
             });
 
@@ -173,5 +172,16 @@ public class GankFragmentRecycleViewAdapter extends
     public int getItemCount() {
 
         return mDataList.size();
+    }
+
+    /**
+     * 清除内存
+     */
+    public void clearMemory() {
+        Glide.get(mcontext).clearMemory();
+        mcontext = null;
+        mcontext = null;
+        mDataList.clear();
+        mDataList = null;
     }
 }

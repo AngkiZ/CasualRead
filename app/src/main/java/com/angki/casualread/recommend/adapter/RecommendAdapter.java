@@ -38,7 +38,6 @@ import java.util.List;
 public class RecommendAdapter extends RecyclerView.Adapter implements OnBannerListener{
 
     private Context mcontext;
-
     private List<String> images = new ArrayList<>();
     private List<String> titles = new ArrayList<>();
     private List<String> topId = new ArrayList<>();
@@ -46,16 +45,7 @@ public class RecommendAdapter extends RecyclerView.Adapter implements OnBannerLi
     private List<GankWelfareData> welfareData = new ArrayList<>();
     private List<GankData> gankData = new ArrayList<>();
     private List<JokeData> jokeData = new ArrayList<>();
-
     private ViewPager viewPager;
-
-    static private int count = 5;
-
-    static private int LAYOUT_CAROUSEL = 0;//轮播图布局
-    static private int LAYOUT_ZHIHU = 1;//知乎布局
-    static private int LAYOUT_WELFARE = 2;//福利布局
-    static private int LAYOUT_GANK = 3;//干货布局
-    static private int LAYOUT_JOKE = 4;//笑话布局
 
     public RecommendAdapter (Context context, List<String> images, List<String> titles,
                              List<NewsBean> zhihuData, List<GankWelfareData> welfareData,
@@ -73,30 +63,28 @@ public class RecommendAdapter extends RecyclerView.Adapter implements OnBannerLi
         this.topId = topId;
     }
 
-
-
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         switch (viewType) {
             case 0:
-                View view0 = LayoutInflater.from(mcontext)
+                View view0 = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.recommend_title_carousel, parent, false);
                 return new ViewHolder1(view0);
             case 1:
-                View view1 = LayoutInflater.from(mcontext)
+                View view1 = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.recommend_title_zhihu, parent, false);
                 return new ViewHolder2(view1);
             case 2:
-                View view2 = LayoutInflater.from(mcontext)
+                View view2 = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.recommend_title_welfare, parent, false);
                 return new ViewHolder3(view2);
             case 3:
-                View view3 = LayoutInflater.from(mcontext)
+                View view3 = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.recommand_title_gank, parent, false);
                 return new ViewHolder4(view3);
             case 4:
-                View view4 = LayoutInflater.from(mcontext)
+                View view4 = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.recommend_title_joke, parent, false);
                 return new ViewHolder5(view4);
             default:
@@ -122,48 +110,47 @@ public class RecommendAdapter extends RecyclerView.Adapter implements OnBannerLi
 
     @Override
     public int getItemCount() {
-        return count;
+        return 5;
     }
 
     @Override
     public int getItemViewType(int position) {
-
+        //判断加载哪个布局
         switch (position) {
-            case 0:
-                return LAYOUT_CAROUSEL;
-            case 1:
-                return LAYOUT_ZHIHU;
-            case 2:
-                return LAYOUT_WELFARE;
-            case 3:
-                return LAYOUT_GANK;
-            case 4:
-                return LAYOUT_JOKE;
-            default:
+            case 0://banner布局
                 return 0;
+            case 1://知乎布局
+                return 1;
+            case 2://福利布局
+                return 2;
+            case 3://gank布局
+                return 3;
+            case 4://joke布局
+                return 4;
+            default:
+                return -1;
         }
     }
 
     /**
      * 加载各个布局
      */
-    static class ViewHolder1 extends RecyclerView.ViewHolder {
+    private static class ViewHolder1 extends RecyclerView.ViewHolder {
 
         Banner banner;
-
-        public ViewHolder1(View view) {
+        ViewHolder1(View view) {
 
             super(view);
             banner = (Banner) view.findViewById(R.id.zhihu_daily_hot);
         }
     }
 
-    static class ViewHolder2 extends RecyclerView.ViewHolder {
+    private static class ViewHolder2 extends RecyclerView.ViewHolder {
 
         RecyclerView recyclerView;
         TextView textview;
 
-        public ViewHolder2(View view) {
+        ViewHolder2(View view) {
 
             super(view);
             recyclerView = (RecyclerView) view.findViewById(R.id.recommand_zhihu_recyclerview);
@@ -171,12 +158,12 @@ public class RecommendAdapter extends RecyclerView.Adapter implements OnBannerLi
         }
     }
 
-    static class ViewHolder3 extends RecyclerView.ViewHolder {
+    private static class ViewHolder3 extends RecyclerView.ViewHolder {
 
         ImageView imageView;
         TextView textView;
 
-        public ViewHolder3(View view) {
+        ViewHolder3(View view) {
 
             super(view);
             imageView = (ImageView) view.findViewById(R.id.recommand_welfare_image);
@@ -184,12 +171,12 @@ public class RecommendAdapter extends RecyclerView.Adapter implements OnBannerLi
         }
     }
 
-    static class ViewHolder4 extends RecyclerView.ViewHolder {
+    private static class ViewHolder4 extends RecyclerView.ViewHolder {
 
         RecyclerView recyclerView;
         TextView textview;
 
-        public ViewHolder4(View view) {
+        ViewHolder4(View view) {
 
             super(view);
             recyclerView = (RecyclerView) view.findViewById(R.id.recommand_gank_recyclerview);
@@ -197,12 +184,12 @@ public class RecommendAdapter extends RecyclerView.Adapter implements OnBannerLi
         }
     }
 
-    static class ViewHolder5 extends RecyclerView.ViewHolder {
+    private static class ViewHolder5 extends RecyclerView.ViewHolder {
 
         RecyclerView recyclerView;
         TextView textview;
 
-        public ViewHolder5(View view) {
+        ViewHolder5(View view) {
 
             super(view);
             recyclerView = (RecyclerView) view.findViewById(R.id.recommand_joke_recyclerview);
@@ -216,8 +203,7 @@ public class RecommendAdapter extends RecyclerView.Adapter implements OnBannerLi
     private void loadholder1(RecyclerView.ViewHolder holder) {
 
         ((ViewHolder1) holder).banner
-                //设置banner样式
-                .setBannerStyle(BannerConfig.NUM_INDICATOR_TITLE)
+                .setBannerStyle(BannerConfig.NUM_INDICATOR_TITLE)//设置banner样式
                 //设置图片加载器
                 .setImageLoader(new GlideImageLoader())
                 //设置图片集合
@@ -230,6 +216,7 @@ public class RecommendAdapter extends RecyclerView.Adapter implements OnBannerLi
                 .setOnBannerListener(this)
                 //banner设置方法全部调用完毕时最后调用
                 .start();
+
     }
     private void loadholder2(RecyclerView.ViewHolder holder) {
         //如果可以确定每个item的高度是固定的，设置这个选项可以提高性能
@@ -266,9 +253,9 @@ public class RecommendAdapter extends RecyclerView.Adapter implements OnBannerLi
                 Bundle bundle = new Bundle();
                 bundle.putStringArrayList("urlList", UrlList());
                 bundle.putInt("code", 0);
-                Intent intent = new Intent(mcontext, WelfareActivity.class);
+                Intent intent = new Intent(view.getContext(), WelfareActivity.class);
                 intent.putExtras(bundle);
-                mcontext.startActivity(intent);
+                view.getContext().startActivity(intent);
             }
         });
         ((ViewHolder3) holder).textView.setOnClickListener(new View.OnClickListener() {
@@ -329,5 +316,22 @@ public class RecommendAdapter extends RecyclerView.Adapter implements OnBannerLi
             mUrlList.add(welfareData.get(i).getUrl());
         }
         return mUrlList;
+    }
+
+    /**
+     * 清除内存
+     */
+    public void clearMemory() {
+        Glide.get(mcontext).clearMemory();
+        mcontext = null;
+        zhihuData.clear();
+        welfareData.clear();
+        gankData.clear();
+        jokeData.clear();
+        zhihuData = null;
+        welfareData = null;
+        gankData = null;
+        jokeData = null;
+        viewPager = null;
     }
 }

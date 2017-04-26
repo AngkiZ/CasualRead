@@ -31,13 +31,8 @@ import java.util.List;
 public class GankActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
-
     private WebView webView;
-
     private FloatingActionButton floatingActionButton;
-
-    private boolean isnetwork;//判断是否有网
-
     private boolean isCollection;//判断是否收藏
 
     @Override
@@ -46,7 +41,8 @@ public class GankActivity extends AppCompatActivity {
         setContentView(R.layout.activity_gank_layout);
 
         String url = getIntent().getStringExtra("gank_url");
-        isnetwork = new NetworkStatus().judgment(getApplicationContext());
+        //判断是否有网
+        boolean isnetwork = new NetworkStatus().judgment(GankActivity.this);
 
         LoadMoudle(url);
         SiteWebView(isnetwork);
@@ -81,7 +77,7 @@ public class GankActivity extends AppCompatActivity {
                 Log.d("onReceivedError", "errorCode: " + errorCode);
                 switch (errorCode) {
                     case ERROR_HOST_LOOKUP:
-                        ToastUtil.showToast(getApplicationContext(), "没有网络也没有缓存233");
+                        ToastUtil.showToast(GankActivity.this, "没有网络也没有缓存233");
                         break;
                 }
             }
@@ -188,25 +184,35 @@ public class GankActivity extends AppCompatActivity {
 
         switch (item.getItemId()) {
             case android.R.id.home:
-                finish();
+                onBackPressed();
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
     /**
-     * 销毁Webview
+     * 销毁所占内存
      */
-    @Override
-    protected void onDestroy() {
+    private void end() {
+        //销毁Webview
         if (webView != null) {
+            //加载内容置为null
             webView.loadDataWithBaseURL(null, "", "text/html", "utf-8", null);
+            //清除历史
             webView.clearHistory();
-
+            //在父容器中把webview删除
             ((ViewGroup) webView.getParent()).removeView(webView);
             webView.destroy();
             webView = null;
         }
-        super.onDestroy();
+        //将各个组件置null，清除内存
+        toolbar = null;
+        floatingActionButton = null;
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        end();
     }
 }

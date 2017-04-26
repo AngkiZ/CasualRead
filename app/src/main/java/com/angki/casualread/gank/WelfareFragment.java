@@ -45,16 +45,15 @@ import okhttp3.Response;
 public class WelfareFragment extends Fragment{
 
     private XRecyclerView welfareRecyclerView;
-
     private List<dbWelfare> dataList = new ArrayList<>();
-
     private WelfareFragmentRecycleViewAdapter adapter;
-
     private dbWelfare mdbWelfare;
-
     private int pager;
-
     private boolean isnetwork;//判断是否有网
+
+    public static WelfareFragment newInstance() {
+        return new WelfareFragment();
+    }
 
     @Nullable
     @Override
@@ -65,16 +64,15 @@ public class WelfareFragment extends Fragment{
         dataList.clear();//清空列表
         pager = 1;
         isnetwork = new NetworkStatus().judgment(getContext());
-        loadWelfareList(view, pager);
+        loadWelfareList(pager);
         loadModule(view);
         return view;
     }
 
     /**
      * 加载数据
-     * @param view
      */
-    private void loadWelfareList(final View view, final int pager) {
+    private void loadWelfareList(final int pager) {
 
         String url = Api.WELFARE + "10/" + pager;
 
@@ -141,7 +139,6 @@ public class WelfareFragment extends Fragment{
         GridLayoutManager layoutManager = new GridLayoutManager(getContext(), 2);
         welfareRecyclerView.setLayoutManager(layoutManager);
         //加载XRecycleView的刷新风格
-        welfareRecyclerView.setRefreshProgressStyle(ProgressStyle.BallSpinFadeLoader);
         welfareRecyclerView.setLoadingMoreProgressStyle(ProgressStyle.BallRotate);
         welfareRecyclerView.setArrowImageView(R.drawable.iconfont_downgrey);
         //下拉刷新，上拉加载事件
@@ -154,7 +151,7 @@ public class WelfareFragment extends Fragment{
                         public void run() {
                             dataList.clear();
                             pager = 1;
-                            loadWelfareList(getView(), pager);
+                            loadWelfareList(pager);
                             welfareRecyclerView.refreshComplete();
                         }
                     }, 1000);
@@ -177,7 +174,7 @@ public class WelfareFragment extends Fragment{
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            loadWelfareList(getView(), pager);
+                            loadWelfareList(pager);
                             welfareRecyclerView.refreshComplete();
                         }
                     },1000);
@@ -189,4 +186,21 @@ public class WelfareFragment extends Fragment{
         welfareRecyclerView.setAdapter(adapter);
     }
 
+    /**
+     * 销毁所占内存
+     */
+    private void end() {
+        welfareRecyclerView = null;
+        dataList.clear();
+        dataList = null;
+        adapter.clearMemory();
+        adapter = null;
+        mdbWelfare = null;
+    }
+
+    @Override
+    public void onDestroy() {
+        end();
+        super.onDestroy();
+    }
 }

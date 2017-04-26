@@ -21,7 +21,7 @@
             android:layout_marginLeft="15dp"
             android:layout_marginTop="15dp"
             android:layout_centerVertical="true"
-            android:textColor="@color/black"
+            android:textColor="@color/colorContent"
             android:textSize="18sp"/>
 
         <TextView

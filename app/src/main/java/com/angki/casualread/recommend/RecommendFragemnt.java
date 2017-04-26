@@ -47,9 +47,7 @@ import okhttp3.Response;
 
 public class RecommendFragemnt extends Fragment {
 
-    private RecyclerView recyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
-
     private List<String> images = new ArrayList<>();
     private List<String> titles = new ArrayList<>();
     private List<String> topid = new ArrayList<>();
@@ -57,9 +55,12 @@ public class RecommendFragemnt extends Fragment {
     private List<GankWelfareData> welfareData = new ArrayList<>();
     private List<GankData> gankData = new ArrayList<>();
     private List<JokeData> jokeData = new ArrayList<>();
-
     private RecommendAdapter adapter;
     private NetworkStatus networkStatus;
+
+    public static RecommendFragemnt newInstance() {
+        return new RecommendFragemnt();
+    }
 
     @Nullable
     @Override
@@ -86,11 +87,10 @@ public class RecommendFragemnt extends Fragment {
 
     private void loadModule(final View view) {
 
-        final MainActivity mainActivity = (MainActivity) getActivity();
         final ViewPager viewPager = HomeFragemnt.getViewPager();
 
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swip_refresh);
-        recyclerView = (RecyclerView) view.findViewById(R.id.recommand_xrecyclerview);
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recommand_xrecyclerview);
         //设置swipeRefreshLayout
         swipeRefreshLayout.setColorSchemeResources(R.color.swipeColor);//进度条颜色
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout
@@ -384,5 +384,27 @@ public class RecommendFragemnt extends Fragment {
 
             }
         });
+    }
+    /**
+     * 销毁所占内存
+     */
+    private void end() {
+        swipeRefreshLayout = null;
+        zhihuData.clear();
+        welfareData.clear();
+        gankData.clear();
+        jokeData.clear();
+        zhihuData = null;
+        welfareData = null;
+        gankData = null;
+        jokeData = null;
+        adapter.clearMemory();
+        adapter = null;
+    }
+
+    @Override
+    public void onDestroy() {
+        end();
+        super.onDestroy();
     }
 }

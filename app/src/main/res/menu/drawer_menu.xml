@@ -26,10 +26,5 @@
             android:id="@+id/drawer_layout_about"
             android:icon="@drawable/ic_info"
             android:title="关于"/>
-        <item
-            android:id="@+id/drawer_layout_quit"
-            android:icon="@drawable/ic_power"
-            android:title="退出"/>
-
     </group>
 </menu>

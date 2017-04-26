@@ -10,6 +10,7 @@ import android.view.View;
 
 /**
  * Created by tengyu on 2017/4/17.
+ * 监听FloatingActionButton的行为
  */
 
 public class ScrollAwareFABBehavior extends FloatingActionButton.Behavior{

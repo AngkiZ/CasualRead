@@ -21,7 +21,7 @@ import java.util.List;
 
 public class GankContentAdapter extends RecyclerView.Adapter<GankContentAdapter.ViewHolder> {
 
-    private Context mcontext;
+    private final Context mcontext;
 
     private List<GankData> mGankDataList;
 
@@ -42,24 +42,24 @@ public class GankContentAdapter extends RecyclerView.Adapter<GankContentAdapter.
 
     public GankContentAdapter(Context context, List<GankData> GankDataList) {
 
-        mcontext = context;
+        this.mcontext = context;
 
-        mGankDataList = GankDataList;
+        this.mGankDataList = GankDataList;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        View view = LayoutInflater.from(mcontext).
+        View view = LayoutInflater.from(parent.getContext()).
                 inflate(R.layout.recommand_content_gank, parent, false);
         final ViewHolder holder = new ViewHolder(view);
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 int position = holder.getAdapterPosition();
-                Intent intent = new Intent(mcontext, GankActivity.class);
+                Intent intent = new Intent(view.getContext(), GankActivity.class);
                 intent.putExtra("gank_url", mGankDataList.get(position).getUrl());
-                mcontext.startActivity(intent);
+                view.getContext().startActivity(intent);
             }
         });
         return holder;

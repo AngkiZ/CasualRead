@@ -41,16 +41,15 @@ import okhttp3.Response;
 public class GankFragment extends Fragment{
 
     private XRecyclerView gankRecyclerView;
-
     private List<dbGank> dataList = new ArrayList<>();
-
     private GankFragmentRecycleViewAdapter adapter;
-
     private dbGank mdbGank;
-
     private int pager;
-
     private boolean isnetwork;//判断是否有网
+
+    public static GankFragment newInstance() {
+        return new GankFragment();
+    }
 
     @Nullable
     @Override
@@ -149,7 +148,6 @@ public class GankFragment extends Fragment{
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         gankRecyclerView.setLayoutManager(layoutManager);
         //加载XRecycleView的刷新风格
-        gankRecyclerView.setRefreshProgressStyle(ProgressStyle.BallSpinFadeLoader);
         gankRecyclerView.setLoadingMoreProgressStyle(ProgressStyle.BallRotate);
         gankRecyclerView.setArrowImageView(R.drawable.iconfont_downgrey);
         //下拉刷新，上拉加载事件
@@ -198,4 +196,21 @@ public class GankFragment extends Fragment{
         gankRecyclerView.setAdapter(adapter);
     }
 
+    /**
+     * 销毁所占内存
+     */
+    private void end() {
+        gankRecyclerView = null;
+        dataList.clear();
+        dataList = null;
+        adapter.clearMemory();
+        adapter = null;
+        mdbGank = null;
+    }
+
+    @Override
+    public void onDestroy() {
+        end();
+        super.onDestroy();
+    }
 }

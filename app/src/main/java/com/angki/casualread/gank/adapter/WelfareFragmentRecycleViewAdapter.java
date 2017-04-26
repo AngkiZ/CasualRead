@@ -30,7 +30,6 @@ public class WelfareFragmentRecycleViewAdapter extends
         RecyclerView.Adapter<WelfareFragmentRecycleViewAdapter.ViewHoler>{
 
     private Context mcontext;
-
     private List<dbWelfare> mDataList;
 
     static class ViewHoler extends RecyclerView.ViewHolder{
@@ -48,14 +47,14 @@ public class WelfareFragmentRecycleViewAdapter extends
 
     public WelfareFragmentRecycleViewAdapter(Context context, List<dbWelfare> dataList) {
 
-        mcontext = context;
-        mDataList = dataList;
+        this.mcontext = context;
+        this.mDataList = dataList;
     }
 
     @Override
-    public WelfareFragmentRecycleViewAdapter.ViewHoler onCreateViewHolder(ViewGroup parent, int viewType) {
+    public WelfareFragmentRecycleViewAdapter.ViewHoler onCreateViewHolder(final ViewGroup parent, int viewType) {
 
-        View view = LayoutInflater.from(mcontext)
+        View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.welfare_item_layout, parent, false);
         final ViewHoler holer = new ViewHoler(view);
 
@@ -65,10 +64,11 @@ public class WelfareFragmentRecycleViewAdapter extends
                 int position = holer.getAdapterPosition() - 1;
                 Bundle bundle = new Bundle();
                 bundle.putStringArrayList("urlList", UrlList());
+                bundle.putStringArrayList("idList", IdList());
                 bundle.putInt("code", position);
-                Intent intent = new Intent(mcontext, WelfareActivity.class);
+                Intent intent = new Intent(parent.getContext(), WelfareActivity.class);
                 intent.putExtras(bundle);
-                mcontext.startActivity(intent);
+                parent.getContext().startActivity(intent);
             }
         });
 
@@ -87,8 +87,10 @@ public class WelfareFragmentRecycleViewAdapter extends
         }
 
         Glide.with(mcontext).load(mDataList.get(position).getDb_we_url())
-//                .skipMemoryCache(true)//跳过内存缓存
-                .diskCacheStrategy(DiskCacheStrategy.RESULT)
+                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .placeholder(R.drawable.ic_meizi)
+                .error(R.drawable.ic_meizi)
+                .centerCrop()
                 .into(holder.image);
     }
 
@@ -105,5 +107,25 @@ public class WelfareFragmentRecycleViewAdapter extends
             mUrlList.add(mDataList.get(i).getDb_we_url());
         }
         return mUrlList;
+    }
+
+    //转换数组属性
+    private ArrayList<String> IdList() {
+
+        ArrayList<String> mIdList = new ArrayList<>();
+        for (int i = 0; i < mDataList.size(); i++) {
+            mIdList.add(mDataList.get(i).getDb_we_id());
+        }
+        return mIdList;
+    }
+
+    /**
+     * 清除内存
+     */
+    public void clearMemory() {
+        Glide.get(mcontext).clearMemory();
+        mcontext = null;
+        mDataList.clear();
+        mDataList = null;
     }
 }

@@ -51,11 +51,11 @@ public class ZhihuFragmentRecycleViewAdapter extends RecyclerView.Adapter<ZhihuF
     public ZhihuFragmentRecycleViewAdapter
             (Context context, List<dbZhihuNews> ZhihuDailyNewsList, int source){
 
-        mcontext = context;
+        this.mcontext = context;
 
-        mZhihuDailyNewsList = ZhihuDailyNewsList;
+        this.mZhihuDailyNewsList = ZhihuDailyNewsList;
 
-        msource = source;
+        this.msource = source;
     }
 
     @Override
@@ -71,15 +71,15 @@ public class ZhihuFragmentRecycleViewAdapter extends RecyclerView.Adapter<ZhihuF
                 if (msource == 1) {
                     int position = holder.getAdapterPosition() - 1;
                     Log.d("onClick", "position: " + position);
-                    Intent intent = new Intent(mcontext, ZhihuActivity.class);
+                    Intent intent = new Intent(view.getContext(), ZhihuActivity.class);
                     intent.putExtra("news_id", mZhihuDailyNewsList.get(position).getDb_zn_id());
-                    mcontext.startActivity(intent);
+                    view.getContext().startActivity(intent);
                 }else if (msource == 2) {
                     int position = holder.getAdapterPosition();
                     Log.d("onClick", "position: " + position);
-                    Intent intent = new Intent(mcontext, ZhihuActivity.class);
+                    Intent intent = new Intent(view.getContext(), ZhihuActivity.class);
                     intent.putExtra("news_id", mZhihuDailyNewsList.get(position).getDb_zn_id());
-                    mcontext.startActivity(intent);
+                    view.getContext().startActivity(intent);
                 }
             }
         });
@@ -94,6 +94,7 @@ public class ZhihuFragmentRecycleViewAdapter extends RecyclerView.Adapter<ZhihuF
         Glide.with(mcontext)
                 .load(zhihuDailyNews.getDb_zn_image())
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .centerCrop()
                 .into(holder.zhihuImage);
     }
 
@@ -102,5 +103,13 @@ public class ZhihuFragmentRecycleViewAdapter extends RecyclerView.Adapter<ZhihuF
         return mZhihuDailyNewsList.size();
     }
 
-
+    /**
+     * 清除内存
+     */
+    public void clearMemory() {
+        Glide.get(mcontext).clearMemory();
+        mcontext = null;
+        mZhihuDailyNewsList.clear();
+        mZhihuDailyNewsList = null;
+    }
 }

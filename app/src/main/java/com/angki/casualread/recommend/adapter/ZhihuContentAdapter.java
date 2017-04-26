@@ -24,7 +24,7 @@ import java.util.List;
 
 public class ZhihuContentAdapter extends RecyclerView.Adapter<ZhihuContentAdapter.ViewHolder> {
 
-    private Context mContext;
+    private final Context mContext;
 
     private List<NewsBean> mZhihuDailyNewsList;
 
@@ -45,24 +45,24 @@ public class ZhihuContentAdapter extends RecyclerView.Adapter<ZhihuContentAdapte
 
     public ZhihuContentAdapter(Context context, List<NewsBean> ZhihuDailyNewsList) {
 
-        mContext = context;
+        this.mContext = context;
 
-        mZhihuDailyNewsList = ZhihuDailyNewsList;
+        this.mZhihuDailyNewsList = ZhihuDailyNewsList;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        View view = LayoutInflater.from(mContext).
+        View view = LayoutInflater.from(parent.getContext()).
                 inflate(R.layout.recommand_content_zhihu, parent , false);
         final ViewHolder holder = new ViewHolder(view);
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 int position = holder.getAdapterPosition();
-                Intent intent = new Intent(mContext, ZhihuActivity.class);
+                Intent intent = new Intent(view.getContext(), ZhihuActivity.class);
                 intent.putExtra("news_id", mZhihuDailyNewsList.get(position).getId());
-                mContext.startActivity(intent);
+                view.getContext().startActivity(intent);
             }
         });
         return holder;
@@ -76,6 +76,7 @@ public class ZhihuContentAdapter extends RecyclerView.Adapter<ZhihuContentAdapte
         Glide.with(mContext)
                 .load(zhihuDailyNews.getImages().get(0))
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .centerCrop()
                 .into(holder.image);
     }
 

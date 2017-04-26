@@ -9,7 +9,9 @@
     <!--tab标签栏文字的颜色-->
     <color name="colorTabText">#585858</color>
     <!--正文文字颜色-->
-    <color name="colorContent">#ff333333</color>
+    <color name="colorContent">#dcd3d3</color>
     <!--刷新进度条的的颜色-->
     <color name="swipeColor">#26b6da</color>
+    <!--推荐碎片title栏的文字颜色-->
+    <color name="recommTitleColor">#797777</color>
 </resources>

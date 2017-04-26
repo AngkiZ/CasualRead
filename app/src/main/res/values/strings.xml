@@ -1,3 +1,19 @@
 <resources>
     <string name="app_name">瞎读</string>
+    
+    <!--关于页面的字符串-->
+    <string name="app_version">当前版本V1.0.0</string>
+    <string name="click_update">点击查看更新</string>
+    <string name="feedback_bug">Bug反馈</string>
+    <string name="thanks_support">感谢支持</string>
+    <string name="author">作者</string>
+    <string name="author_name">AngkiZ</string>
+    <string name="mailbox">邮箱</string>
+    <string name="mailbox_address">503001231@qq.com</string>
+    <string name="github">GitHub</string>
+    <string name="github_address">https://github.com/AngkiZ</string>
+    <string name="data_source">数据来源</string>
+    <string name="data_source_zhihu">知乎数据来源</string>
+    <string name="data_source_gank">Gank数据来源</string>
+    <string name="data_source_joke">笑话数据来源</string>
 </resources>

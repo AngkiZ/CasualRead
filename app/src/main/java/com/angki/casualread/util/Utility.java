@@ -209,7 +209,7 @@ public class Utility {
     }
 
     /**
-     * 解析糗事百科
+     * 解析笑话
      */
     public static List<JokeData> handleJokeResponse(String data) {
 

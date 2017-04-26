@@ -34,7 +34,7 @@
             android:maxLines="3"
             android:ellipsize="end"
             android:textSize="18sp"
-            android:textColor="#000000"/>
+            android:textColor="@color/colorContent"/>
 
         <ImageView
             android:id="@+id/zhihu_item_image"

@@ -19,7 +19,7 @@ import java.util.List;
 
 public class JokeContentAdapter extends RecyclerView.Adapter<JokeContentAdapter.ViewHolder>{
 
-    private Context mcontext;
+    private final Context mcontext;
 
     private List<JokeData> mDataList;
 
@@ -38,15 +38,15 @@ public class JokeContentAdapter extends RecyclerView.Adapter<JokeContentAdapter.
 
     public JokeContentAdapter(Context context, List<JokeData> dataList) {
 
-        mcontext = context;
+        this.mcontext = context;
 
-        mDataList = dataList;
+        this.mDataList = dataList;
     }
 
     @Override
     public JokeContentAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        View view = LayoutInflater.from(mcontext)
+        View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.recommand_content_joke, parent, false);
 
         return new ViewHolder(view);

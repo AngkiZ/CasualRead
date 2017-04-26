@@ -19,7 +19,7 @@
             android:layout_alignParentBottom="true"
             android:text="干货"
             android:textSize="18sp"
-            android:textColor="@color/colorContent"/>
+            android:textColor="@color/recommTitleColor"/>
 
         <LinearLayout
             android:layout_width="wrap_content"

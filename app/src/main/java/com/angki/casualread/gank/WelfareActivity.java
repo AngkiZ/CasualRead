@@ -31,6 +31,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
@@ -41,6 +42,7 @@ public class WelfareActivity extends AppCompatActivity implements ViewPager.OnPa
 
     private int code;//第几张图片
     private List<String> urlList;//图片地址集合
+    private List<String> idList;//图片地址集合
     private WelfareViewPagerAdapter adapter;
     private TextView imagecount;
     private TextView imagedownload;
@@ -57,6 +59,7 @@ public class WelfareActivity extends AppCompatActivity implements ViewPager.OnPa
         Bundle bundle = getIntent().getExtras();
         code = bundle.getInt("code");
         urlList = bundle.getStringArrayList("urlList");
+        idList = bundle.getStringArrayList("idList");
 
         LoadMoudle();
 
@@ -83,7 +86,7 @@ public class WelfareActivity extends AppCompatActivity implements ViewPager.OnPa
     /**
      * 保存图片至相册
      */
-    private static void saveImageToGallery(Context context, Bitmap bitmap) {
+    private static boolean saveImageToGallery(Context context, Bitmap bitmap, String id) {
         // 首先保存图片
         File appDir = new File(Environment.getExternalStorageDirectory(), "瞎Read相册");
         //判断这个文件是否存在，不存在就创建该目录
@@ -91,28 +94,32 @@ public class WelfareActivity extends AppCompatActivity implements ViewPager.OnPa
             appDir.mkdir();
         }
         //文件命名使用下载时间+.jpg
-        String fileName = System.currentTimeMillis() + ".jpg";
+        String fileName = id + ".jpg";
         File file = new File(appDir, fileName);
-        try {
-            FileOutputStream fos = new FileOutputStream(file);
-            //图片压缩，其中100表示不压缩
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-            fos.flush();
-            fos.close();
-        }catch (IOException e) {
-            e.printStackTrace();
-        }
+        if (!file.exists()) {
+            try {
+                FileOutputStream fos = new FileOutputStream(file);
+                //图片压缩，其中100表示不压缩
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+                fos.flush();
+                fos.close();
+            }catch (IOException e) {
+                e.printStackTrace();
+            }
 
-        // 其次把文件插入到系统图库
-        try {
-            MediaStore.Images.Media.insertImage(context.getContentResolver(),
-                    file.getAbsolutePath(), fileName, null);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            // 其次把文件插入到系统图库
+            try {
+                MediaStore.Images.Media.insertImage(context.getContentResolver(),
+                        file.getAbsolutePath(), fileName, null);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            // 最后通知图库更新
+            context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
+                    Uri.parse("file://" + file.getAbsoluteFile())));
+            return true;
         }
-        // 最后通知图库更新
-        context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
-                Uri.parse("file://" + file.getAbsoluteFile())));
+        return false;
     }
 
     /**
@@ -124,17 +131,17 @@ public class WelfareActivity extends AppCompatActivity implements ViewPager.OnPa
         imagedownload = (TextView) findViewById(R.id.activity_welfare_layout_save);
         viewPager = (ViewPager) findViewById(R.id.activity_welfare_layout_viewpager);
 
-        adapter = new WelfareViewPagerAdapter(getApplicationContext());
+        adapter = new WelfareViewPagerAdapter();
         viewPager.setAdapter(adapter);
-        viewPager.setCurrentItem(code);
+        viewPager.setCurrentItem(code);//跳转第几张相片
         page = code;
-        viewPager.setEnabled(false);
+        viewPager.setEnabled(true);
         //ViewPager的滑动监听
         viewPager.addOnPageChangeListener(this);
         viewPager.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                finish();
+                end();
             }
         });
         // 设定当前的页数和总页数
@@ -160,10 +167,14 @@ public class WelfareActivity extends AppCompatActivity implements ViewPager.OnPa
                                 if (imagePath != null) {
                                     Bitmap bitmap = BitmapFactory.decodeFile(imagePath, bmOptions);
                                     if (bitmap != null) {
-                                        saveImageToGallery(WelfareActivity.this, bitmap);
-                                        ToastUtil.showToast(WelfareActivity.this, "以保存至" +
-                                                Environment.getExternalStorageDirectory()
-                                                        .getAbsolutePath()+"/瞎Read相册");
+                                        //判断图片是否已经在相册存在
+                                        if (saveImageToGallery(WelfareActivity.this, bitmap, idList.get(page))) {
+                                            ToastUtil.showToast(WelfareActivity.this, "以保存至" +
+                                                    Environment.getExternalStorageDirectory()
+                                                            .getAbsolutePath()+"/瞎Read相册");
+                                        }else {
+                                            ToastUtil.showToast(WelfareActivity.this, "图片已存在~");
+                                        }
                                     }
                                 }
                             }
@@ -179,13 +190,7 @@ public class WelfareActivity extends AppCompatActivity implements ViewPager.OnPa
      */
     class WelfareViewPagerAdapter extends PagerAdapter {
 
-        private Context mcontext;
-
-        public WelfareViewPagerAdapter(Context context) {
-
-            mcontext = context;
-        }
-
+        private PhotoView photoView;
         /**
          * 加载每个item
          * @param container
@@ -193,11 +198,11 @@ public class WelfareActivity extends AppCompatActivity implements ViewPager.OnPa
          * @return
          */
         @Override
-        public Object instantiateItem(ViewGroup container, int position) {
+        public Object instantiateItem(final ViewGroup container, int position) {
 
-            View view = LayoutInflater.from(mcontext)
+            View view = LayoutInflater.from(container.getContext())
                     .inflate(R.layout.viewpager_very_image, container, false);
-            final PhotoView photoView = (PhotoView)
+            photoView = (PhotoView)
                     view.findViewById(R.id.viewpager_very_image_photoview);
             final ProgressBar progressBar = (ProgressBar) view.findViewById(R.id.loading);
             //保存网络图片的路径
@@ -206,13 +211,13 @@ public class WelfareActivity extends AppCompatActivity implements ViewPager.OnPa
             progressBar.setVisibility(View.VISIBLE);
             progressBar.setClickable(false);
 
-            Glide.with(mcontext).load(url)
+            Glide.with(WelfareActivity.this).load(url)
                     .crossFade(700)//淡入淡出效果
                     //图片的监听
                     .listener(new RequestListener<String, GlideDrawable>() {
                         @Override
                         public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                            Toast.makeText(mcontext, "图片无缓存！0.0", Toast.LENGTH_SHORT).show();
+                            ToastUtil.showToast(WelfareActivity.this, "图片无缓存！ 0.0");
                             progressBar.setVisibility(View.GONE);
                             return false;
                         }
@@ -222,7 +227,8 @@ public class WelfareActivity extends AppCompatActivity implements ViewPager.OnPa
                             progressBar.setVisibility(View.GONE);
                             return false;
                         }
-                    }).into(photoView);
+                    }).error(R.drawable.ic_meizi)
+                    .into(photoView);
 
             photoView.setOnPhotoTapListener(WelfareActivity.this);//设置单点点击事件
             container.addView(view, 0);
@@ -250,6 +256,15 @@ public class WelfareActivity extends AppCompatActivity implements ViewPager.OnPa
 
         Object getItem(int position) {
             return urlList.get(position);
+        }
+        //释放内存，当传入空时，释放内存
+        public void notifyDataSetChanged(ArrayList<String> List) {
+            if (List == null) {
+                Glide.clear(photoView);
+                Glide.get(WelfareActivity.this).clearMemory();
+                photoView = null;
+            }
+            notifyDataSetChanged();
         }
     }
 
@@ -284,7 +299,7 @@ public class WelfareActivity extends AppCompatActivity implements ViewPager.OnPa
      */
     @Override
     public void onPhotoTap(View view, float x, float y) {
-        finish();
+        end();
     }
 
     /**
@@ -292,6 +307,22 @@ public class WelfareActivity extends AppCompatActivity implements ViewPager.OnPa
      */
     @Override
     public void onOutsidePhotoTap() {
-        finish();
+        end();
+    }
+
+    /**
+     * 销毁所占内存
+     */
+    private void end() {
+        //将各个组件置null，清除内存
+        urlList.clear();
+        urlList = null;
+        idList.clear();
+        idList = null;
+        adapter.notifyDataSetChanged(null);//传入null，到Adapter中去释放内存
+        imagecount = null;
+        imagedownload = null;
+        viewPager = null;
+        onBackPressed();
     }
 }
