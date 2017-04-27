@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.angki.casualread.R;
+import com.angki.casualread.util.MarginUtil;
 import com.angki.casualread.zhihu.ZhihuActivity;
 import com.angki.casualread.zhihu.gson.ZhihuDailyNews.NewsBean;
 import com.bumptech.glide.Glide;
@@ -70,7 +71,11 @@ public class ZhihuContentAdapter extends RecyclerView.Adapter<ZhihuContentAdapte
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-
+        if (position % 2 == 0) {
+            MarginUtil.setViewMargin(holder.cardView, 0, 6, 6, 6);
+        }else {
+            MarginUtil.setViewMargin(holder.cardView, 6, 6, 0, 6);
+        }
         NewsBean zhihuDailyNews = mZhihuDailyNewsList.get(position);
         holder.title.setText(zhihuDailyNews.getTitle());
         Glide.with(mContext)

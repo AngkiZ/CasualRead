@@ -27,7 +27,7 @@
             android:layout_centerVertical="true"
             android:ellipsize="end"
             android:textColor="@color/colorContent"
-            android:textSize="18sp"/>
+            android:textSize="@dimen/fragment_gank_title"/>
 
         <TextView
             android:id="@+id/gank_item_author_2"
@@ -36,7 +36,8 @@
             android:layout_alignParentBottom="true"
             android:layout_marginLeft="15dp"
             android:layout_marginBottom="8dp"
-            android:textSize="15sp"/>
+            android:textSize="@dimen/fragment_gank_author"
+            android:textColor="@color/gank_author"/>
 
     </LinearLayout>
 

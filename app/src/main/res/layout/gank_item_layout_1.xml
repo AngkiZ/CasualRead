@@ -33,7 +33,7 @@
                 android:lines="2"
                 android:ellipsize="end"
                 android:textColor="@color/colorContent"
-                android:textSize="18sp" />
+                android:textSize="@dimen/fragment_gank_title" />
 
             <TextView
                 android:id="@+id/gank_item_author_1"
@@ -42,14 +42,15 @@
                 android:layout_alignParentBottom="true"
                 android:layout_marginLeft="15dp"
                 android:layout_marginBottom="8dp"
-                android:textSize="15sp" />
+                android:textColor="@color/gank_author"
+                android:textSize="@dimen/fragment_gank_author" />
             
         </RelativeLayout>
 
         <ImageView
             android:id="@+id/gank_item_image"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="@dimen/fragment_gankImager_width"
+            android:layout_height="@dimen/fragment_gankImager_height"
             android:layout_margin="10dp"/>
         
     </LinearLayout>

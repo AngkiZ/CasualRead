@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 
 import com.angki.casualread.R;
 import com.angki.casualread.util.Api;
+import com.angki.casualread.util.App;
 import com.angki.casualread.util.HttpUtil;
 import com.angki.casualread.util.NetworkStatus;
 import com.angki.casualread.util.ToastUtil;
@@ -48,7 +49,8 @@ public class ZhihuFragment extends Fragment{
     private XRecyclerView zhihuRecyclerView;
     private List<dbZhihuNews> dataList = new ArrayList<>();
     private ZhihuFragmentRecycleViewAdapter adapter;
-    private Calendar c;//获取时间类
+    private Calendar c_db;//数据库中所需时间
+    private Calendar c_net;//请求连接所需时间
     private List<dbZhihuNews> l;//没有网时加载的数据
     private boolean isnetwork;//判断是否有网
 
@@ -59,32 +61,42 @@ public class ZhihuFragment extends Fragment{
     public void onAttach(Context context) {
         super.onAttach(context);
         Log.d(TAG, "onAttach: ");
+        c_db = Calendar.getInstance();
+        c_net = Calendar.getInstance();
+        c_net.add(Calendar.DAY_OF_MONTH, +1);
         //记录最后一次打开软件并且从网络加载保存内容的日期
         SharedPreferences.Editor editor = PreferenceManager
                 .getDefaultSharedPreferences(getActivity()).edit();
-        editor.putString("date", date(false));
-        Log.d(TAG, "onAttach: date:" + date(false));
+        editor.putString("date", Analysis(c_db));
+
         editor.apply();
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
-        Log.d(TAG, "onCreate: ");
         super.onCreate(savedInstanceState);
-
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        Log.d(TAG, "onCreateView: ");
         View view = inflater.inflate(R.layout.zhihu_fragment, container, false);
         dataList.clear();//清空列表
         isnetwork = new NetworkStatus().judgment(getContext());
-        //加载RecycleView知乎日报数据
-        loadZhihuDailyNews(true);
-        loadModule(view);
+
+        if (App.isFirstLoad) {
+            Log.d(TAG, "onCreateView: " + App.isFirstLoad);
+            //加载RecycleView知乎日报数据
+            loadZhihuDailyNews(true);
+            loadModule(view);
+            App.isFirstLoad = false;
+        }else {
+            Log.d(TAG, "onCreateView: " + App.isFirstLoad);
+            loadModule(view);
+            failureZhihu(true, true);
+        }
+
         return view;
     }
 
@@ -93,51 +105,19 @@ public class ZhihuFragment extends Fragment{
      * boolean b为true时，表示第一次加载，为false时，表示加载更多
      */
     private void loadZhihuDailyNews(final boolean b){
+        Log.d(TAG, "loadZhihuDailyNews: date:" + Analysis(c_db));
         //请求的地址
         String url;
         if (b) {
-            url = Api.ZHIHU_BEFORE + date(true);
-            Log.d("------", "url: " + url);
+            url = Api.ZHIHU_BEFORE + Analysis(c_net);
         }else {
-            url = Api.ZHIHU_BEFORE + bedate(false);
-            Log.d("------", "beurl: " + url);
+            url = Api.ZHIHU_BEFORE + Analysis(c_net);
         }
         HttpUtil.sendOkHttpRequest(url, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
 
-                if (b) {
-                    //提出记录的日期，按日期加载内容
-                    SharedPreferences prefer = PreferenceManager.getDefaultSharedPreferences(getActivity());
-                    String date = prefer.getString("date", null);
-                    Log.d(TAG, "onFailure: date:" + date);
-                    int id = DataSupport.select("db_znd_date")
-                            .where("db_znd_date like ?", "%" + date + "%")
-                            .find(dbZhihuNewsDate.class).get(0).getId();
-                    l = DataSupport.where("dbzhihunewsdate_id like ?", "%" + id + "%")
-                            .order("listSorting asc")
-                            .find(dbZhihuNews.class);
-                } else {
-                    int id = DataSupport.select("db_znd_date")
-                            .where("db_znd_date like ?", "%" + bedate(false) + "%")
-                            .find(dbZhihuNewsDate.class).get(0).getId();
-                    l = DataSupport.where("dbzhihunewsdate_id like ?", "%" + id + "%")
-                            .order("listSorting asc")
-                            .find(dbZhihuNews.class);
-                }
-                //获取之前集合大小
-                int a = dataList.size();
-
-                for (int i = 0; i < l.size(); i++) {
-                    dataList.add(i + a, l.get(i));
-                }
-
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        adapter.notifyDataSetChanged();
-                    }
-                });
+                failureZhihu(b, false);
             }
 
             @Override
@@ -215,20 +195,46 @@ public class ZhihuFragment extends Fragment{
             //上拉加载
             @Override
             public void onLoadMore() {
-
-                List<dbZhihuNewsDate> date = DataSupport.select("db_znd_date")
-                        .where("db_znd_date like ?", "%" + bedate(true) + "%")
+                c_db.add(c_db.DAY_OF_MONTH, -1);
+                c_net.add(c_net.DAY_OF_MONTH, -1);
+                List<dbZhihuNewsDate> date = DataSupport.select("db_znd_date", "dbnewscount")
+                        .where("db_znd_date like ?", "%" + Analysis(c_db) + "%")
                         .find(dbZhihuNewsDate.class);
-                if (date.size() != 0) {
+                Log.d(TAG, "onLoadMore: date.size:" + date.get(0).getDbnewscount());
+                //判断要加载的数据库中是否有,没有就请求
+                if (date.size() == 0) {
+                    //判断是否有网，有网的话就请求内容，没有的话显示已经到底
+                    if (!isnetwork) {
+                        new Handler().postDelayed(new Runnable(){
+                            public void run() {
+                                ToastUtil.showToast(getContext(), "已经到底了哟~");
+                                zhihuRecyclerView.refreshComplete();
+                            }
+                        }, 1000);
+                    } else {
+                        new Handler().postDelayed(new Runnable(){
+                            public void run() {
+                                loadZhihuDailyNews(false);
+                                zhihuRecyclerView.loadMoreComplete();
+                            }
+                        }, 1000);
+                    }
+                    //判断数据库中某日期的内容是否够，不够的话就请求内容，够的话便从数据库中提取
+                }else if (date.get(0).getDbnewscount() != 20){
                     new Handler().postDelayed(new Runnable(){
                         public void run() {
                             loadZhihuDailyNews(false);
                             zhihuRecyclerView.loadMoreComplete();
                         }
                     }, 1000);
-                } else {
-                    ToastUtil.showToast(getContext(), "已经到底了哟~");
-                    zhihuRecyclerView.refreshComplete();
+                }else {
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            failureZhihu(false, false);
+                            zhihuRecyclerView.loadMoreComplete();
+                        }
+                    }, 1000);
                 }
             }
         });
@@ -239,36 +245,48 @@ public class ZhihuFragment extends Fragment{
     }
 
     /**
-     * 今日date
-     * @return
-     * @boolean b 判断是否有网
+     * 从数据库中加载
+     * @param b 是否第一次加载
+     * @param therd 是否在UI线程中，true为UI线程，flase为请求线程
      */
-    private String date(boolean b){
-
-        c = Calendar.getInstance();
+    private void failureZhihu(boolean b, boolean therd) {
         if (b) {
-            /**
-             * 有网时，因为数据请求需要，获取今日内容需要的日期是第二天
-             */
-            c.add(Calendar.DAY_OF_MONTH, +1);
+            //提出记录的日期，按日期加载内容
+            SharedPreferences prefer = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            String date = prefer.getString("date", null);
+            Log.d(TAG, "onFailure: date:" + date);
+            int id = DataSupport.select("db_znd_date")
+                    .where("db_znd_date like ?", "%" + date + "%")
+                    .find(dbZhihuNewsDate.class).get(0).getId();
+            l = DataSupport.where("dbzhihunewsdate_id like ?", "%" + id + "%")
+                    .order("listSorting asc")
+                    .find(dbZhihuNews.class);
+        } else {
+            int id = DataSupport.select("db_znd_date")
+                    .where("db_znd_date like ?", "%" + Analysis(c_db) + "%")
+                    .find(dbZhihuNewsDate.class).get(0).getId();
+            l = DataSupport.where("dbzhihunewsdate_id like ?", "%" + id + "%")
+                    .order("listSorting asc")
+                    .find(dbZhihuNews.class);
         }
-        return Analysis(c);
+        //获取之前集合大小
+        int a = dataList.size();
+
+        for (int i = 0; i < l.size(); i++) {
+            dataList.add(i + a, l.get(i));
+        }
+        if (therd) {
+            adapter.notifyDataSetChanged();
+        }else {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    adapter.notifyDataSetChanged();
+                }
+            });
+        }
     }
 
-    /**
-     * 之前date
-     * @return
-     */
-    private String bedate(boolean b) {
-
-        if (b) {
-            /**
-             * 将时间往前一天
-             */
-            c.add(c.DAY_OF_MONTH, -1);
-        }
-        return Analysis(c);
-    }
 
     /**
      * 将时间转换成字符串
@@ -304,7 +322,7 @@ public class ZhihuFragment extends Fragment{
         dataList = null;
         adapter.clearMemory();//清除adapter中各个变量的内存
         adapter = null;
-        c = null;
+        c_db = null;
     }
     @Override
     public void onDestroy() {

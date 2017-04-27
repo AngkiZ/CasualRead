@@ -24,6 +24,7 @@ import com.angki.casualread.gank.gson.GankWelfareDatas;
 import com.angki.casualread.joke.gson.JokeData;
 import com.angki.casualread.recommend.adapter.RecommendAdapter;
 import com.angki.casualread.util.Api;
+import com.angki.casualread.util.App;
 import com.angki.casualread.util.HttpUtil;
 import com.angki.casualread.util.NetworkStatus;
 import com.angki.casualread.util.ToastUtil;
@@ -65,7 +66,6 @@ public class RecommendFragemnt extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-
         View view = inflater.inflate(R.layout.recommend_fragment, container, false);
         //清空列表
         zhihuData.clear();
@@ -75,7 +75,6 @@ public class RecommendFragemnt extends Fragment {
         welfareData.clear();
         gankData.clear();
         jokeData.clear();
-
         loadZhihuContent();
         loadWelfareContent();
         loadGankContent();
@@ -338,24 +337,7 @@ public class RecommendFragemnt extends Fragment {
         HttpUtil.sendOkHttpRequest(url, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-
-                SharedPreferences prefs = PreferenceManager
-                        .getDefaultSharedPreferences(getActivity());
-                String JSON = prefs.getString("Joke", null);
-                //解析数据
-                final List<JokeData> jokeDatas = Utility.handleJokeResponse(JSON);
-
-                for (int i = 0; i < jokeDatas.size(); i++) {
-
-                    jokeData.add(jokeDatas.get(i));
-                }
-                //加载数据
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        adapter.notifyDataSetChanged();
-                    }
-                });
+                failureJoke();
             }
 
             @Override
@@ -365,23 +347,49 @@ public class RecommendFragemnt extends Fragment {
                 final String responseData = response.body().string();
                 //解析数据
                 final List<JokeData> jokeDatas = Utility.handleJokeResponse(responseData);
+                //当jokeDatas为null时，表示请求失败，读取以前数据
+                if (jokeDatas != null) {
+                    for (int i = 0; i < jokeDatas.size(); i++) {
 
-                for (int i = 0; i < jokeDatas.size(); i++) {
-
-                    jokeData.add(jokeDatas.get(i));
-                }
-                //加载数据
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        adapter.notifyDataSetChanged();
-                        SharedPreferences.Editor editor = PreferenceManager
-                                .getDefaultSharedPreferences(getActivity()).edit();
-                        editor.putString("Joke", responseData);
-                        editor.apply();
+                        jokeData.add(jokeDatas.get(i));
                     }
-                });
+                    //加载数据
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            adapter.notifyDataSetChanged();
+                            SharedPreferences.Editor editor = PreferenceManager
+                                    .getDefaultSharedPreferences(getActivity()).edit();
+                            editor.putString("Joke", responseData);
+                            editor.apply();
+                        }
+                    });
+                } else {
+                    failureJoke();
+                }
+            }
+        });
+    }
 
+    /**
+     * 当请求失败时加载
+     */
+    private void failureJoke() {
+        SharedPreferences prefs = PreferenceManager
+                .getDefaultSharedPreferences(getActivity());
+        String JSON = prefs.getString("Joke", null);
+        //解析数据
+        final List<JokeData> jokeDatas = Utility.handleJokeResponse(JSON);
+
+        for (int i = 0; i < jokeDatas.size(); i++) {
+
+            jokeData.add(jokeDatas.get(i));
+        }
+        //加载数据
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                adapter.notifyDataSetChanged();
             }
         });
     }

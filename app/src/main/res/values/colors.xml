@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name="colorPrimary">#0ba2e7</color>
+    <color name="colorPrimaryDark">#0c9eca</color>
+    <color name="colorAccent">#039be5</color>
     <color name="white">#fff</color>
     <color name="black">#000</color>
 
+    <!--tab标签栏下划线的颜色-->
+    <color name="tabIndicatorColor">#81d4fa</color>
     <!--tab标签栏文字的颜色-->
-    <color name="colorTabText">#585858</color>
+    <color name="colorTabText">#bdbdbd</color>
     <!--正文文字颜色-->
     <color name="colorContent">#000000</color>
     <!--刷新进度条的的颜色-->
@@ -15,11 +17,13 @@
     <!--推荐碎片title栏的文字颜色-->
     <color name="recommTitleColor">#ff333333</color>
     <!--关于页面的标题颜色-->
-    <color name="about_title">#2cd4ed</color>
+    <color name="about_title">#039be5</color>
     <!--分割线颜色-->
     <color name="line_color">#4b595b</color>
     <!--about页面的条目未被点击的颜色-->
     <color name="click_normal">#00fcfcfc</color>
     <!--about页面的条目被点击的颜色-->
     <color name="click_select">#8e8ea3</color>
+    <!--gank的作者名字颜色-->
+    <color name="gank_author">#bdbdbd</color>
 </resources>

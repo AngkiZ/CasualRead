@@ -13,7 +13,6 @@ public class MarginUtil {
     public static ViewGroup.LayoutParams
     setViewMargin(View view, int left, int top, int right, int bottom) {
 
-
         ViewGroup.LayoutParams params = view.getLayoutParams();
         ViewGroup.MarginLayoutParams marginParams = null;
 

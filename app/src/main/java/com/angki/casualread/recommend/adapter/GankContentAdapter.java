@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.angki.casualread.R;
 import com.angki.casualread.gank.GankActivity;
 import com.angki.casualread.gank.gson.GankData;
+import com.angki.casualread.util.MarginUtil;
 
 import java.util.List;
 
@@ -68,8 +69,14 @@ public class GankContentAdapter extends RecyclerView.Adapter<GankContentAdapter.
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
+        if (position == 0 ) {
+            MarginUtil.setViewMargin(holder.cardView, 0, 0, 0, 8);
+        }else if (position == mGankDataList.size()) {
+            MarginUtil.setViewMargin(holder.cardView, 0, 8, 0, 0);
+        }else {
+            MarginUtil.setViewMargin(holder.cardView, 0, 8, 0, 8);
+        }
         GankData gankData = mGankDataList.get(position);
-
         holder.title.setText(gankData.getDesc());
         holder.author.setText(gankData.getWho());
     }

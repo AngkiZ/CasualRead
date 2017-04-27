@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:text="每日一冷"
-            android:textSize="18sp"
+            android:textSize="@dimen/recommand_title"
             android:textColor="@color/recommTitleColor"/>
 
         <LinearLayout
@@ -33,7 +33,7 @@
                 android:layout_height="wrap_content"
                 android:clickable="true"
                 android:text="更多"
-                android:textSize="12sp"
+                android:textSize="@dimen/recommand_title_more"
                 android:textColor="@color/colorTabText"/>
 
             <ImageView

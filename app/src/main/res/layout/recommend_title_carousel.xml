@@ -9,7 +9,7 @@
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/zhihu_daily_hot"
         android:layout_width="match_parent"
-        android:layout_height="250dp"
+        android:layout_height="@dimen/banner_height"
         app:delay_time="4000"
         app:title_textsize="15sp" />
 

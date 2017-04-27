@@ -3,24 +3,24 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <!--recommand的标题字体大小-->
-    <dimen name="recommand_title">18sp</dimen>
-    <dimen name="recommand_title_more">12sp</dimen>
+    <dimen name="recommand_title">15sp</dimen>
+    <dimen name="recommand_title_more">9sp</dimen>
     <!--recommand的知乎内容字体大小-->
-    <dimen name="recommand_content_zhihu">18sp</dimen>
+    <dimen name="recommand_content_zhihu">12sp</dimen>
     <!--recommand的gank内容字体大小-->
-    <dimen name="recommand_content_gank_title">18sp</dimen>
-    <dimen name="recommand_content_gank_author">15sp</dimen>
+    <dimen name="recommand_content_gank_title">15sp</dimen>
+    <dimen name="recommand_content_gank_author">12sp</dimen>
     <!--recommand的joke内容字体大小-->
-    <dimen name="recommand_content_joke">20sp</dimen>
+    <dimen name="recommand_content_joke">15sp</dimen>
     <!--fragment的zhihu内容字体大小-->
-    <dimen name="fragment_zhihu">18sp</dimen>
+    <dimen name="fragment_zhihu">15sp</dimen>
     <!--fragment的gank内容字体大小-->
-    <dimen name="fragment_gank_title">18sp</dimen>
-    <dimen name="fragment_gank_author">15sp</dimen>
+    <dimen name="fragment_gank_title">15sp</dimen>
+    <dimen name="fragment_gank_author">12sp</dimen>
     <!--fragment的joke内容字体大小-->
-    <dimen name="fragment_joke">20sp</dimen>
+    <dimen name="fragment_joke">15sp</dimen>
     <!--recommand中的banner的title-->
-    <dimen name="banner_title">15sp</dimen>
+    <dimen name="banner_title">12sp</dimen>
 
     <!--组件尺寸-->
     <!--recommand中的banner的height-->
@@ -28,11 +28,11 @@
     <!--recommand中的welfare的height-->
     <dimen name="welfare_height">180dp</dimen>
     <!--fragment中的zhihu的item的height-->
-    <dimen name="fragment_zhihuItem_height">96dp</dimen>
+    <dimen name="fragment_zhihuItem_height">86dp</dimen>
     <!--fragment中的zhihu配图的width,height-->
-    <dimen name="fragment_zhihuImager_width">80dp</dimen>
-    <dimen name="fragment_zhihuImager_height">80dp</dimen>
+    <dimen name="fragment_zhihuImager_width">70dp</dimen>
+    <dimen name="fragment_zhihuImager_height">70dp</dimen>
     <!--fragment中的gank配图的width,height-->
-    <dimen name="fragment_gankImager_width">80dp</dimen>
-    <dimen name="fragment_gankImager_height">80dp</dimen>
+    <dimen name="fragment_gankImager_width">70dp</dimen>
+    <dimen name="fragment_gankImager_height">70dp</dimen>
 </resources>

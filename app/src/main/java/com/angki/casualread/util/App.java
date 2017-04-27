@@ -16,6 +16,7 @@ import org.litepal.LitePalApplication;
 
 public class App extends LitePalApplication{
     private static final String TAG = "App";
+    public static boolean isFirstLoad = true;
     @Override
     public void onCreate() {
         super.onCreate();
@@ -37,4 +38,5 @@ public class App extends LitePalApplication{
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         }
     }
+
 }

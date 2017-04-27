@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.angki.casualread.R;
 import com.angki.casualread.joke.gson.JokeData;
+import com.angki.casualread.util.MarginUtil;
 
 import java.util.List;
 
@@ -55,8 +56,14 @@ public class JokeContentAdapter extends RecyclerView.Adapter<JokeContentAdapter.
     @Override
     public void onBindViewHolder(JokeContentAdapter.ViewHolder holder, int position) {
 
+        if (position == 0 ) {
+            MarginUtil.setViewMargin(holder.cardView, 0, 0, 0, 8);
+        }else if (position == mDataList.size()) {
+            MarginUtil.setViewMargin(holder.cardView, 0, 8, 0, 0);
+        }else {
+            MarginUtil.setViewMargin(holder.cardView, 0, 8, 0, 8);
+        }
         JokeData jokeData = mDataList.get(position);
-
         holder.content.setText(jokeData.getContent());
     }
 

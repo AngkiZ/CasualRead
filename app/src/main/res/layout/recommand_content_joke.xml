@@ -16,7 +16,7 @@
         android:layout_margin="15dp"
         android:gravity="center_vertical"
         android:textIsSelectable="true"
-        android:textSize="20sp"
+        android:textSize="@dimen/recommand_content_joke"
         android:textColor="@color/colorContent" />
 
 </android.support.v7.widget.CardView>

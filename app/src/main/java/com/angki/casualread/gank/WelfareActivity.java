@@ -1,12 +1,17 @@
 package com.angki.casualread.gank;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -91,7 +96,7 @@ public class WelfareActivity extends AppCompatActivity implements ViewPager.OnPa
         File appDir = new File(Environment.getExternalStorageDirectory(), "瞎Read相册");
         //判断这个文件是否存在，不存在就创建该目录
         if (!appDir.exists()) {
-            appDir.mkdir();
+            appDir.mkdirs();
         }
         //文件命名使用下载时间+.jpg
         String fileName = id + ".jpg";
@@ -152,37 +157,74 @@ public class WelfareActivity extends AppCompatActivity implements ViewPager.OnPa
         imagedownload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                //权限申请
+                if (ContextCompat.checkSelfPermission(WelfareActivity.this,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE) !=
+                        PackageManager.PERMISSION_GRANTED) {
 
-                ToastUtil.showToast(WelfareActivity.this, "开始下载");
-                final BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        // 子线程获得图片路径
-                        final String imagePath = getImagePath(urlList.get(page));
-                        //主线程更新
-                        WelfareActivity.this.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (imagePath != null) {
-                                    Bitmap bitmap = BitmapFactory.decodeFile(imagePath, bmOptions);
-                                    if (bitmap != null) {
-                                        //判断图片是否已经在相册存在
-                                        if (saveImageToGallery(WelfareActivity.this, bitmap, idList.get(page))) {
-                                            ToastUtil.showToast(WelfareActivity.this, "以保存至" +
-                                                    Environment.getExternalStorageDirectory()
-                                                            .getAbsolutePath()+"/瞎Read相册");
-                                        }else {
-                                            ToastUtil.showToast(WelfareActivity.this, "图片已存在~");
-                                        }
-                                    }
-                                }
-                            }
-                        });
-                    }
-                }).start();
+                    ActivityCompat.requestPermissions(WelfareActivity.this,
+                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                }else {
+                    saveImage();
+                }
             }
         });
+    }
+
+    /**
+     * 保存相片的方法
+     */
+    private void saveImage() {
+
+        ToastUtil.showToast(WelfareActivity.this, "开始下载");
+        final BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                // 子线程获得图片路径
+                final String imagePath = getImagePath(urlList.get(page));
+                //主线程更新
+                WelfareActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        if (imagePath != null) {
+                            Bitmap bitmap = BitmapFactory.decodeFile(imagePath, bmOptions);
+                            if (bitmap != null) {
+                                //判断图片是否已经在相册存在
+                                if (saveImageToGallery(WelfareActivity.this, bitmap, idList.get(page))) {
+                                    ToastUtil.showToast(WelfareActivity.this, "以保存至" +
+                                            Environment.getExternalStorageDirectory()
+                                                    .getAbsolutePath()+"/瞎Read相册");
+                                }else {
+                                    ToastUtil.showToast(WelfareActivity.this, "图片已存在~");
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }).start();
+    }
+
+    /**
+     * 权限申请的回调结果
+     * @param requestCode 请求码
+     * @param permissions 权限数组
+     * @param grantResults 授权结果
+     */
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case 1:
+                if (grantResults.length > 0 && grantResults[0] ==
+                        PackageManager.PERMISSION_GRANTED) {
+
+                    saveImage();
+                }else {
+                    ToastUtil.showToast(WelfareActivity.this, "没有权限，保存图片失败..");
+                }
+        }
     }
 
     /**

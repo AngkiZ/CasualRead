@@ -18,7 +18,7 @@
         android:layout_height="match_parent"
         android:layout_margin="10dp"
         android:gravity="center_vertical"
-        android:textSize="20sp"
+        android:textSize="@dimen/fragment_joke"
         android:textIsSelectable="true"
         android:textColor="@color/colorContent"/>
 

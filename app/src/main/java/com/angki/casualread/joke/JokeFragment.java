@@ -78,22 +78,7 @@ public class JokeFragment extends Fragment{
         HttpUtil.sendOkHttpRequest(url, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                //获取指定页数的内容集合
-                List<dbJoke> jokeList = DataSupport
-                        .where("db_joke_page like ?", "%" + page + "%")
-                        .order("db_joke_listSorting asc")
-                        .find(dbJoke.class);
-                //获取之前集合大小
-                int a = dataList.size();
-                for (int i = 0; i < jokeList.size(); i++) {
-                    dataList.add(i + a, jokeList.get(i));
-                }
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        adapter.notifyDataSetChanged();
-                    }
-                });
+                failureJoke();
             }
 
             @Override
@@ -103,26 +88,30 @@ public class JokeFragment extends Fragment{
                 final String responseData = response.body().string();
                 //解析数据
                 final List<JokeData> jokeData = Utility.handleJokeResponse(responseData);
-                //获取之前集合大小
-                int a = dataList.size();
-                for (int i = 0; i < jokeData.size(); i++) {
-                    mdbJoke = new dbJoke();
-                    mdbJoke.setDb_joke_id(jokeData.get(i).getHashId());
-                    mdbJoke.setDb_joke_content(jokeData.get(i).getContent());
-                    mdbJoke.setDb_joke_listSorting(i);
-                    mdbJoke.setDb_joke_page(page);
-                    dataList.add(i + a, mdbJoke);
-                }
-                //存储数据
-                new dbUtil().dbjokeSave(jokeData, page);
-                //刷新数据
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        adapter.notifyDataSetChanged();
+                if (jokeData != null) {
+                    //获取之前集合大小
+                    int a = dataList.size();
+                    for (int i = 0; i < jokeData.size(); i++) {
+                        mdbJoke = new dbJoke();
+                        mdbJoke.setDb_joke_id(jokeData.get(i).getHashId());
+                        mdbJoke.setDb_joke_content(jokeData.get(i).getContent());
+                        mdbJoke.setDb_joke_listSorting(i);
+                        mdbJoke.setDb_joke_page(page);
+                        dataList.add(i + a, mdbJoke);
                     }
-                });
+                    //存储数据
+                    new dbUtil().dbjokeSave(jokeData, page);
+                    //刷新数据
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+
+                            adapter.notifyDataSetChanged();
+                        }
+                    });
+                }else {
+                    failureJoke();
+                }
             }
         });
     }
@@ -184,6 +173,38 @@ public class JokeFragment extends Fragment{
         //加载adapter
         adapter = new JokeFragmentRecyclerViewAdapter(dataList);
         jokeRecyclerView.setAdapter(adapter);
+    }
+
+    /**
+     * 从数据库中加载
+     */
+    private void failureJoke() {
+        //获取指定页数的内容集合
+        List<dbJoke> jokeList = DataSupport
+                .where("db_joke_page like ?", "%" + page + "%")
+                .order("db_joke_listSorting asc")
+                .find(dbJoke.class);
+        if (jokeList.size() == 0) {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    ToastUtil.showToast(getContext(), "已经到底了哟~");
+                    jokeRecyclerView.refreshComplete();
+                }
+            });
+        }else {
+            //获取之前集合大小
+            int a = dataList.size();
+            for (int i = 0; i < jokeList.size(); i++) {
+                dataList.add(i + a, jokeList.get(i));
+            }
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    adapter.notifyDataSetChanged();
+                }
+            });
+        }
     }
 
     /**

@@ -22,7 +22,7 @@
             android:layout_marginTop="15dp"
             android:layout_centerVertical="true"
             android:textColor="@color/colorContent"
-            android:textSize="18sp"/>
+            android:textSize="@dimen/recommand_content_gank_title"/>
 
         <TextView
             android:id="@+id/recommand_gank_recyclerview_author"
@@ -32,7 +32,7 @@
             android:layout_marginTop="15dp"
             android:layout_marginLeft="15dp"
             android:layout_marginBottom="8dp"
-            android:textSize="15sp"/>
+            android:textSize="@dimen/recommand_content_gank_author"/>
 
     </LinearLayout>
 
