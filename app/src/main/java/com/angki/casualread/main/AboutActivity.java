@@ -1,4 +1,4 @@
-package com.angki.casualread.about;
+package com.angki.casualread.main;
 
 import android.content.Intent;
 import android.net.Uri;

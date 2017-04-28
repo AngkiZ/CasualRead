@@ -20,7 +20,6 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.angki.casualread.R;
-import com.angki.casualread.about.AboutActivity;
 
 import static com.angki.casualread.R.id.drawer_layout_about;
 import static com.angki.casualread.R.id.drawer_layout_collect;

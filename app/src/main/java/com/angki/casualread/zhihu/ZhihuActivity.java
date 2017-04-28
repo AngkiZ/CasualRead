@@ -295,6 +295,8 @@ public class ZhihuActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        end();
+        if (toolbar.getId() != R.id.activity_zhihu_null_layout_collapsing_toolbar){
+            end();
+        }
     }
 }

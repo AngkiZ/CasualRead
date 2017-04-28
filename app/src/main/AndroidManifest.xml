@@ -35,7 +35,7 @@
             android:name=".gank.WelfareActivity"
             android:theme="@style/ViewBigPicTheme" />
         <activity
-            android:name=".about.AboutActivity"
+            android:name=".main.AboutActivity"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".main.DummyActivity"

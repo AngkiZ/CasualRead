@@ -1,221 +1,230 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/activity_about"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.angki.casualread.about.AboutActivity">
+    android:fitsSystemWindows="true">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/activity_about_toolbar"
+    <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
+        android:layout_height="wrap_content"
+        app:elevation="0dp">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/activity_about_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
+
+    </android.support.design.widget.AppBarLayout>
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-       <LinearLayout
-           android:layout_width="match_parent"
-           android:layout_height="match_parent"
-           android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-           <TextView
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:layout_marginTop="10dp"
-               android:layout_marginStart="10dp"
-               android:text="@string/app_name"
-               android:textSize="15sp"
-               android:textColor="@color/about_title"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="10dp"
+                android:text="@string/app_name"
+                android:textSize="15sp"
+                android:textColor="@color/about_title"/>
 
-           <LinearLayout
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:clickable="true"
-               android:background="@drawable/click_effect"
-               android:orientation="vertical"
-               android:showDividers="beginning">
-               <TextView
-                   android:layout_width="match_parent"
-                   android:layout_height="wrap_content"
-                   android:layout_marginTop="20dp"
-                   android:layout_marginStart="10dp"
-                   android:text="@string/app_version"
-                   android:textSize="18sp"/>
-               <TextView
-                   android:layout_width="match_parent"
-                   android:layout_height="wrap_content"
-                   android:layout_marginBottom="12.5dp"
-                   android:layout_marginStart="10dp"
-                   android:text="@string/click_update"/>
-           </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:background="@drawable/click_effect"
+                android:orientation="vertical"
+                android:showDividers="beginning">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginStart="10dp"
+                    android:text="@string/app_version"
+                    android:textSize="18sp"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12.5dp"
+                    android:layout_marginStart="10dp"
+                    android:text="@string/click_update"/>
+            </LinearLayout>
 
-           <LinearLayout
-               android:id="@+id/activity_about_bug"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:background="@drawable/click_effect"
-               android:orientation="vertical"
-               android:clickable="true"
-               android:divider="@drawable/dividing_line"
-               android:showDividers="beginning">
+            <LinearLayout
+                android:id="@+id/activity_about_bug"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/click_effect"
+                android:orientation="vertical"
+                android:clickable="true"
+                android:divider="@drawable/dividing_line"
+                android:showDividers="beginning">
 
-               <TextView
-                   android:layout_width="match_parent"
-                   android:layout_height="wrap_content"
-                   android:background="@drawable/click_effect"
-                   android:layout_marginTop="12.5dp"
-                   android:layout_marginStart="10dp"
-                   android:text="@string/feedback_bug"
-                   android:textSize="18sp" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/click_effect"
+                    android:layout_marginTop="12.5dp"
+                    android:layout_marginStart="10dp"
+                    android:text="@string/feedback_bug"
+                    android:textSize="18sp" />
 
-               <TextView
-                   android:layout_width="match_parent"
-                   android:layout_height="wrap_content"
-                   android:layout_marginBottom="12.5dp"
-                   android:layout_marginStart="10dp"
-                   android:text="@string/thanks_support"/>
-           </LinearLayout>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12.5dp"
+                    android:layout_marginStart="10dp"
+                    android:text="@string/thanks_support"/>
+            </LinearLayout>
 
-           <TextView
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:layout_marginTop="12.5dp"
-               android:layout_marginBottom="12.5dp"
-               android:layout_marginStart="10dp"
-               android:text="@string/author"
-               android:textSize="15sp"
-               android:textColor="@color/about_title"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12.5dp"
+                android:layout_marginBottom="12.5dp"
+                android:layout_marginStart="10dp"
+                android:text="@string/author"
+                android:textSize="15sp"
+                android:textColor="@color/about_title"/>
 
-           <TextView
-               android:layout_width="match_parent"
-               android:layout_height="37.5dp"
-               android:layout_marginTop="12.5dp"
-               android:layout_marginBottom="12.5dp"
-               android:layout_marginStart="10dp"
-               android:gravity="center_vertical"
-               android:text="@string/author_name"
-               android:textSize="18sp"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="37.5dp"
+                android:layout_marginTop="12.5dp"
+                android:layout_marginBottom="12.5dp"
+                android:layout_marginStart="10dp"
+                android:gravity="center_vertical"
+                android:text="@string/author_name"
+                android:textSize="18sp"/>
 
-           <LinearLayout
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:clickable="true"
-               android:background="@drawable/click_effect"
-               android:orientation="vertical"
-               android:divider="@drawable/dividing_line"
-               android:showDividers="beginning">
-               <TextView
-                   android:layout_width="match_parent"
-                   android:layout_height="wrap_content"
-                   android:layout_marginTop="12.5dp"
-                   android:layout_marginStart="10dp"
-                   android:text="@string/mailbox"
-                   android:textSize="18sp"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:background="@drawable/click_effect"
+                android:orientation="vertical"
+                android:divider="@drawable/dividing_line"
+                android:showDividers="beginning">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12.5dp"
+                    android:layout_marginStart="10dp"
+                    android:text="@string/mailbox"
+                    android:textSize="18sp"/>
 
-               <TextView
-                   android:layout_width="match_parent"
-                   android:layout_height="wrap_content"
-                   android:layout_marginStart="10dp"
-                   android:layout_marginBottom="12.5dp"
-                   android:text="@string/mailbox_address"/>
-           </LinearLayout>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginBottom="12.5dp"
+                    android:text="@string/mailbox_address"/>
+            </LinearLayout>
 
-           <LinearLayout
-               android:id="@+id/activity_about_github"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:background="@drawable/click_effect"
-               android:orientation="vertical"
-               android:clickable="true"
-               android:divider="@drawable/dividing_line"
-               android:showDividers="beginning">
+            <LinearLayout
+                android:id="@+id/activity_about_github"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/click_effect"
+                android:orientation="vertical"
+                android:clickable="true"
+                android:divider="@drawable/dividing_line"
+                android:showDividers="beginning">
 
-               <TextView
-                   android:layout_width="match_parent"
-                   android:layout_height="wrap_content"
-                   android:layout_marginTop="12.5dp"
-                   android:layout_marginStart="10dp"
-                   android:text="@string/github"
-                   android:textSize="18sp" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12.5dp"
+                    android:layout_marginStart="10dp"
+                    android:text="@string/github"
+                    android:textSize="18sp" />
 
-               <TextView
-                   android:layout_width="match_parent"
-                   android:layout_height="wrap_content"
-                   android:layout_marginStart="10dp"
-                   android:layout_marginBottom="12.5dp"
-                   android:text="@string/github_address"/>
-           </LinearLayout>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginBottom="12.5dp"
+                    android:text="@string/github_address"/>
+            </LinearLayout>
 
-           <TextView
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:layout_marginTop="12.5dp"
-               android:layout_marginStart="10dp"
-               android:text="@string/data_source"
-               android:textSize="15sp"
-               android:textColor="@color/about_title"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12.5dp"
+                android:layout_marginStart="10dp"
+                android:text="@string/data_source"
+                android:textSize="15sp"
+                android:textColor="@color/about_title"/>
 
-           <LinearLayout
-               android:id="@+id/data_source_zhihu"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:clickable="true"
-               android:background="@drawable/click_effect"
-               android:layout_marginTop="12.5dp"
-               android:orientation="vertical">
-               <TextView
-                   android:layout_width="match_parent"
-                   android:layout_height="wrap_content"
-                   android:layout_marginTop="12.5dp"
-                   android:layout_marginBottom="12.5dp"
-                   android:layout_marginStart="10dp"
-                   android:text="@string/data_source_zhihu"
-                   android:textSize="18sp" />
-           </LinearLayout>
+            <LinearLayout
+                android:id="@+id/data_source_zhihu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:background="@drawable/click_effect"
+                android:layout_marginTop="12.5dp"
+                android:orientation="vertical">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12.5dp"
+                    android:layout_marginBottom="12.5dp"
+                    android:layout_marginStart="10dp"
+                    android:text="@string/data_source_zhihu"
+                    android:textSize="18sp" />
+            </LinearLayout>
 
-           <LinearLayout
-               android:id="@+id/data_source_gank"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:clickable="true"
-               android:background="@drawable/click_effect"
-               android:orientation="vertical"
-               android:divider="@drawable/dividing_line"
-               android:showDividers="beginning">
-               <TextView
-                   android:layout_width="match_parent"
-                   android:layout_height="wrap_content"
-                   android:layout_marginTop="12.5dp"
-                   android:layout_marginBottom="12.5dp"
-                   android:layout_marginStart="10dp"
-                   android:text="@string/data_source_gank"
-                   android:textSize="18sp" />
-           </LinearLayout>
+            <LinearLayout
+                android:id="@+id/data_source_gank"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:background="@drawable/click_effect"
+                android:orientation="vertical"
+                android:divider="@drawable/dividing_line"
+                android:showDividers="beginning">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12.5dp"
+                    android:layout_marginBottom="12.5dp"
+                    android:layout_marginStart="10dp"
+                    android:text="@string/data_source_gank"
+                    android:textSize="18sp" />
+            </LinearLayout>
 
-           <LinearLayout
-               android:id="@+id/data_source_joke"
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:clickable="true"
-               android:background="@drawable/click_effect"
-               android:orientation="vertical"
-               android:divider="@drawable/dividing_line"
-               android:showDividers="beginning">
-               <TextView
-                   android:layout_width="match_parent"
-                   android:layout_height="wrap_content"
-                   android:layout_marginTop="12.5dp"
-                   android:layout_marginBottom="12.5dp"
-                   android:layout_marginStart="10dp"
-                   android:text="@string/data_source_joke"
-                   android:textSize="18sp" />
-           </LinearLayout>
+            <LinearLayout
+                android:id="@+id/data_source_joke"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:background="@drawable/click_effect"
+                android:orientation="vertical"
+                android:divider="@drawable/dividing_line"
+                android:showDividers="beginning">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12.5dp"
+                    android:layout_marginBottom="12.5dp"
+                    android:layout_marginStart="10dp"
+                    android:text="@string/data_source_joke"
+                    android:textSize="18sp" />
+            </LinearLayout>
 
-       </LinearLayout>
+        </LinearLayout>
     </ScrollView>
-</LinearLayout>
+</android.support.design.widget.CoordinatorLayout>
