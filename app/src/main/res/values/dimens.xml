@@ -6,7 +6,7 @@
     <dimen name="recommand_title">18sp</dimen>
     <dimen name="recommand_title_more">12sp</dimen>
     <!--recommand的知乎内容字体大小-->
-    <dimen name="recommand_content_zhihu">18sp</dimen>
+    <dimen name="recommand_content_zhihu">15sp</dimen>
     <!--recommand的gank内容字体大小-->
     <dimen name="recommand_content_gank_title">18sp</dimen>
     <dimen name="recommand_content_gank_author">15sp</dimen>
@@ -21,6 +21,8 @@
     <dimen name="fragment_joke">20sp</dimen>
     <!--recommand中的banner的title-->
     <dimen name="banner_title">15sp</dimen>
+    <!--zhihuActivity中的title-->
+    <dimen name="activity_zhihu_title">20sp</dimen>
 
     <!--组件尺寸-->
     <!--recommand中的banner的height-->

@@ -22,8 +22,6 @@ import java.util.List;
 
 public class GankContentAdapter extends RecyclerView.Adapter<GankContentAdapter.ViewHolder> {
 
-    private final Context mcontext;
-
     private List<GankData> mGankDataList;
 
     static class ViewHolder extends RecyclerView.ViewHolder {
@@ -41,9 +39,7 @@ public class GankContentAdapter extends RecyclerView.Adapter<GankContentAdapter.
         }
     }
 
-    public GankContentAdapter(Context context, List<GankData> GankDataList) {
-
-        this.mcontext = context;
+    public GankContentAdapter(List<GankData> GankDataList) {
 
         this.mGankDataList = GankDataList;
     }

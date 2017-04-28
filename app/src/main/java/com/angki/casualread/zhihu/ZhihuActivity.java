@@ -1,6 +1,7 @@
 package com.angki.casualread.zhihu;
 
 import android.content.res.Configuration;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -15,6 +16,7 @@ import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.angki.casualread.R;
 import com.angki.casualread.util.Api;
@@ -22,6 +24,7 @@ import com.angki.casualread.util.HttpUtil;
 import com.angki.casualread.util.NetworkStatus;
 import com.angki.casualread.util.Utility;
 import com.angki.casualread.util.dbUtil;
+import com.angki.casualread.zhihu.adapter.AppBarStateChangeListener;
 import com.angki.casualread.zhihu.db.dbZhihuNews;
 import com.angki.casualread.zhihu.db.dbZhihuStors;
 import com.angki.casualread.zhihu.gson.ZhihuDailyStory.StoryBean;
@@ -44,6 +47,8 @@ public class ZhihuActivity extends AppCompatActivity {
     private ImageView imageView;
     private StoryBean storyBean;
     private dbZhihuStors mdbZhihuStors;
+    private AppBarLayout appBarLayout;
+    private CollapsingToolbarLayout collapsingToolbar;
     private FloatingActionButton floatingActionButton;
     private boolean isCollection;//是否被收藏
     private List<dbZhihuStors> cache;//缓存
@@ -146,9 +151,11 @@ public class ZhihuActivity extends AppCompatActivity {
     /**
      * 加载组件
      */
-    private void LoadModule(String result, dbZhihuStors mdbZhihuStors) {
-        CollapsingToolbarLayout collapsingToolbar =
-                (CollapsingToolbarLayout) findViewById(R.id.activity_zhihu_layout_collapsing);
+    private void LoadModule(String result, final dbZhihuStors mdbZhihuStors) {
+        //加载控件
+        TextView textView = (TextView) findViewById(R.id.activity_zhihu_layout_collapsing_title);
+        collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.activity_zhihu_layout_collapsing);
+        appBarLayout = (AppBarLayout) findViewById(R.id.activity_zhihu_layout_appBar);
         toolbar = (Toolbar) findViewById(R.id.activity_zhihu_layout_collapsing_toolbar);
         imageView = (ImageView) findViewById(R.id.activity_zhihu_layout_collapsing_image);
         webView = (WebView) findViewById(R.id.activity_zhihu_layout_webview);
@@ -166,7 +173,27 @@ public class ZhihuActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-        collapsingToolbar.setTitle(mdbZhihuStors.getDb_zs_title());
+        //去掉默认标题
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        //设置CollapsingToolbarLayout中的标题
+        textView.setText(mdbZhihuStors.getDb_zs_title());
+        //监听CollapsingToolbarLayout的折叠、展开状态
+        appBarLayout.addOnOffsetChangedListener(new AppBarStateChangeListener() {
+            @Override
+            public void onStateChanged(AppBarLayout appBarLayout, State state) {
+                if( state == State.EXPANDED ) {
+                    //展开状态
+                    collapsingToolbar.setTitle("");
+                }else if(state == State.COLLAPSED){
+                    //折叠状态
+                    collapsingToolbar.setTitle(mdbZhihuStors.getDb_zs_title());
+                }else {
+                    //中间状态
+                    collapsingToolbar.setTitle("");
+                }
+            }
+        });
+        //CollapsingToolbarLayout中的图
         Glide.with(this).load(mdbZhihuStors.getDb_zs_image())
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .into(imageView);
@@ -236,6 +263,23 @@ public class ZhihuActivity extends AppCompatActivity {
             webView.destroy();
             webView = null;
         }
+        //移除CollapsingToolbarLayout监听事件
+        appBarLayout.removeOnOffsetChangedListener(new AppBarStateChangeListener() {
+            @Override
+            public void onStateChanged(AppBarLayout appBarLayout, State state) {
+                if( state == State.EXPANDED ) {
+                    //展开状态
+                    collapsingToolbar.setTitle("");
+                }else if(state == State.COLLAPSED){
+                    //折叠状态
+                    collapsingToolbar.setTitle(mdbZhihuStors.getDb_zs_title());
+                }else {
+                    //中间状态
+                    collapsingToolbar.setTitle("");
+                }
+            }
+        });
+        //清除图片
         Glide.clear(imageView);//停止加载
         Glide.get(this).clearMemory();//清理内存缓存
         //将各个组件置null，清除内存

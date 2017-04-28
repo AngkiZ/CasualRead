@@ -21,6 +21,8 @@
     <dimen name="fragment_joke">15sp</dimen>
     <!--recommand中的banner的title-->
     <dimen name="banner_title">12sp</dimen>
+    <!--zhihuActivity中的title-->
+    <dimen name="activity_zhihu_title">17sp</dimen>
 
     <!--组件尺寸-->
     <!--recommand中的banner的height-->

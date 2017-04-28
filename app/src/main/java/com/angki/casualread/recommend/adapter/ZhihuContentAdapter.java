@@ -80,8 +80,11 @@ public class ZhihuContentAdapter extends RecyclerView.Adapter<ZhihuContentAdapte
         holder.title.setText(zhihuDailyNews.getTitle());
         Glide.with(mContext)
                 .load(zhihuDailyNews.getImages().get(0))
+                .placeholder(R.drawable.ic_meizi)
+                .error(R.drawable.ic_meizi)
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .centerCrop()
+                .dontAnimate()
                 .into(holder.image);
     }
 

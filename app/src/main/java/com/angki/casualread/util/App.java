@@ -16,7 +16,7 @@ import org.litepal.LitePalApplication;
 
 public class App extends LitePalApplication{
     private static final String TAG = "App";
-    public static boolean isFirstLoad = true;
+    public static boolean isFirstLoad = true;//是否第一次启动
     @Override
     public void onCreate() {
         super.onCreate();

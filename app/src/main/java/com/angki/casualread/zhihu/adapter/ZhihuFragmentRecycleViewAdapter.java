@@ -93,8 +93,11 @@ public class ZhihuFragmentRecycleViewAdapter extends RecyclerView.Adapter<ZhihuF
         holder.zhihuTitle.setText(zhihuDailyNews.getDb_zn_title());
         Glide.with(mcontext)
                 .load(zhihuDailyNews.getDb_zn_image())
+                .placeholder(R.drawable.ic_meizi)
+                .error(R.drawable.ic_meizi)
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .centerCrop()
+                .dontAnimate()
                 .into(holder.zhihuImage);
     }
 

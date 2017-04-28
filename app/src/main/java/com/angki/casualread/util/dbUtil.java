@@ -45,8 +45,6 @@ public class dbUtil {
     public void dbzhihuSave(NewsBeans newsBeans) {
         //查询指定日期
         List<dbZhihuNewsDate> date = DataSupport.select("db_znd_date").where("db_znd_date like ?", "%" + newsBeans.getDate() + "%").find(dbZhihuNewsDate.class);
-        Log.d(TAG, "db_znd_date: " + date.toString());
-        Log.d(TAG, "db_znd_date: " + date.size());
         mdbZhihuNewsDate = new dbZhihuNewsDate();
         //判断该日期是否存在，存在就更新数据，不存在则添加数据
         if (date.size() == 0) {

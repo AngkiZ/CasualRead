@@ -64,12 +64,7 @@ public class ZhihuFragment extends Fragment{
         c_db = Calendar.getInstance();
         c_net = Calendar.getInstance();
         c_net.add(Calendar.DAY_OF_MONTH, +1);
-        //记录最后一次打开软件并且从网络加载保存内容的日期
-        SharedPreferences.Editor editor = PreferenceManager
-                .getDefaultSharedPreferences(getActivity()).edit();
-        editor.putString("date", Analysis(c_db));
 
-        editor.apply();
     }
 
     @Override
@@ -84,17 +79,16 @@ public class ZhihuFragment extends Fragment{
         View view = inflater.inflate(R.layout.zhihu_fragment, container, false);
         dataList.clear();//清空列表
         isnetwork = new NetworkStatus().judgment(getContext());
-
+        //判断App是否第一次启动，是的话便从网上请求数据，不是的话便从数据库提取数据
         if (App.isFirstLoad) {
             Log.d(TAG, "onCreateView: " + App.isFirstLoad);
             //加载RecycleView知乎日报数据
             loadZhihuDailyNews(true);
             loadModule(view);
-            App.isFirstLoad = false;
         }else {
             Log.d(TAG, "onCreateView: " + App.isFirstLoad);
             loadModule(view);
-            failureZhihu(true, true);
+            LoadDbZhihu(true, true);
         }
 
         return view;
@@ -117,7 +111,7 @@ public class ZhihuFragment extends Fragment{
             @Override
             public void onFailure(Call call, IOException e) {
 
-                failureZhihu(b, false);
+                LoadDbZhihu(b, false);
             }
 
             @Override
@@ -139,6 +133,11 @@ public class ZhihuFragment extends Fragment{
                     d.setDb_zn_image(newsBeans.getStories().get(i).getImages().get(0));
                     dataList.add(i + a, d);
                 }
+                //记录最后一次打开软件并且从网络加载保存内容的日期
+                SharedPreferences.Editor editor = PreferenceManager
+                        .getDefaultSharedPreferences(getActivity()).edit();
+                editor.putString("date", newsBeans.getDate());
+                editor.apply();
 
                 //存储数据
                 new dbUtil().dbzhihuSave(newsBeans);
@@ -208,7 +207,7 @@ public class ZhihuFragment extends Fragment{
                         new Handler().postDelayed(new Runnable(){
                             public void run() {
                                 ToastUtil.showToast(getContext(), "已经到底了哟~");
-                                zhihuRecyclerView.refreshComplete();
+                                zhihuRecyclerView.loadMoreComplete();
                             }
                         }, 1000);
                     } else {
@@ -221,17 +220,27 @@ public class ZhihuFragment extends Fragment{
                     }
                     //判断数据库中某日期的内容是否够，不够的话就请求内容，够的话便从数据库中提取
                 }else if (date.get(0).getDbnewscount() != 20){
-                    new Handler().postDelayed(new Runnable(){
-                        public void run() {
-                            loadZhihuDailyNews(false);
-                            zhihuRecyclerView.loadMoreComplete();
-                        }
-                    }, 1000);
+                    if (isnetwork) {
+                        new Handler().postDelayed(new Runnable(){
+                            public void run() {
+                                loadZhihuDailyNews(false);
+                                zhihuRecyclerView.loadMoreComplete();
+                            }
+                        }, 1000);
+                    }else {
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                LoadDbZhihu(false, false);
+                                zhihuRecyclerView.loadMoreComplete();
+                            }
+                        }, 1000);
+                    }
                 }else {
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            failureZhihu(false, false);
+                            LoadDbZhihu(false, false);
                             zhihuRecyclerView.loadMoreComplete();
                         }
                     }, 1000);
@@ -249,7 +258,7 @@ public class ZhihuFragment extends Fragment{
      * @param b 是否第一次加载
      * @param therd 是否在UI线程中，true为UI线程，flase为请求线程
      */
-    private void failureZhihu(boolean b, boolean therd) {
+    private void LoadDbZhihu(boolean b, boolean therd) {
         if (b) {
             //提出记录的日期，按日期加载内容
             SharedPreferences prefer = PreferenceManager.getDefaultSharedPreferences(getActivity());
@@ -323,6 +332,7 @@ public class ZhihuFragment extends Fragment{
         adapter.clearMemory();//清除adapter中各个变量的内存
         adapter = null;
         c_db = null;
+        c_net = null;
     }
     @Override
     public void onDestroy() {

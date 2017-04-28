@@ -90,6 +90,7 @@ public class WelfareFragmentRecycleViewAdapter extends
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .placeholder(R.drawable.ic_meizi)
                 .error(R.drawable.ic_meizi)
+                .dontAnimate()
                 .centerCrop()
                 .into(holder.image);
     }

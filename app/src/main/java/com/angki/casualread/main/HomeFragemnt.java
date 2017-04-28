@@ -16,6 +16,7 @@ import com.angki.casualread.gank.WelfareFragment;
 import com.angki.casualread.joke.JokeFragment;
 import com.angki.casualread.main.adpter.HomeViewPagerAdapter;
 import com.angki.casualread.recommend.RecommendFragemnt;
+import com.angki.casualread.util.App;
 import com.angki.casualread.zhihu.ZhihuFragment;
 
 import java.util.ArrayList;
@@ -69,7 +70,6 @@ public class HomeFragemnt extends Fragment{
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.main_home_fragment, container, false);
-
         loadFragment(view);
         return view;
     }
@@ -126,6 +126,7 @@ public class HomeFragemnt extends Fragment{
     @Override
     public void onDestroy() {
         super.onDestroy();
+        App.isFirstLoad = false;//当主页碎片退出时，意味着App不再是第一次加载
         adapter = null;
         viewPager = null;
     }

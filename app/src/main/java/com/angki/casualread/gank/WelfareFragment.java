@@ -20,6 +20,7 @@ import com.angki.casualread.gank.db.dbWelfare;
 import com.angki.casualread.gank.gson.GankWelfareData;
 import com.angki.casualread.gank.gson.GankWelfareDatas;
 import com.angki.casualread.util.Api;
+import com.angki.casualread.util.App;
 import com.angki.casualread.util.HttpUtil;
 import com.angki.casualread.util.NetworkStatus;
 import com.angki.casualread.util.ToastUtil;
@@ -64,8 +65,14 @@ public class WelfareFragment extends Fragment{
         dataList.clear();//清空列表
         pager = 1;
         isnetwork = new NetworkStatus().judgment(getContext());
-        loadWelfareList(pager);
-        loadModule(view);
+        //判断App是否第一次启动，是的话便从网上请求数据，不是的话便从数据库提取数据
+        if (App.isFirstLoad) {
+            loadWelfareList(pager);
+            loadModule(view);
+        }else {
+            loadModule(view);
+            LoadDbWelfare(true);
+        }
         return view;
     }
 
@@ -79,21 +86,8 @@ public class WelfareFragment extends Fragment{
         HttpUtil.sendOkHttpRequest(url, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                //获取指定页数的内容集合
-                List<dbWelfare> welfareList = DataSupport
-                            .where("db_we_pager like ?", "%" + pager + "%")
-                            .order("db_we_listSorting asc").find(dbWelfare.class);
-                //获取之前集合大小
-                int a = dataList.size();
-                for (int i = 0; i < welfareList.size(); i++) {
-                    dataList.add(i + a, welfareList.get(i));
-                }
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        adapter.notifyDataSetChanged();
-                    }
-                });
+                Log.d("loadWelfareList", "onFailure: " + e);
+                LoadDbWelfare(false);
             }
 
             @Override
@@ -164,18 +158,28 @@ public class WelfareFragment extends Fragment{
             @Override
             public void onLoadMore() {
                 pager++;
-                List<dbWelfare> welfareList = DataSupport
+                final List<dbWelfare> welfareList = DataSupport
                         .where("db_we_pager like ?", "%" + pager + "%")
                         .order("db_we_listSorting asc").find(dbWelfare.class);
-                if (welfareList.size() == 0 && isnetwork == false) {
-                    ToastUtil.showToast(getContext(), "已经到底了哟~");
-                    welfareRecyclerView.refreshComplete();
+                if (welfareList.size() == 0) {
+                    if (isnetwork) {
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                loadWelfareList(pager);
+                                welfareRecyclerView.loadMoreComplete();
+                            }
+                        },1000);
+                    }else {
+                        ToastUtil.showToast(getContext(), "已经到底了哟~");
+                        welfareRecyclerView.loadMoreComplete();
+                    }
                 }else {
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            loadWelfareList(pager);
-                            welfareRecyclerView.refreshComplete();
+                            LoadDbWelfare(false);
+                            welfareRecyclerView.loadMoreComplete();
                         }
                     },1000);
                 }
@@ -184,6 +188,29 @@ public class WelfareFragment extends Fragment{
         //加载adapter
         adapter = new WelfareFragmentRecycleViewAdapter(getContext(), dataList);
         welfareRecyclerView.setAdapter(adapter);
+    }
+
+    private void LoadDbWelfare(boolean therd) {
+        //获取指定页数的内容集合
+        List<dbWelfare> welfareList = DataSupport
+                .where("db_we_pager like ?", "%" + pager + "%")
+                .order("db_we_listSorting asc").find(dbWelfare.class);
+        //获取之前集合大小
+        int a = dataList.size();
+        for (int i = 0; i < welfareList.size(); i++) {
+            dataList.add(i + a, welfareList.get(i));
+        }
+        if (therd) {
+            adapter.notifyDataSetChanged();
+        }else {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    adapter.notifyDataSetChanged();
+                }
+            });
+
+        }
     }
 
     /**

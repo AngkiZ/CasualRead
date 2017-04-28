@@ -75,11 +75,21 @@ public class RecommendFragemnt extends Fragment {
         welfareData.clear();
         gankData.clear();
         jokeData.clear();
-        loadZhihuContent();
-        loadWelfareContent();
-        loadGankContent();
-        loadJokeContent();
-        loadModule(view);
+        //判断App是否第一次启动，是的话便从网上请求数据，不是的话便从数据库提取数据
+        if (App.isFirstLoad) {
+            loadModule(view);
+            loadZhihuContent();
+            loadWelfareContent();
+            loadGankContent();
+            loadJokeContent();
+        }else {
+            loadModule(view);
+            dbZhihu(true);
+            dbWelfare(true);
+            dbGank(true);
+            dbJoke(true);
+        }
+
         return view;
     }
 
@@ -143,32 +153,7 @@ public class RecommendFragemnt extends Fragment {
             //没有网时加载
             @Override
             public void onFailure(Call call, IOException e) {
-
-                SharedPreferences prefs = PreferenceManager
-                        .getDefaultSharedPreferences(getActivity());
-                String JSON = prefs.getString("zhihu", null);
-                final NewsBeans newsBeans = Utility.handleZHDNResponse(JSON);
-                for (int i = 0; i < 4; i++) {
-
-                    zhihuData.add(newsBeans.getStories().get(i));
-                }
-
-                //轮播图显示内容的集合
-                for(int i = 0; i < newsBeans.getTopStories().size(); i++){
-
-                    images.add(newsBeans.getTopStories().get(i).getImage());
-                    titles.add(newsBeans.getTopStories().get(i).getTitle());
-                    topid.add(newsBeans.getTopStories().get(i).getId());
-
-                }
-
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        adapter.notifyDataSetChanged();
-                    }
-                });
+                dbZhihu(false);
             }
 
             @Override
@@ -219,24 +204,7 @@ public class RecommendFragemnt extends Fragment {
         HttpUtil.sendOkHttpRequest(url, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-
-                SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-                String JSON = prefs.getString("Welfare", null);
-                //解析数据
-                final GankWelfareDatas gankWelfareDatas =
-                        Utility.handleGankWelfareResponse(JSON);
-                welfareData.clear();
-                for (int i = 0; i < gankWelfareDatas.getResults().size(); i++) {
-
-                    welfareData.add(gankWelfareDatas.getResults().get(i));
-                }
-                //加载图片
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        adapter.notifyDataSetChanged();
-                    }
-                });
+                dbWelfare(false);
             }
 
             @Override
@@ -277,27 +245,7 @@ public class RecommendFragemnt extends Fragment {
         HttpUtil.sendOkHttpRequest(url, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-
-                SharedPreferences prefs = PreferenceManager
-                        .getDefaultSharedPreferences(getActivity());
-                String JSON = prefs.getString("Gank", null);
-                //解析数据
-                final GankDatas gankDatas = Utility.handleGankResponse(JSON);
-
-                for (int i = 0; i < gankDatas.getResults().size(); i++) {
-
-                    gankData.add(gankDatas.getResults().get(i));
-                }
-                //存储数据
-                new dbUtil().dbgankSave(gankDatas, 1);
-                //加载数据
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        adapter.notifyDataSetChanged();
-
-                    }
-                });
+                dbGank(false);
             }
 
             @Override
@@ -337,7 +285,7 @@ public class RecommendFragemnt extends Fragment {
         HttpUtil.sendOkHttpRequest(url, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                failureJoke();
+                dbJoke(false);
             }
 
             @Override
@@ -365,16 +313,16 @@ public class RecommendFragemnt extends Fragment {
                         }
                     });
                 } else {
-                    failureJoke();
+                    dbJoke(false);
                 }
             }
         });
     }
 
     /**
-     * 当请求失败时加载
+     * 从数据库中加载
      */
-    private void failureJoke() {
+    private void dbJoke(boolean therd) {
         SharedPreferences prefs = PreferenceManager
                 .getDefaultSharedPreferences(getActivity());
         String JSON = prefs.getString("Joke", null);
@@ -385,14 +333,108 @@ public class RecommendFragemnt extends Fragment {
 
             jokeData.add(jokeDatas.get(i));
         }
-        //加载数据
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                adapter.notifyDataSetChanged();
-            }
-        });
+        if (therd) {
+            adapter.notifyDataSetChanged();
+        }else {
+            //加载数据
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    adapter.notifyDataSetChanged();
+                }
+            });
+        }
     }
+
+    /**
+     * 从数据库中加载
+     * @param therd 是否在UI线程中，true为UI线程，flase为请求线程
+     */
+    private void dbZhihu(boolean therd) {
+
+        SharedPreferences prefs = PreferenceManager
+                .getDefaultSharedPreferences(getActivity());
+        String JSON = prefs.getString("zhihu", null);
+        final NewsBeans newsBeans = Utility.handleZHDNResponse(JSON);
+        for (int i = 0; i < 4; i++) {
+
+            zhihuData.add(newsBeans.getStories().get(i));
+        }
+
+        //轮播图显示内容的集合
+        for(int i = 0; i < newsBeans.getTopStories().size(); i++){
+
+            images.add(newsBeans.getTopStories().get(i).getImage());
+            titles.add(newsBeans.getTopStories().get(i).getTitle());
+            topid.add(newsBeans.getTopStories().get(i).getId());
+
+        }
+        if (therd) {
+            adapter.notifyDataSetChanged();
+        } else {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+
+                    adapter.notifyDataSetChanged();
+                }
+            });
+        }
+    }
+
+    /**
+     * 从数据库中加载
+     * @param therd 是否在UI线程中，true为UI线程，flase为请求线程
+     */
+    private void dbGank(boolean therd) {
+
+        SharedPreferences prefs = PreferenceManager
+                .getDefaultSharedPreferences(getActivity());
+        String JSON = prefs.getString("Gank", null);
+        //解析数据
+        final GankDatas gankDatas = Utility.handleGankResponse(JSON);
+
+        for (int i = 0; i < gankDatas.getResults().size(); i++) {
+
+            gankData.add(gankDatas.getResults().get(i));
+        }
+        if (therd) {
+            adapter.notifyDataSetChanged();
+        }else {
+            //加载数据
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    adapter.notifyDataSetChanged();
+                }
+            });
+        }
+    }
+
+    private void dbWelfare(boolean therd) {
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String JSON = prefs.getString("Welfare", null);
+        //解析数据
+        final GankWelfareDatas gankWelfareDatas =
+                Utility.handleGankWelfareResponse(JSON);
+        welfareData.clear();
+        for (int i = 0; i < gankWelfareDatas.getResults().size(); i++) {
+
+            welfareData.add(gankWelfareDatas.getResults().get(i));
+        }
+        if (therd) {
+            adapter.notifyDataSetChanged();
+        }else {
+            //加载图片
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    adapter.notifyDataSetChanged();
+                }
+            });
+        }
+    }
+
     /**
      * 销毁所占内存
      */

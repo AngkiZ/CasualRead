@@ -16,6 +16,7 @@ import com.angki.casualread.gank.db.dbGank;
 import com.angki.casualread.gank.gson.GankData;
 import com.angki.casualread.gank.gson.GankDatas;
 import com.angki.casualread.util.Api;
+import com.angki.casualread.util.App;
 import com.angki.casualread.util.HttpUtil;
 import com.angki.casualread.util.NetworkStatus;
 import com.angki.casualread.util.ToastUtil;
@@ -58,49 +59,35 @@ public class GankFragment extends Fragment{
 
         View view = inflater.inflate(R.layout.gank_fragment, container, false);
         dataList.clear();//清空列表
-        pager = 1;
-        isnetwork = new NetworkStatus().judgment(getContext());
-        loadGankList(view, pager);
-        loadModule(view);
-
+        pager = 1;//初始页数
+        isnetwork = new NetworkStatus().judgment(getContext());//判断是否有网
+        //判断App是否第一次启动，是的话便从网上请求数据，不是的话便从数据库提取数据
+        if (App.isFirstLoad) {
+            loadGankList(pager);
+            loadModule(view);
+        }else {
+            loadModule(view);
+            LoadDbGank(true);
+        }
         return view;
     }
 
     /**
      * 加载数据
-     * @param view
      * @param pager
      */
-    private void loadGankList(final View view, final int pager) {
+    private void loadGankList(final int pager) {
 
         String url = Api.GANK + "10/" + pager;
 
         HttpUtil.sendOkHttpRequest(url, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                //获取指定页数的内容集合
-                List<dbGank> gankList = DataSupport
-                            .where("db_gank_page like ?", "%" + pager + "%")
-                            .order("db_gank_listSorting asc").find(dbGank.class);
-
-                //获取之前集合大小
-                int a = dataList.size();
-                for (int i = 0; i < gankList.size(); i++) {
-                    dataList.add(i + a, gankList.get(i));
-                }
-
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        adapter.notifyDataSetChanged();
-                    }
-                });
+                LoadDbGank(false);
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
-
                 //获取JSON数据
                 final String responseData = response.body().string();
                 //解析数据
@@ -158,10 +145,9 @@ public class GankFragment extends Fragment{
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-
                             dataList.clear();
                             pager = 1;
-                            loadGankList(getView(), pager);
+                            loadGankList(pager);
                             gankRecyclerView.refreshComplete();
                         }
                     }, 1000);
@@ -174,26 +160,64 @@ public class GankFragment extends Fragment{
             @Override
             public void onLoadMore() {
                 pager++;
-                List<dbGank> gankList = DataSupport
+                List<dbGank> gankList = DataSupport.select("db_gank_page")
                         .where("db_gank_page like ?", "%" + pager + "%")
                         .find(dbGank.class);
-                if (gankList.size() == 0 && isnetwork == false) {
-                    ToastUtil.showToast(getContext(), "已经到底了哟~");
-                    gankRecyclerView.refreshComplete();
+                if (gankList.size() == 0) {
+                    if (isnetwork) {
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                loadGankList(pager);
+                                gankRecyclerView.loadMoreComplete();
+                            }
+                        },1000);
+                    }else {
+                        ToastUtil.showToast(getContext(), "已经到底了哟~");
+                        gankRecyclerView.loadMoreComplete();
+                    }
                 }else {
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            loadGankList(getView(), pager);
-                            gankRecyclerView.refreshComplete();
+                            LoadDbGank(false);
+                            gankRecyclerView.loadMoreComplete();
                         }
-                    },1000);
+                    }, 1000);
                 }
             }
         });
         //加载adapter
         adapter = new GankFragmentRecycleViewAdapter(getContext(), dataList, 1);
         gankRecyclerView.setAdapter(adapter);
+    }
+
+    /**
+     *
+     * @param therd 是否在UI线程中，true为UI线程，flase为请求线程
+     */
+    private void LoadDbGank(boolean therd) {
+        //获取指定页数的内容集合
+        List<dbGank> gankList = DataSupport
+                .where("db_gank_page like ?", "%" + pager + "%")
+                .order("db_gank_listSorting asc").find(dbGank.class);
+
+        //获取之前集合大小
+        int a = dataList.size();
+        for (int i = 0; i < gankList.size(); i++) {
+            dataList.add(i + a, gankList.get(i));
+        }
+        //判断是否在UI线程中
+        if (therd) {
+            adapter.notifyDataSetChanged();
+        }else {
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    adapter.notifyDataSetChanged();
+                }
+            });
+        }
     }
 
     /**

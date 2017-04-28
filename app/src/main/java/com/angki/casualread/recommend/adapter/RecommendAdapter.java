@@ -244,6 +244,10 @@ public class RecommendAdapter extends RecyclerView.Adapter implements OnBannerLi
         }else {
             Glide.with(mcontext)
                     .load(R.drawable.big_image)
+                    .placeholder(R.drawable.ic_meizi)
+                    .error(R.drawable.ic_meizi)
+                    .centerCrop()
+                    .dontAnimate()
                     .into(((ViewHolder3) holder).imageView);
         }
         ((ViewHolder3) holder).imageView.setOnClickListener(new View.OnClickListener() {
@@ -274,7 +278,7 @@ public class RecommendAdapter extends RecyclerView.Adapter implements OnBannerLi
         ((ViewHolder4) holder).recyclerView
                 .setLayoutManager(new LinearLayoutManager(mcontext));
         ((ViewHolder4) holder).recyclerView
-                .setAdapter(new GankContentAdapter(mcontext, gankData));
+                .setAdapter(new GankContentAdapter(gankData));
         ((ViewHolder4) holder).textview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

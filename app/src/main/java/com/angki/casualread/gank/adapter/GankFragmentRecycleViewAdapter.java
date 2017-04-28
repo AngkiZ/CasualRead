@@ -143,9 +143,12 @@ public class GankFragmentRecycleViewAdapter extends
             ((ViewHolder1) holder).author1.setText(gankData.getDb_gank_who());
             Glide.with(mcontext).load(gankData.getDb_gank_image())
                     .asBitmap()
+                    .placeholder(R.drawable.ic_meizi)
+                    .error(R.drawable.ic_meizi)
                     .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                     .override(80, 80)
                     .centerCrop()
+                    .dontAnimate()
                     .into(((ViewHolder1) holder).image);
 
         } else if (holder instanceof ViewHolder2){

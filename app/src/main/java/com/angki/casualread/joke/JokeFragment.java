@@ -18,6 +18,7 @@ import com.angki.casualread.joke.db.dbJoke;
 import com.angki.casualread.joke.gson.JokeData;
 import com.angki.casualread.recommend.adapter.JokeContentAdapter;
 import com.angki.casualread.util.Api;
+import com.angki.casualread.util.App;
 import com.angki.casualread.util.HttpUtil;
 import com.angki.casualread.util.NetworkStatus;
 import com.angki.casualread.util.ToastUtil;
@@ -62,9 +63,14 @@ public class JokeFragment extends Fragment{
         dataList.clear();//清空列表
         page = 1;
         isnetwork = new NetworkStatus().judgment(getContext());
-        loadJokeList(page);
-        loadModule(view);
-
+        //判断App是否第一次启动，是的话便从网上请求数据，不是的话便从数据库提取数据
+        if (App.isFirstLoad) {
+            loadJokeList(page);
+            loadModule(view);
+        }else {
+            loadModule(view);
+            dbJoke(true);
+        }
         return view;
     }
 
@@ -78,7 +84,7 @@ public class JokeFragment extends Fragment{
         HttpUtil.sendOkHttpRequest(url, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                failureJoke();
+                dbJoke(false);
             }
 
             @Override
@@ -89,6 +95,7 @@ public class JokeFragment extends Fragment{
                 //解析数据
                 final List<JokeData> jokeData = Utility.handleJokeResponse(responseData);
                 if (jokeData != null) {
+                    Log.d("first", "jokeData: " + jokeData);
                     //获取之前集合大小
                     int a = dataList.size();
                     for (int i = 0; i < jokeData.size(); i++) {
@@ -110,7 +117,7 @@ public class JokeFragment extends Fragment{
                         }
                     });
                 }else {
-                    failureJoke();
+                    dbJoke(false);
                 }
             }
         });
@@ -156,17 +163,27 @@ public class JokeFragment extends Fragment{
                 List<dbJoke> jokeList = DataSupport.select("db_joke_page")
                         .where("db_joke_page like ?", "%" + page + "%")
                         .find(dbJoke.class);
-                if (jokeList.size() == 0 && isnetwork == false) {
-                    ToastUtil.showToast(getContext(), "已经到底了哟~");
-                    jokeRecyclerView.refreshComplete();
+                if (jokeList.size() == 0) {
+                    if (isnetwork) {
+                        new Handler().postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                loadJokeList(page);
+                                jokeRecyclerView.loadMoreComplete();
+                            }
+                        },1000);
+                    }else {
+                        ToastUtil.showToast(getContext(), "已经到底了哟~");
+                        jokeRecyclerView.loadMoreComplete();
+                    }
                 }else {
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            loadJokeList(page);
-                            jokeRecyclerView.refreshComplete();
+                            dbJoke(true);
+                            jokeRecyclerView.loadMoreComplete();
                         }
-                    },1000);
+                    }, 1000);
                 }
             }
         });
@@ -177,27 +194,23 @@ public class JokeFragment extends Fragment{
 
     /**
      * 从数据库中加载
+     * @param therd 是否在UI线程中，true为UI线程，flase为请求线程
      */
-    private void failureJoke() {
+    private void dbJoke(boolean therd) {
         //获取指定页数的内容集合
         List<dbJoke> jokeList = DataSupport
                 .where("db_joke_page like ?", "%" + page + "%")
                 .order("db_joke_listSorting asc")
                 .find(dbJoke.class);
-        if (jokeList.size() == 0) {
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    ToastUtil.showToast(getContext(), "已经到底了哟~");
-                    jokeRecyclerView.refreshComplete();
-                }
-            });
+
+        //获取之前集合大小
+        int a = dataList.size();
+        for (int i = 0; i < jokeList.size(); i++) {
+            dataList.add(i + a, jokeList.get(i));
+        }
+        if (therd) {
+            adapter.notifyDataSetChanged();
         }else {
-            //获取之前集合大小
-            int a = dataList.size();
-            for (int i = 0; i < jokeList.size(); i++) {
-                dataList.add(i + a, jokeList.get(i));
-            }
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
