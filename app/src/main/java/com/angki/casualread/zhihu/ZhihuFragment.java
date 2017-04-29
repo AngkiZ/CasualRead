@@ -199,7 +199,6 @@ public class ZhihuFragment extends Fragment{
                 List<dbZhihuNewsDate> date = DataSupport.select("db_znd_date", "dbnewscount")
                         .where("db_znd_date like ?", "%" + Analysis(c_db) + "%")
                         .find(dbZhihuNewsDate.class);
-                Log.d(TAG, "onLoadMore: date.size:" + date.get(0).getDbnewscount());
                 //判断要加载的数据库中是否有,没有就请求
                 if (date.size() == 0) {
                     //判断是否有网，有网的话就请求内容，没有的话显示已经到底

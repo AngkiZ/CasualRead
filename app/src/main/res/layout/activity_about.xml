@@ -42,6 +42,7 @@
                 android:textColor="@color/about_title"/>
 
             <LinearLayout
+                android:id="@+id/activity_about_update"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:clickable="true"

@@ -15,13 +15,6 @@ import com.angki.casualread.R;
 
 public class AboutActivity extends AppCompatActivity {
 
-    private Toolbar toolbar;
-    private LinearLayout github;
-    private LinearLayout feedback_bug;
-    private LinearLayout data_source_z;
-    private LinearLayout data_source_g;
-    private LinearLayout data_source_j;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,13 +28,13 @@ public class AboutActivity extends AppCompatActivity {
      * 加载组件
      */
     private void loadMoudle() {
-        toolbar = (Toolbar) findViewById(R.id.activity_about_toolbar);
-        github = (LinearLayout) findViewById(R.id.activity_about_github);
-        feedback_bug = (LinearLayout) findViewById(R.id.activity_about_bug);
-        data_source_z = (LinearLayout) findViewById(R.id.data_source_zhihu);
-        data_source_g = (LinearLayout) findViewById(R.id.data_source_gank);
-        data_source_j = (LinearLayout) findViewById(R.id.data_source_joke);
-
+        Toolbar toolbar = (Toolbar) findViewById(R.id.activity_about_toolbar);
+        LinearLayout github = (LinearLayout) findViewById(R.id.activity_about_github);
+        LinearLayout feedback_bug = (LinearLayout) findViewById(R.id.activity_about_bug);
+        LinearLayout data_source_z = (LinearLayout) findViewById(R.id.data_source_zhihu);
+        LinearLayout data_source_g = (LinearLayout) findViewById(R.id.data_source_gank);
+        LinearLayout data_source_j = (LinearLayout) findViewById(R.id.data_source_joke);
+        LinearLayout update = (LinearLayout) findViewById(R.id.activity_about_update);
         //设置标题栏,作为ActionBar显示
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
@@ -49,6 +42,15 @@ public class AboutActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
+
+        update.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse("http://fir.im/wmst"));
+                startActivity(intent);
+            }
+        });
 
         github.setOnClickListener(new View.OnClickListener() {
             @Override
