@@ -98,9 +98,10 @@ public class WelfareActivity extends AppCompatActivity implements ViewPager.OnPa
         if (!appDir.exists()) {
             appDir.mkdirs();
         }
-        //文件命名使用下载时间+.jpg
+        //文件命名使用id+.jpg
         String fileName = id + ".jpg";
         File file = new File(appDir, fileName);
+        //判断图片是否存在，不存在便创建并且返回true
         if (!file.exists()) {
             try {
                 FileOutputStream fos = new FileOutputStream(file);
@@ -112,13 +113,13 @@ public class WelfareActivity extends AppCompatActivity implements ViewPager.OnPa
                 e.printStackTrace();
             }
 
-            // 其次把文件插入到系统图库
-            try {
-                MediaStore.Images.Media.insertImage(context.getContentResolver(),
-                        file.getAbsolutePath(), fileName, null);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
+            // 其次把文件插入到系统图库，会出现两张图片，picture文件夹里和自己创建的文件夹里会有
+//            try {
+//                MediaStore.Images.Media.insertImage(context.getContentResolver(),
+//                        file.getAbsolutePath(), fileName, null);
+//            } catch (FileNotFoundException e) {
+//                e.printStackTrace();
+//            }
             // 最后通知图库更新
             context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE,
                     Uri.parse("file://" + file.getAbsoluteFile())));
