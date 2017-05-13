@@ -88,7 +88,7 @@ public class ZhihuFragment extends Fragment{
         }else {
             Log.d(TAG, "onCreateView: " + App.isFirstLoad);
             loadModule(view);
-            LoadDbZhihu(true, true);
+            LoadDbZhihu(false, true);
         }
 
         return view;
@@ -133,11 +133,14 @@ public class ZhihuFragment extends Fragment{
                     d.setDb_zn_image(newsBeans.getStories().get(i).getImages().get(0));
                     dataList.add(i + a, d);
                 }
-                //记录最后一次打开软件并且从网络加载保存内容的日期
-                SharedPreferences.Editor editor = PreferenceManager
-                        .getDefaultSharedPreferences(getActivity()).edit();
-                editor.putString("date", newsBeans.getDate());
-                editor.apply();
+                //只在第一次加载的时候保存日期
+                if(b){
+                    //记录最后一次打开软件并且从网络加载保存内容的日期
+                    SharedPreferences.Editor editor = PreferenceManager
+                            .getDefaultSharedPreferences(getActivity()).edit();
+                    editor.putString("date", newsBeans.getDate());
+                    editor.apply();
+                }
 
                 //存储数据
                 new dbUtil().dbzhihuSave(newsBeans);
@@ -178,6 +181,10 @@ public class ZhihuFragment extends Fragment{
             @Override
             public void onRefresh() {
                 if (isnetwork) {
+                    //重置时间
+                    c_db = Calendar.getInstance();
+                    c_net = Calendar.getInstance();
+                    c_net.add(Calendar.DAY_OF_MONTH, +1);
                     new Handler().postDelayed(new Runnable(){
                         public void run() {
                             dataList.clear();
@@ -332,6 +339,7 @@ public class ZhihuFragment extends Fragment{
         adapter = null;
         c_db = null;
         c_net = null;
+        Log.d(TAG, "end: ");
     }
     @Override
     public void onDestroy() {
