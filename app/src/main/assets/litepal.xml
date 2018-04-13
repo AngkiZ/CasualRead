@@ -6,11 +6,11 @@
     <version value="1"/>
 
     <list>
-        <mapping class="com.angki.casualread.zhihu.db.dbZhihuNews"/>
-        <mapping class="com.angki.casualread.zhihu.db.dbZhihuStors"/>
-        <mapping class="com.angki.casualread.zhihu.db.dbZhihuNewsDate"/>
-        <mapping class="com.angki.casualread.gank.db.dbGank"/>
-        <mapping class="com.angki.casualread.gank.db.dbWelfare"/>
-        <mapping class="com.angki.casualread.joke.db.dbJoke"/>
+        <mapping class="com.angki.casualread.mvp.model.entity.bean.dbZhihuNews"/>
+        <mapping class="com.angki.casualread.mvp.model.entity.bean.dbZhihuStors"/>
+        <mapping class="com.angki.casualread.mvp.model.entity.bean.dbZhihuNewsDate"/>
+        <mapping class="com.angki.casualread.mvp.model.entity.bean.dbGank"/>
+        <mapping class="com.angki.casualread.mvp.model.entity.bean.dbWelfare"/>
+        <mapping class="com.angki.casualread.mvp.model.entity.bean.dbJoke"/>
     </list>
 </litepal>

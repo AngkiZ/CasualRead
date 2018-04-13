@@ -1,44 +1,90 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    compileSdkVersion rootProject.ext.android["compileSdkVersion"]
+    buildToolsVersion rootProject.ext.android["buildToolsVersion"]
+
     defaultConfig {
         applicationId "com.angki.casualread"
-        minSdkVersion 19
-        targetSdkVersion 25
-        versionCode 1
-        versionName "1.0"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        minSdkVersion rootProject.ext.android["minSdkVersion"]
+        targetSdkVersion rootProject.ext.android["targetSdkVersion"]
+        versionCode rootProject.ext.android["versionCode"]
+        versionName rootProject.ext.android["versionName"]
+        testInstrumentationRunner rootProject.ext.android["androidJUnitRunner"]
     }
+
     buildTypes {
-        release {
+        debug {
+            buildConfigField "boolean", "LOG_DEBUG", "true"
+            buildConfigField "boolean", "USE_CANARY", "true"
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+
+        release {
+            buildConfigField "boolean", "LOG_DEBUG", "false"
+            buildConfigField "boolean", "USE_CANARY", "false"
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    //生成包的名字
+    applicationVariants.all { variant ->
+        variant.outputs.all {
+            outputFileName = "CasualRead_${defaultConfig.versionName}_${releaseTime()}.apk"
         }
     }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
-    compile 'com.android.support:appcompat-v7:25.2.0'
-    compile 'org.litepal.android:core:1.5.1'
-    compile 'com.github.bumptech.glide:glide:3.7.0'
-    compile 'com.squareup.okhttp3:okhttp:3.4.1'
-    compile 'com.android.support:recyclerview-v7:25.2.0'
-    compile 'com.android.support:cardview-v7:25.2.0'
-    compile 'com.youth.banner:banner:1.4.9'
-    compile 'com.android.support:design:25.0.1'
-    compile 'de.hdodenhof:circleimageview:2.1.0'
-    compile 'com.jcodecraeer:xrecyclerview:1.3.2'
-    compile 'com.github.chrisbanes:PhotoView:1.3.1'
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    //support
+    implementation(rootProject.ext.dependencies["cardview-v7"]) {
+        exclude module: 'support-annotations'
+    }
+    //test
+    testImplementation rootProject.ext.dependencies["junit"]
+    debugImplementation rootProject.ext.dependencies["canary-debug"]
+    releaseImplementation rootProject.ext.dependencies["canary-release"]
+    testImplementation rootProject.ext.dependencies["canary-release"]
+    //tools
+    annotationProcessor rootProject.ext.dependencies["dagger2-compiler"]
+    implementation rootProject.ext.dependencies["progressmanager"]
+    implementation rootProject.ext.dependencies["retrofit-url-manager"]
+    implementation rootProject.ext.dependencies["lifecyclemodel"]
+    //view
+    annotationProcessor(rootProject.ext.dependencies["butterknife-compiler"]) {
+        exclude module: 'support-annotations'
+    }
+    implementation rootProject.ext.dependencies["paginate"]
+    //Github 仓库上最新的 Demo 具有下一个版本的新特性, 所以依赖最新的远程库会出现版本不兼容的情况, 详情请查看 https://github.com/JessYanCoding/MVPArms/wiki/Issues#2
+    implementation 'me.jessyan:arms:2.4.1'
+    /**
+     * 数据库,https://github.com/LitePalFramework/LitePal
+     */
+    implementation 'org.litepal.android:core:1.6.1'
+    /**
+     * 图片变换,https://github.com/wasabeef/glide-transformations
+     */
+    implementation 'jp.wasabeef:glide-transformations:3.2.0'
+    /**
+     * 轮播图,https://github.com/youth5201314/banner
+     */
+    implementation 'com.youth.banner:banner:1.4.10'
+    /**
+     * 圆形控件,https://github.com/hdodenhof/CircleImageView
+     */
+    implementation 'de.hdodenhof:circleimageview:2.2.0'
 
-    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.3.1' // or 1.4-beta1
-    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.3.1' // or 1.4-beta1
-    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.3.1' // or 1.4-beta1
+    implementation 'com.jcodecraeer:xrecyclerview:1.3.2'
+    /**
+     * 大图显示控件,https://github.com/chrisbanes/PhotoView/tree/master
+     */
+    implementation 'com.github.chrisbanes:PhotoView:2.1.3'
 
     testCompile 'junit:junit:4.12'
+}
+// 显示的时间格式，形如20170710
+def static releaseTime() {
+    return new Date().format("yyyyMMdd", TimeZone.getDefault())
 }

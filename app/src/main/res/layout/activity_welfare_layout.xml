@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="@color/black">
 
-    <com.angki.casualread.gank.adapter.HackyProblematicViewGroup
+    <com.angki.casualread.mvp.ui.adapter.HackyProblematicViewGroup
         android:id="@+id/activity_welfare_layout_viewpager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
