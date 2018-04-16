@@ -22,7 +22,6 @@ import com.angki.casualread.mvp.model.entity.result.GankWelfareDatas;
 import com.angki.casualread.mvp.model.entity.result.JokeData;
 import com.angki.casualread.mvp.ui.adapter.AdapterRecommend;
 import com.angki.casualread.app.util.Api;
-import com.angki.casualread.app.util.App;
 import com.angki.casualread.app.util.HttpUtil;
 import com.angki.casualread.app.util.NetworkStatus;
 import com.angki.casualread.app.util.ToastUtil;
@@ -43,7 +42,7 @@ import okhttp3.Response;
  * Created by tengyu on 2017/3/20.
  */
 
-public class FragemntRecommend extends Fragment {
+public class FragmentRecommend extends Fragment {
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private List<String> images = new ArrayList<>();
@@ -56,8 +55,8 @@ public class FragemntRecommend extends Fragment {
     private AdapterRecommend adapter;
     private NetworkStatus networkStatus;
 
-    public static FragemntRecommend newInstance() {
-        return new FragemntRecommend();
+    public static FragmentRecommend newInstance() {
+        return new FragmentRecommend();
     }
 
     @Nullable
@@ -93,7 +92,7 @@ public class FragemntRecommend extends Fragment {
 
     private void loadModule(final View view) {
 
-        final ViewPager viewPager = FragemntHome.getViewPager();
+        final ViewPager viewPager = FragmentHome.getViewPager();
 
         swipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.swip_refresh);
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.recommand_xrecyclerview);

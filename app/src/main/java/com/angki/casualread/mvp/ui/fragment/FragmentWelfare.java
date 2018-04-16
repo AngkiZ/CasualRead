@@ -15,7 +15,6 @@ import com.angki.casualread.mvp.ui.adapter.AdapterWelfareFragmentRecycleView;
 import com.angki.casualread.mvp.model.entity.bean.dbWelfare;
 import com.angki.casualread.mvp.model.entity.result.GankWelfareDatas;
 import com.angki.casualread.app.util.Api;
-import com.angki.casualread.app.util.App;
 import com.angki.casualread.app.util.HttpUtil;
 import com.angki.casualread.app.util.NetworkStatus;
 import com.angki.casualread.app.util.ToastUtil;

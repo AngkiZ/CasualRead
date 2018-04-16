@@ -4,10 +4,12 @@ import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
 import android.os.Message;
+import android.support.v7.app.AppCompatDelegate;
 
 import com.angki.casualread.BuildConfig;
 import com.angki.casualread.app.util.LogUtils;
 import com.angki.casualread.app.util.Utils;
+import com.angki.casualread.app.util.myUtil;
 import com.jess.arms.base.delegate.AppLifecycles;
 import com.jess.arms.integration.AppManager;
 import com.jess.arms.utils.ArmsUtils;
@@ -24,8 +26,14 @@ import org.litepal.LitePal;
 
 public class AppLifecyclesImpl implements AppLifecycles {
 
-    //是否第一次启动
+    /**
+     * 是否第一次启动
+     */
     public static boolean isFirstLoad = true;
+    /**
+     * 包名
+     */
+    public static String mPackageName;
     /**
      * 这里比 onCreate 先执行,常用于 MultiDex 初始化,插件化框架的初始化
      * @param base
@@ -42,7 +50,7 @@ public class AppLifecyclesImpl implements AppLifecycles {
      */
     @Override
     public void onCreate(Application application) {
-
+        mPackageName = application.getPackageName();
         //日志打印
         if (BuildConfig.LOG_DEBUG) {
 
@@ -89,6 +97,23 @@ public class AppLifecyclesImpl implements AppLifecycles {
                 }
             }
         });
+
+        //获取选择主题
+        String themeFileName = "ThemeData";
+        if (myUtil.isExisred(themeFileName)){
+            switch (myUtil.getIntFromSP(application, themeFileName, "theme", 0)) {
+                case 1:
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+                    break;
+                case 2:
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                    break;
+                default:
+                    break;
+            }
+        }else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        }
 
     }
 

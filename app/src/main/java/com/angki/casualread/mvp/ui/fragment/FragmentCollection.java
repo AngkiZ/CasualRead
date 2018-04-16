@@ -32,6 +32,14 @@ public class FragmentCollection extends Fragment{
     //被收藏的干货
     private List<dbGank> collection_gank_list = new ArrayList<>();
 
+    public static FragmentCollection newInstance(int index) {
+        FragmentCollection fragmentContacts = new FragmentCollection();
+        Bundle bundle = new Bundle();
+        bundle.putInt("Index", index);
+        fragmentContacts.setArguments(bundle);
+        return fragmentContacts;
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {

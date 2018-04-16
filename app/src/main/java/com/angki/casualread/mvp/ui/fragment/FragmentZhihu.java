@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 
 import com.angki.casualread.R;
 import com.angki.casualread.app.util.Api;
-import com.angki.casualread.app.util.App;
 import com.angki.casualread.app.util.HttpUtil;
 import com.angki.casualread.app.util.NetworkStatus;
 import com.angki.casualread.app.util.ToastUtil;

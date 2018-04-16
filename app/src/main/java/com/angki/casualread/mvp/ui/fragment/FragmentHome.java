@@ -11,17 +11,17 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.angki.casualread.R;
+import com.angki.casualread.app.appLifeCycle.AppLifecyclesImpl;
 import com.angki.casualread.mvp.ui.adapter.AdapterHomeViewPager;
-import com.angki.casualread.app.util.App;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by tengyu on 2017/4/15.
+ * @author :Angki
+ * @date : 2018-04-16-14-50
  */
-
-public class FragemntHome extends Fragment{
+public class FragmentHome extends Fragment{
 
     //所用到Fragment
     private List<Fragment> fragmentList;
@@ -33,12 +33,23 @@ public class FragemntHome extends Fragment{
 
     private TabLayout tabLayout;
 
-    private FragemntRecommend fragemntRecommend;
+    private FragmentRecommend fragmentRecommend;
     private FragmentZhihu fragmentZhihu;
     private FragmentJoke fragmentJoke;
     private FragmentGank fragmentGank;
     private FragmentWelfare fragmentWelfare;
     private AdapterHomeViewPager adapter;
+
+    /**
+     * @return 返回一个ContactsFragment的弱引用
+     */
+    public static FragmentHome newInstance(int index) {
+        FragmentHome fragmentHome = new FragmentHome();
+        Bundle bundle = new Bundle();
+        bundle.putInt("Index", index);
+        fragmentHome.setArguments(bundle);
+        return fragmentHome;
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -46,13 +57,13 @@ public class FragemntHome extends Fragment{
         //判断是否已有保存的内容，有的话直接加载，没有在获得新对象
         if (savedInstanceState != null){
             FragmentManager manager = getChildFragmentManager();
-            fragemntRecommend = (FragemntRecommend) manager.getFragment(savedInstanceState, "recommand");
+            fragmentRecommend = (FragmentRecommend) manager.getFragment(savedInstanceState, "recommand");
             fragmentZhihu = (FragmentZhihu) manager.getFragment(savedInstanceState, "zhihu");
             fragmentGank = (FragmentGank) manager.getFragment(savedInstanceState, "gank");
             fragmentJoke = (FragmentJoke) manager.getFragment(savedInstanceState, "joke");
             fragmentWelfare = (FragmentWelfare) manager.getFragment(savedInstanceState, "welfare");
         }else {
-            fragemntRecommend = FragemntRecommend.newInstance();
+            fragmentRecommend = FragmentRecommend.newInstance();
             fragmentZhihu = FragmentZhihu.newInstance();
             fragmentGank = FragmentGank.newInstance();
             fragmentJoke = FragmentJoke.newInstance();
@@ -79,7 +90,7 @@ public class FragemntHome extends Fragment{
 
         //将Fragment填入列表
         fragmentList = new ArrayList<>();
-        fragmentList.add(fragemntRecommend);
+        fragmentList.add(fragmentRecommend);
         fragmentList.add(fragmentZhihu);
         fragmentList.add(fragmentGank);
         fragmentList.add(fragmentJoke);
@@ -111,7 +122,7 @@ public class FragemntHome extends Fragment{
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         FragmentManager manager = getChildFragmentManager();
-        manager.putFragment(outState, "recommand", fragemntRecommend);
+        manager.putFragment(outState, "recommand", fragmentRecommend);
         manager.putFragment(outState, "zhihu", fragmentZhihu);
         manager.putFragment(outState, "gank", fragmentGank);
         manager.putFragment(outState, "joke", fragmentJoke);
@@ -121,7 +132,7 @@ public class FragemntHome extends Fragment{
     @Override
     public void onDestroy() {
         super.onDestroy();
-        App.isFirstLoad = false;//当主页碎片退出时，意味着App不再是第一次加载
+        AppLifecyclesImpl.isFirstLoad = false;//当主页碎片退出时，意味着App不再是第一次加载
         adapter = null;
         viewPager = null;
     }
