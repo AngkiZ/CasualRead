@@ -1,6 +1,5 @@
-package com.angki.casualread.app.appLifeCycle;
+package com.angki.casualread.app.lifeCycle;
 
-import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
 import android.os.Message;

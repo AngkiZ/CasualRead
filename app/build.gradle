@@ -11,6 +11,8 @@ android {
         versionCode rootProject.ext.android["versionCode"]
         versionName rootProject.ext.android["versionName"]
         testInstrumentationRunner rootProject.ext.android["androidJUnitRunner"]
+        //开启多jar包支持
+        multiDexEnabled true
     }
 
     buildTypes {
@@ -38,51 +40,106 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
+
     //support
     implementation(rootProject.ext.dependencies["cardview-v7"]) {
         exclude module: 'support-annotations'
     }
+
     //test
     testImplementation rootProject.ext.dependencies["junit"]
     debugImplementation rootProject.ext.dependencies["canary-debug"]
     releaseImplementation rootProject.ext.dependencies["canary-release"]
     testImplementation rootProject.ext.dependencies["canary-release"]
+
     //tools
     annotationProcessor rootProject.ext.dependencies["dagger2-compiler"]
+
+    //进度监听，https://github.com/JessYanCoding/ProgressManager/blob/master/README-zh.md
     implementation rootProject.ext.dependencies["progressmanager"]
+
+    //让 Retrofit 同时支持多个 BaseUrl 以及动态改变 BaseUrl.https://github.com/JessYanCoding/RetrofitUrlManager/blob/master/README-zh.md
     implementation rootProject.ext.dependencies["retrofit-url-manager"]
+
+    //https://github.com/JessYanCoding/LifecycleModel
     implementation rootProject.ext.dependencies["lifecyclemodel"]
-    //view
-    annotationProcessor(rootProject.ext.dependencies["butterknife-compiler"]) {
-        exclude module: 'support-annotations'
-    }
-    implementation rootProject.ext.dependencies["paginate"]
+
+    //权限获取
+    implementation rootProject.ext.dependencies["rxpermissions2"]
     //Github 仓库上最新的 Demo 具有下一个版本的新特性, 所以依赖最新的远程库会出现版本不兼容的情况, 详情请查看 https://github.com/JessYanCoding/MVPArms/wiki/Issues#2
-    implementation 'me.jessyan:arms:2.4.1'
+    implementation 'me.jessyan:arms:2.5.0'
+    implementation rootProject.ext.dependencies["androideventbus"]
+    implementation rootProject.ext.dependencies["autosize"]
+
     /**
-     * 数据库,https://github.com/LitePalFramework/LitePal
+     *  rxbinding,https://github.com/JakeWharton/RxBinding
      */
-    implementation 'org.litepal.android:core:1.6.1'
+    implementation 'com.jakewharton.rxbinding2:rxbinding:2.1.1'
+    implementation 'com.jakewharton.rxbinding2:rxbinding-appcompat-v7:2.1.1'
+    implementation 'com.jakewharton.rxbinding2:rxbinding-support-v4:2.1.1'
+
     /**
-     * 图片变换,https://github.com/wasabeef/glide-transformations
+     *  结合上者的上拉更多下拉刷新,https://github.com/scwang90/SmartRefreshLayout
      */
-    implementation 'jp.wasabeef:glide-transformations:3.2.0'
+    implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.0.5'
+    implementation 'com.scwang.smartrefresh:SmartRefreshHeader:1.0.5'
+
     /**
-     * 轮播图,https://github.com/youth5201314/banner
+     *  RecyclerView的adapter,https://github.com/CymChad/BaseRecyclerViewAdapterHelper
      */
-    implementation 'com.youth.banner:banner:1.4.10'
+    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.38'
+
     /**
-     * 圆形控件,https://github.com/hdodenhof/CircleImageView
+     *  constraint-layout布局
+     */
+    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
+
+    /**
+     *  状态栏控件,https://github.com/laobie/StatusBarUtil
+     */
+    implementation 'com.jaeger.statusbarutil:library:1.5.0'
+
+    /**
+     *  图像剪切控件,https://github.com/Yalantis/uCrop
+     */
+    implementation 'com.github.yalantis:ucrop:2.2.2'
+
+    /**
+     *  圆形控件,https://github.com/hdodenhof/CircleImageView
      */
     implementation 'de.hdodenhof:circleimageview:2.2.0'
 
-    implementation 'com.jcodecraeer:xrecyclerview:1.3.2'
     /**
-     * 大图显示控件,https://github.com/chrisbanes/PhotoView/tree/master
+     *  Fragment管理框架,https://github.com/YoKeyword/Fragmentation/blob/master/README_CN.md
      */
-    implementation 'com.github.chrisbanes:PhotoView:2.1.3'
+    implementation 'me.yokeyword:fragmentation:1.3.3'
 
-    testCompile 'junit:junit:4.12'
+    /**
+     *  一个TextView加强版，https://github.com/chenBingX/SuperTextView
+     */
+    implementation 'com.github.chenBingX:SuperTextView:v3.1.4'
+
+    /**
+     *  过渡动画
+     */
+
+    //noinspection GradleCompatible
+    implementation 'com.android.support:transition:28.0.0'
+
+    /**
+     *  数据接收发送的监控
+     */
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.11.0'
+
+    /**
+     *  图片变换,https://github.com/wasabeef/glide-transformations
+     */
+    implementation 'jp.wasabeef:glide-transformations:3.2.0'
+
+    /**
+     *  图片缩放，https://github.com/chrisbanes/PhotoView
+     */
+    implementation 'com.github.chrisbanes:PhotoView:2.1.4'
 }
 // 显示的时间格式，形如20170710
 def static releaseTime() {

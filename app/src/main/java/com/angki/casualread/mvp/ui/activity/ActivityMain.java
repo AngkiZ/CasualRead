@@ -1,30 +1,24 @@
 package com.angki.casualread.mvp.ui.activity;
 
+import android.app.ActionBar;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.support.v7.app.AppCompatDelegate;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toolbar;
 
 import com.angki.casualread.R;
 import com.angki.casualread.app.util.FragmentUtils;
-import com.angki.casualread.mvp.ui.fragment.FragmentHome;
 import com.angki.casualread.mvp.ui.fragment.FragmentCollection;
-import com.jess.arms.base.BaseActivity;
+import com.angki.casualread.mvp.ui.fragment.FragmentHome;
 import com.jess.arms.di.component.AppComponent;
 
 import butterknife.BindView;
@@ -39,7 +33,7 @@ import static com.angki.casualread.R.id.drawer_layout_theme;
  * @author :Angki
  * @date : 2018-04-16-14-54
  */
-public class ActivityMain extends BaseActivity {
+public class ActivityMain extends BaseMyActivity {
 
     /**
      * 侧滑菜单
@@ -81,14 +75,7 @@ public class ActivityMain extends BaseActivity {
 
     @Override
     public void initData(@Nullable Bundle savedInstanceState) {
-        //判断是否保存数据,获取Fragment对象
-        if (savedInstanceState != null) {
-            mFragmentHome = (FragmentHome) getSupportFragmentManager().getFragment(savedInstanceState, "HomeFragment");
-            mFragmentCollection = (FragmentCollection) getSupportFragmentManager().getFragment(savedInstanceState, "CollcetionFragment");
-        }else {
-            mFragmentHome = FragmentHome.newInstance(1);
-            mFragmentCollection = FragmentCollection.newInstance(1);
-        }
+
         FragmentUtils.addFragment(getSupportFragmentManager(), mFragmentHome, R.id.activity_main_fragment);
         mFragment = mFragmentHome;
         initView();
@@ -203,41 +190,12 @@ public class ActivityMain extends BaseActivity {
         return true;
     }
 
-    /**
-     * 保存临时的Fragment的数据
-     * @param outState 保存的数据
-     */
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        //判断homeFragment是否被添加
-        if (mFragmentHome.isAdded()) {
-            getSupportFragmentManager().putFragment(outState, "HomeFragment", mFragmentHome);
-        }
-        //判断collectionFragment是否被添加，且判断collectionFragment是否为空
-        if (mFragmentCollection != null && mFragmentCollection.isAdded()) {
-            getSupportFragmentManager().putFragment(outState, "CollcetionFragment", mFragmentCollection);
-        }
-    }
 
     /**
      * 销毁所占内存
      */
     private void end() {
         mDrawerLayout = null;
-    }
-
-    @Override
-    public void onBackPressed() {
-
-        if (mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
-            mDrawerLayout.closeDrawers();
-        }else {
-            end();
-            startActivity(new Intent(this, ActivityDummy.class));
-            finish();
-            super.onBackPressed();
-        }
     }
 
     @Override

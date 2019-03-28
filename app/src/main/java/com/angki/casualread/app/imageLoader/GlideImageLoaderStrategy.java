@@ -3,15 +3,12 @@ package com.angki.casualread.app.imageLoader;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.transition.Transition;
 import com.jess.arms.http.imageloader.BaseImageLoaderStrategy;
 import com.jess.arms.http.imageloader.glide.GlideArms;
 import com.jess.arms.http.imageloader.glide.GlideRequest;
@@ -23,12 +20,14 @@ import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
+
 /**
  * 改变框架图片加载
- * @author ：Administrator on 2018/3/2 13:57
- * @eamil ：503001231@qq.com
+ * @author ：Administrator on 2018/7/25 17:27
+ * @project ：WX_MutualAid
+ * @package ：com.xmon.wx_mutualaid.app.lifeCycle
+ * @e-mail ：503001231@qq.com
  */
-
 public class GlideImageLoaderStrategy implements BaseImageLoaderStrategy<ImageConfigImpl> {
 
     /**
@@ -59,11 +58,9 @@ public class GlideImageLoaderStrategy implements BaseImageLoaderStrategy<ImageCo
         requests = GlideArms.with(ctx);
         //判断加载网络还时本地
         if (config.getLoad() == -1 && !TextUtils.isEmpty(config.getUrl())) {
-            glideRequest = requests.load(config.getUrl())
-                    .transition(DrawableTransitionOptions.withCrossFade());
+            glideRequest = requests.load(config.getUrl());
         }else {
-            glideRequest = requests.load(config.getLoad())
-                    .transition(DrawableTransitionOptions.withCrossFade());
+            glideRequest = requests.load(config.getLoad());
         }
         //是否跳过内存缓存
         if (config.isSkipMemoryCache()) {
@@ -119,20 +116,11 @@ public class GlideImageLoaderStrategy implements BaseImageLoaderStrategy<ImageCo
         if (config.getmSize() != 0) {
             glideRequest.override(config.getmSize());
         }
-        glideRequest.transition(DrawableTransitionOptions.withCrossFade());
-        //初始化完成,当控件为自定义的控件时，会出现不显示头像，这时需要加入一个加载完成回调，当加载完成时加载图片
-        glideRequest.into(new SimpleTarget<Drawable>() {
-            @Override
-            public void onResourceReady(@android.support.annotation.NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
-                config.getImageView().setImageDrawable(resource);
-            }
-
-            @Override
-            public void onLoadFailed(@Nullable Drawable errorDrawable) {
-                super.onLoadFailed(errorDrawable);
-                config.getImageView().setImageDrawable(errorDrawable);
-            }
-        });
+        //过渡动画
+        if (config.isCrossFade()) {
+            glideRequest.transition(DrawableTransitionOptions.withCrossFade());
+        }
+        glideRequest.into(config.getImageView());
     }
 
     /**

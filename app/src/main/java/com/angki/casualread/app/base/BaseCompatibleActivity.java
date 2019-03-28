@@ -1,4 +1,4 @@
-package com.xmon.soogoo.base;
+package com.angki.casualread.app.base;
 
 import android.content.Context;
 import android.os.Bundle;

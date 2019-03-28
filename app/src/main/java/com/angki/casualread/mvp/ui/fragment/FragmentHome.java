@@ -1,6 +1,7 @@
 package com.angki.casualread.mvp.ui.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -11,8 +12,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.angki.casualread.R;
-import com.angki.casualread.app.appLifeCycle.AppLifecyclesImpl;
+import com.angki.casualread.app.lifeCycle.AppLifecyclesImpl;
 import com.angki.casualread.mvp.ui.adapter.AdapterHomeViewPager;
+import com.jess.arms.di.component.AppComponent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,7 +23,7 @@ import java.util.List;
  * @author :Angki
  * @date : 2018-04-16-14-50
  */
-public class FragmentHome extends Fragment{
+public class FragmentHome extends BaseMyFragment {
 
     //所用到Fragment
     private List<Fragment> fragmentList;
@@ -49,6 +51,26 @@ public class FragmentHome extends Fragment{
         bundle.putInt("Index", index);
         fragmentHome.setArguments(bundle);
         return fragmentHome;
+    }
+
+    @Override
+    public void setupFragmentComponent(@NonNull AppComponent appComponent) {
+
+    }
+
+    @Override
+    public View initView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return null;
+    }
+
+    @Override
+    public void initData(@Nullable Bundle savedInstanceState) {
+
+    }
+
+    @Override
+    public void setData(@Nullable Object data) {
+
     }
 
     @Override
@@ -136,4 +158,6 @@ public class FragmentHome extends Fragment{
         adapter = null;
         viewPager = null;
     }
+
+
 }

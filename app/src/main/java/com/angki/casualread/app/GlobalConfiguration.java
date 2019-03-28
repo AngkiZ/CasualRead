@@ -5,8 +5,8 @@ import android.content.Context;
 import android.support.v4.app.FragmentManager;
 
 import com.angki.casualread.BuildConfig;
-import com.angki.casualread.app.activityLifeCycle.ActivityLifecycleCallbacksImpl;
-import com.angki.casualread.app.appLifeCycle.AppLifecyclesImpl;
+import com.angki.casualread.app.lifeCycle.ActivityLifecycleCallbacksImpl;
+import com.angki.casualread.app.lifeCycle.AppLifecyclesImpl;
 import com.angki.casualread.app.globalError.ResponseErrorListenerImpl;
 import com.angki.casualread.app.httpHandler.GlobalHttpHandlerImpl;
 import com.angki.casualread.app.imageLoader.GlideImageLoaderStrategy;

@@ -4,8 +4,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -21,13 +21,15 @@ import com.angki.casualread.mvp.model.entity.result.GankWelfareData;
 import com.angki.casualread.mvp.model.entity.result.GankWelfareDatas;
 import com.angki.casualread.mvp.model.entity.result.JokeData;
 import com.angki.casualread.mvp.ui.adapter.AdapterRecommend;
-import com.angki.casualread.app.util.Api;
+import com.angki.casualread.mvp.model.api.Api;
 import com.angki.casualread.app.util.HttpUtil;
 import com.angki.casualread.app.util.NetworkStatus;
 import com.angki.casualread.app.util.ToastUtil;
 import com.angki.casualread.app.util.Utility;
 import com.angki.casualread.mvp.model.entity.result.ZhihuDailyNews.NewsBean;
 import com.angki.casualread.mvp.model.entity.result.ZhihuDailyNews.NewsBeans;
+import com.jess.arms.base.App;
+import com.jess.arms.di.component.AppComponent;
 
 
 import java.io.IOException;
@@ -42,7 +44,7 @@ import okhttp3.Response;
  * Created by tengyu on 2017/3/20.
  */
 
-public class FragmentRecommend extends Fragment {
+public class FragmentRecommend extends BaseMyFragment {
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private List<String> images = new ArrayList<>();
@@ -55,8 +57,38 @@ public class FragmentRecommend extends Fragment {
     private AdapterRecommend adapter;
     private NetworkStatus networkStatus;
 
-    public static FragmentRecommend newInstance() {
-        return new FragmentRecommend();
+    public static FragmentRecommend newInstance(int index) {
+        FragmentRecommend fragmentRecommend = new FragmentRecommend();
+        Bundle bundle = new Bundle();
+        bundle.putInt("Index", index);
+        fragmentRecommend.setArguments(bundle);
+        return fragmentRecommend;
+    }
+
+    @Override
+    public void setupFragmentComponent(@NonNull AppComponent appComponent) {
+
+    }
+
+    @Override
+    public View initView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return null;
+    }
+
+    @Override
+    public void initData(@Nullable Bundle savedInstanceState) {
+
+    }
+
+    @Override
+    public void setData(@Nullable Object data) {
+
+    }
+
+    @Override
+    public void onLazyInitView(@Nullable Bundle savedInstanceState) {
+        super.onLazyInitView(savedInstanceState);
+
     }
 
     @Nullable
@@ -453,4 +485,6 @@ public class FragmentRecommend extends Fragment {
         end();
         super.onDestroy();
     }
+
+
 }

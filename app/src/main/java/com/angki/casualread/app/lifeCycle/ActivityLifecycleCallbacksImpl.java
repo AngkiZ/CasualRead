@@ -1,4 +1,4 @@
-package com.angki.casualread.app.activityLifeCycle;
+package com.angki.casualread.app.lifeCycle;
 
 import android.app.Activity;
 import android.app.Application;

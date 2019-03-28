@@ -14,12 +14,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.angki.casualread.R;
-import com.angki.casualread.app.util.Api;
+import com.angki.casualread.mvp.model.api.Api;
 import com.angki.casualread.app.util.HttpUtil;
 import com.angki.casualread.app.util.NetworkStatus;
 import com.angki.casualread.app.util.ToastUtil;
 import com.angki.casualread.app.util.Utility;
-import com.angki.casualread.app.util.dbUtil;
 import com.angki.casualread.mvp.ui.adapter.AdapterZhihuFragmentRecycleView;
 import com.angki.casualread.mvp.model.entity.bean.dbZhihuNews;
 import com.angki.casualread.mvp.model.entity.bean.dbZhihuNewsDate;

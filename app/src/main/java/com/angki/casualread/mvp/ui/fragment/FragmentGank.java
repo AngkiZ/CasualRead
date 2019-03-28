@@ -13,12 +13,11 @@ import com.angki.casualread.R;
 import com.angki.casualread.mvp.ui.adapter.AdapterGankFragmentRecycleView;
 import com.angki.casualread.mvp.model.entity.bean.dbGank;
 import com.angki.casualread.mvp.model.entity.result.GankDatas;
-import com.angki.casualread.app.util.Api;
+import com.angki.casualread.mvp.model.api.Api;
 import com.angki.casualread.app.util.HttpUtil;
 import com.angki.casualread.app.util.NetworkStatus;
 import com.angki.casualread.app.util.ToastUtil;
 import com.angki.casualread.app.util.Utility;
-import com.angki.casualread.app.util.dbUtil;
 import com.jcodecraeer.xrecyclerview.ProgressStyle;
 import com.jcodecraeer.xrecyclerview.XRecyclerView;
 

@@ -3,10 +3,10 @@ package com.angki.casualread.app.globalError;
 import android.content.Context;
 import android.net.ParseException;
 
+import com.angki.casualread.app.util.LogUtils;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonParseException;
 import com.jess.arms.utils.ArmsUtils;
-import com.xmon.egg.app.util.LogUtils;
 
 import org.json.JSONException;
 

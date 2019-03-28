@@ -1,4 +1,4 @@
-package com.angki.casualread.app.fragmentLifeCycle;
+package com.angki.casualread.app.lifeCycle;
 
 import android.content.Context;
 import android.os.Bundle;

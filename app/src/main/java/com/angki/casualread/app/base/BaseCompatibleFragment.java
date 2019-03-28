@@ -1,4 +1,4 @@
-package com.xmon.soogoo.base;
+package com.angki.casualread.app.base;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -29,7 +29,7 @@ import me.yokeyword.fragmentation.SupportFragment;
  * @e-mail ：503001231@qq.com
  */
 
-public abstract class BaseCompatibleFragment<P extends IPresenter> extends SupportFragment implements IFragment, FragmentLifecycleable{
+public abstract class BaseCompatibleFragment<P extends IPresenter> extends SupportFragment implements IFragment, FragmentLifecycleable {
 
     protected final String TAG = this.getClass().getSimpleName();
     private final BehaviorSubject<FragmentEvent> mLifecycleSubject = BehaviorSubject.create();

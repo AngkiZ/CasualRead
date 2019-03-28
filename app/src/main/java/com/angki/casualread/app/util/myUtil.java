@@ -3,7 +3,7 @@ package com.angki.casualread.app.util;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.angki.casualread.app.appLifeCycle.AppLifecyclesImpl;
+import com.angki.casualread.app.lifeCycle.AppLifecyclesImpl;
 
 import java.io.File;
 

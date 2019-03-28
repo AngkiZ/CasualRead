@@ -1,4 +1,4 @@
-package com.angki.casualread.app.util;
+package com.angki.casualread.mvp.model.api;
 
 /**
  * Created by tengyu on 2017/3/15.
@@ -19,15 +19,6 @@ public class Api {
      */
     public static final String ZHIHU_NEWS = "http://news-at.zhihu.com/api/4/news/";
     public static final String ZHIHU_BEFORE = "http://news-at.zhihu.com/api/4/news/before/";
-
-    /**
-     * API说明：
-     * API 均由聚合数据提供，
-     * 来源：https://www.juhe.cn/
-     * 拼接"?key=您申请的KEY&page=1&pagesize=10"
-     * page为当前页数，pagesize返回条数
-     */
-    public static final String JOKE = "http://japi.juhe.cn/joke/content/text.from";
 
     /**
      * API说明：
