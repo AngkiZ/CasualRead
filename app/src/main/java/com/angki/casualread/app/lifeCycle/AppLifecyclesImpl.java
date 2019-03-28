@@ -27,10 +27,6 @@ import org.litepal.LitePal;
 public class AppLifecyclesImpl implements AppLifecycles {
 
     /**
-     * 是否第一次启动
-     */
-    public static boolean isFirstLoad = true;
-    /**
      * 包名
      */
     public static String mPackageName;
@@ -125,19 +121,4 @@ public class AppLifecyclesImpl implements AppLifecycles {
         LogUtils.eTag("Angki","onTerminate");
     }
 
-    /**
-     * 在Android中，我们可以通过Process.myPid()和 RunningAppProcessInfo来取得当前的进程名。
-     */
-    public static String getCurProcessName(Context context) {
-        int pid = android.os.Process.myPid();
-        ActivityManager mActivityManager = (ActivityManager) context
-                .getSystemService(Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningAppProcessInfo appProcess : mActivityManager
-                .getRunningAppProcesses()) {
-            if (appProcess.pid == pid) {
-                return appProcess.processName;
-            }
-        }
-        return null;
-    }
 }
